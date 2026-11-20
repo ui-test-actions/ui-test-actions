@@ -59,9 +59,9 @@ def setup_desktop(target, processes):
             raise RuntimeError("Xvfb did not allocate a display")
         os.environ["DISPLAY"] = f":{display}"
     deps = ["Pillow==12.2.0"]
-    if target == "windows":
+    if target in ("windows", "ios"):
         deps.append("PyAutoGUI==0.9.54")
-    if target == "macos":
+    if target in ("macos", "ios"):
         deps.append("pyobjc-framework-Quartz==12.1")
     run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", *deps, timeout=180)
     if target == "windows":
@@ -72,11 +72,11 @@ def setup_desktop(target, processes):
 class Desktop:
     def __init__(self, target):
         self.target = target
-        if self.target == "windows":
+        if self.target in ("windows", "ios"):
             import pyautogui
             self.gui = pyautogui
             self.gui.FAILSAFE = False
-        if self.target == "macos":
+        if self.target in ("macos", "ios"):
             import Quartz
             self.quartz = Quartz
 
@@ -85,7 +85,7 @@ class Desktop:
         from PIL import ImageGrab
         image = ImageGrab.grab()
         logical_size = image.size
-        if self.target == "macos":
+        if self.target in ("macos", "ios"):
             q = self.quartz
             bounds = q.CGDisplayBounds(q.CGMainDisplayID())
             logical_size = (int(bounds.size.width), int(bounds.size.height))
@@ -133,7 +133,7 @@ class Desktop:
             move(round(x1 + (x2 - x1) * step / 12), round(y1 + (y2 - y1) * step / 12))
 
     def type_text(self, text):
-        if self.target == "windows":
+        if self.target in ("windows", "ios"):
             self.gui.write(text, interval=0.025)
         elif self.target == "linux":
             run("xdotool", "type", "--clearmodifiers", "--", text)
@@ -367,20 +367,20 @@ def main(control):
     duration = duration_setting("UI_TEST_DURATION", 1, 180)
     startup = duration_setting("UI_TEST_STARTUP_TIMEOUT", 1, 1800)
     processes = []
-    with tempfile.TemporaryDirectory(prefix="live-ui-", dir="/tmp" if target == "ios" else None) as directory:
+    with tempfile.TemporaryDirectory(prefix="live-ui-") as directory:
         work = Path(directory)
         try:
             binary = download_tunnel(work)
-            if target in ("linux", "windows", "macos"):
-                setup_desktop(target, processes)
-            launch_app(startup)
             device = os.environ.get("UI_TEST_DEVICE", "")
+            if target != "android":
+                setup_desktop(target, processes)
+            if target == "ios":
+                from mobile import open_simulator
+                open_simulator(device)
+            launch_app(startup)
             if target == "android":
                 from mobile import Android
                 backend = Android(device)
-            elif target == "ios":
-                from mobile import IOS
-                backend = IOS(device, work, processes)
             else:
                 backend = Desktop(target)
             with Session(digest, backend, target) as session:

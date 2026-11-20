@@ -1,24 +1,8 @@
 """UI input and framebuffer capture on local mobile simulators."""
 
-import hashlib
 import json
-import platform
 from shlex import quote
-from struct import unpack
 import subprocess
-import sys
-import tarfile
-import time
-from urllib.request import urlopen
-
-
-IDB_RELEASE = "https://github.com/meta/idb/releases/download/v1.7.8/"
-IDB_ARCHIVE = "idb-companion.macos-arm64.tar.gz"
-IDB_WHEEL = "fb_idb-1.7.8-py3-none-any.whl"
-IDB_DIGESTS = {
-    IDB_ARCHIVE: "44369a2df0b62e3a1764de61bd09280999c7e9b27ea8f20bff1ea3a9db0302a2",
-    IDB_WHEEL: "ed8557a4c54ffee53006c1fe63f070cda567949312ab24be56faf987c5a3d04b",
-}
 
 
 def output(*args, timeout=20, stderr=None):
@@ -65,69 +49,11 @@ class Android:
         output(*self.adb, "shell", " && ".join(commands), stderr=subprocess.DEVNULL)
 
 
-class IOS:
-    def __init__(self, device, work, processes):
-        if platform.machine() != "arm64":
-            raise RuntimeError("The iOS backend requires an Apple Silicon runner")
-        booted = json.loads(output("xcrun", "simctl", "list", "devices", "booted", "-j"))
-        devices = [
-            item["udid"] for runtime, items in booted["devices"].items()
-            if ".iOS-" in runtime for item in items if item["state"] == "Booted"
-        ]
-        self.udid = select_device(device, devices, "booted iOS simulator")
-        self.screen = (0, 0)
-        for name, digest in IDB_DIGESTS.items():
-            with urlopen(IDB_RELEASE + name, timeout=45) as source, (work / name).open("wb") as dest:
-                while chunk := source.read(1024 * 1024):
-                    dest.write(chunk)
-            with (work / name).open("rb") as source:
-                if hashlib.file_digest(source, "sha256").hexdigest() != digest:
-                    raise RuntimeError(f"IDB checksum mismatch for {name}")
-        with tarfile.open(work / IDB_ARCHIVE) as archive:
-            archive.extractall(work / "idb", filter="data")
-        subprocess.run(
-            [sys.executable, "-m", "pip", "install", "--disable-pip-version-check", str(work / IDB_WHEEL)],
-            check=True, timeout=180,
-        )
-        socket = work / "idb.sock"
-        self.idb = ("idb", "--companion", str(socket))
-        log = work / "idb.log"
-        with log.open("wb") as stream:
-            companion = subprocess.Popen(
-                [str(work / "idb" / "idb_companion"), "--udid", self.udid, "--grpc-domain-sock", str(socket)],
-                stdout=stream, stderr=subprocess.STDOUT,
-            )
-        processes.append(companion)
-        deadline = time.monotonic() + 45
-        while not socket.exists() and companion.poll() is None and time.monotonic() < deadline:
-            time.sleep(0.25)
-        if not socket.exists():
-            print(log.read_text(encoding="utf-8", errors="replace"))
-            raise RuntimeError("IDB companion did not start")
-        dims = json.loads(output(*self.idb, "describe", "--json"))["screen_dimensions"]
-        self.points = (dims["width_points"], dims["height_points"])
-        if not all(self.points):
-            raise RuntimeError("Simulator did not report logical screen dimensions")
-
-    def capture(self):
-        png = output(*self.idb, "screenshot", "-", "--format", "png", timeout=25)
-        self.screen = unpack(">II", png[16:24])
-        return png
-
-    def pointer(self, kind, points, duration):
-        width, height = self.points
-        image_width, image_height = self.screen
-        if (width > height) != (image_width > image_height):
-            width, height = height, width
-        coordinates = [
-            str(value)
-            for x, y in points
-            for value in (x * width // image_width, y * height // image_height)
-        ]
-        if kind == "click":
-            output(*self.idb, "ui", "tap", *coordinates)
-        else:
-            output(*self.idb, "ui", "swipe", *coordinates, "--duration", str(duration))
-
-    def type_text(self, text):
-        output(*self.idb, "ui", "text", "--", text, stderr=subprocess.DEVNULL)
+def open_simulator(device):
+    booted = json.loads(output("xcrun", "simctl", "list", "devices", "booted", "-j"))
+    devices = [
+        item["udid"] for runtime, items in booted["devices"].items()
+        if ".iOS-" in runtime for item in items if item["state"] == "Booted"
+    ]
+    udid = select_device(device, devices, "booted iOS simulator")
+    output("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", udid)
