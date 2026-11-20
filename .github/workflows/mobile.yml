@@ -135,7 +135,7 @@ jobs:
           name: ios-environment-permissions
           path: ${{ runner.temp }}/ios-environment
           retention-days: 7
-      - uses: ui-test-actions/ui-test-actions@f5a44184a88f6c80c31d37d0e24ea7f61cd1c588
+      - uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
