@@ -1,0 +1,87 @@
+name: Verify mobile UI session
+run-name: Mobile proof · ${{ inputs.target }}
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        options: [android, ios]
+        required: true
+      token_sha256:
+        description: SHA-256 of the client session token
+        type: string
+        required: true
+      duration:
+        description: Minutes after app readiness
+        type: string
+        default: '15'
+permissions:
+  contents: read
+jobs:
+  mobile:
+    runs-on: ${{ fromJSON('{"android":"ubuntu-24.04","ios":"macos-26"}')[inputs.target] }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Boot Android emulator and build fixture
+        if: inputs.target == 'android'
+        shell: bash
+        run: |
+          sudo chmod a+rw /dev/kvm
+          image='system-images;android-35;google_apis;x86_64'
+          sdkmanager "$image" 'platforms;android-35' 'build-tools;35.0.0'
+          echo no | avdmanager create avd --force --name live-ui-proof --package "$image"
+          emulator -avd live-ui-proof -port 5554 -no-window -no-audio \
+            -no-snapshot -no-boot-anim -gpu swiftshader_indirect > emulator.log 2>&1 &
+          bash fixtures/android/build.sh build/android
+          if ! timeout 360 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do sleep 2; done'; then
+            cat emulator.log
+            exit 1
+          fi
+          adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP
+          adb -s emulator-5554 shell wm dismiss-keyguard
+          echo 'PROOF_DEVICE=emulator-5554' >> "$GITHUB_ENV"
+      - name: Boot iOS simulator and build fixture
+        if: inputs.target == 'ios'
+        shell: bash
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available -j > simulators.json
+          simulator=$(python -c '
+          import json
+          runtimes = json.load(open("simulators.json"))["devices"]
+          print(next(
+              device["udid"]
+              for key in reversed(sorted(runtimes)) if ".iOS-" in key
+              for device in runtimes[key]
+              if device["name"].startswith("iPhone") and device["isAvailable"]
+          ))
+          ')
+          bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
+          xcrun simctl bootstatus "$simulator" -b
+          echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
+      - uses: ui-test-actions/ui-test-actions@228efdc86405cdbb170cc3993138b91566696163
+        with:
+          target: ${{ inputs.target }}
+          token-sha256: ${{ inputs.token_sha256 }}
+          duration-minutes: ${{ inputs.duration }}
+          device: ${{ env.PROOF_DEVICE }}
+          launch: |
+            if [[ "$RUNNER_OS" == Linux ]]; then
+              adb -s "$PROOF_DEVICE" install -r build/android/fixture.apk
+              adb -s "$PROOF_DEVICE" shell am start -W -n dev.uitest.fixture/.MainActivity
+            else
+              xcrun simctl install "$PROOF_DEVICE" "$RUNNER_TEMP/LiveUIFixture.app"
+              xcrun simctl launch "$PROOF_DEVICE" dev.uitest.fixture
+            fi
+          ready: |
+            if [[ "$RUNNER_OS" == Linux ]]; then
+              adb -s "$PROOF_DEVICE" shell dumpsys activity activities | grep -q 'mResumedActivity.*dev.uitest.fixture\|topResumedActivity.*dev.uitest.fixture'
+            else
+              xcrun simctl spawn "$PROOF_DEVICE" launchctl list | grep -q 'UIKitApplication:dev.uitest.fixture'
+            fi
