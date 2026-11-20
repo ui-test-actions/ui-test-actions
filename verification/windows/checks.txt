@@ -1,0 +1,18 @@
+2026-11-20T04:56:02Z
+no_token=401
+wrong_token=401
+session={"id": "afe833e6ed6e2c13c6b197d1", "target": "windows", "seconds_remaining": 558}
+2026-11-20T04:56:20Z
+{"ok": true}
+{"ok": true}
+{"ok": true}
+reconnect={"id": "afe833e6ed6e2c13c6b197d1", "target": "windows", "seconds_remaining": 539}
+cancel_requested=2026-11-20T04:56:55Z
+✓ Request to cancel workflow 44677512108 submitted.
+2026-11-20T04:56:57Z http=200
+2026-11-20T04:57:02Z http=200
+2026-11-20T04:57:05Z http=530
+2026-11-20T04:57:35Z
+{"conclusion":"cancelled","status":"completed"}
+after_completed_cancellation=530
+Bearer token absent from job logs and connection artifact

@@ -90,3 +90,7 @@ ui --fail "$URL/v1/screenshot" -o after.png
 The managed [Cloudflare Quick Tunnel](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) forwards HTTPS traffic to the session's loopback listener. It requires no Cloudflare account. Cloudflare terminates HTTPS and Quick Tunnels have no availability SLA. The public URL is a locator. Every screen, input, and session API request checks the bearer token, which is held in the browser tab or the local terminal. The connection artifact contains only the HTTPS address, target, session ID, and expiry. Use non-production test data and avoid leaving sensitive screens in the test desktop.
 
 The action stops the listener and tunnel when the timer expires. GitHub job cancellation stops the hold step, which signals the runner-side session to close. A successful reconnect during the live window returns the same session ID. When the job is over, the endpoint is unreachable or returns an error. Remove your local token file after use.
+
+## Hosted verification
+
+See the [hosted runner proofs](verification/README.md) for run links, screenshots, and external connection checks.
