@@ -275,12 +275,16 @@ class MobileDriver:
                     self.ime = ime
         else:
             requested = os.environ.get("UI_TEST_DEVICE", "")
-            booted = json.loads(_run("xcrun", "simctl", "list", "devices", "booted", "-j"))
-            available = [
-                item["udid"] for runtime, devices in booted["devices"].items()
-                if ".iOS-" in runtime for item in devices if item["state"] == "Booted"
-            ]
-            self.device = select_device(requested, available, "booted iOS simulator")
+            if self.legacy is None and requested:
+                from uuid import UUID
+                self.device = str(UUID(requested)).upper()
+            else:
+                booted = json.loads(_run("xcrun", "simctl", "list", "devices", "booted", "-j", timeout=40))
+                available = [
+                    item["udid"] for runtime, devices in booted["devices"].items()
+                    if ".iOS-" in runtime for item in devices if item["state"] == "Booted"
+                ]
+                self.device = select_device(requested, available, "booted iOS simulator")
 
     def capabilities(self):
         commands = []
@@ -288,7 +292,9 @@ class MobileDriver:
             commands.extend(("pointer.click", "pointer.drag", "pointer.scroll", "keyboard.press",
                              "tree.snapshot", "device.orientation"))
         if self.ime or self.target == "ios":
-            commands.extend(("text.insert", "clipboard.get", "clipboard.set"))
+            commands.extend(("clipboard.get", "clipboard.set"))
+            if self.legacy is not None:
+                commands.append("text.insert")
         if self.app_ids:
             commands.extend(("app.launch", "app.close", "app.restart", "app.uninstall"))
             if self.target == "android" or self.install_paths:

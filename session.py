@@ -496,9 +496,11 @@ def main(control):
         try:
             binary = download_tunnel(work)
             device = os.environ.get("UI_TEST_DEVICE", "")
-            if target != "android":
+            webdriver_url = os.environ.get("UI_TEST_WEBDRIVER_URL")
+            native_ios = target == "ios" and bool(webdriver_url)
+            if target != "android" and not native_ios:
                 setup_desktop(target, processes)
-            if target == "ios":
+            if target == "ios" and not native_ios:
                 from mobile import open_simulator
                 open_simulator(device)
             exchange = None
@@ -506,20 +508,25 @@ def main(control):
                 exchange = Exchange(work / "files")
                 os.environ["UI_TEST_EXCHANGE_DIR"] = str(exchange.directory)
             launch_app(startup)
+            if target == "android" or native_ios:
+                run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "Pillow==12.2.0", timeout=180)
             if target == "android":
                 from mobile import Android
                 backend = Android(device)
-                run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "Pillow==12.2.0", timeout=180)
             else:
-                backend = Desktop(target)
-            driver = load_driver(backend, target)
-            webdriver_url = os.environ.get("UI_TEST_WEBDRIVER_URL")
+                backend = None if native_ios else Desktop(target)
+            if native_ios:
+                from mobile_driver import MobileDriver
+                driver = MobileDriver(None, target)
+            else:
+                driver = load_driver(backend, target)
             if webdriver_url:
                 if target not in ("android", "ios"):
                     raise ValueError("The loopback Appium adapter requires an Android or iOS target.")
                 from webdriver_driver import WebDriverMobile
-                mobile = driver.mobile if target == "ios" else driver
-                driver = WebDriverMobile(webdriver_url, json.loads(os.environ["UI_TEST_WEBDRIVER_CAPS"]), mobile, target)
+                driver = WebDriverMobile(
+                    webdriver_url, json.loads(os.environ["UI_TEST_WEBDRIVER_CAPS"]), driver, target,
+                )
                 backend = driver
             with Session(digest, backend, target, driver, port, exchange) as session:
                 session.capture()

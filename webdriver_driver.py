@@ -158,6 +158,8 @@ class WebDriverMobile:
     def type_text(self, text):
         if "text.insert" in self.mobile.capabilities():
             return self.mobile.execute("text.insert", {"text": text})
+        if not self.mobile.legacy:
+            raise RuntimeError("Legacy text input is unavailable with this Appium driver.")
         return self.mobile.legacy.type_text(text)
 
     def point(self, x, y, duration=0):
