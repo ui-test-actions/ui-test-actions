@@ -21,7 +21,7 @@ from urllib.request import urlopen
 CLOUDFLARED_VERSION = "2026.11.1"
 CLOUDFLARED_ASSETS = {
     ("Linux", "amd64"): ("linux-amd64", "97bb3b02d23a5980fc9c15a1a270e692da1923f103f920d5b16d4931d5ab55e7"),
-    ("Linux", "arm64"): ("linux-arm64", "b155cec3e48e489cfb8e5c602769fb8c771083018d8884d18a791567c5a"),
+    ("Linux", "arm64"): ("linux-arm64", "b155cec3e48e489cfb8e5c602769fb8c771083018d8881d68b4d18a791567c5a"),
     ("Darwin", "amd64"): ("darwin-amd64.tgz", "5e0403b188dfee71fbd9b995e7dc9910d61b661c52371935ab6475d41185632f"),
     ("Darwin", "arm64"): ("darwin-arm64.tgz", "02fe4bcf08f2c09699cff30658228a739a0c47fb75f3653d1b8772a27ade4462"),
     ("Windows", "amd64"): ("windows-amd64.exe", "341deda3db5ec498a0482254d6c38c0b7cf01a30c37bb5dd95d2216d08955e35"),
