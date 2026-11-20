@@ -5,8 +5,10 @@ import binascii
 import http.client
 import json
 from math import isfinite
+from pathlib import Path
 import re
 from struct import unpack
+from tempfile import TemporaryDirectory
 from urllib.parse import urlsplit
 import xml.etree.ElementTree as ET
 
@@ -107,6 +109,8 @@ class WebDriverMobile:
             raise ValueError("Appium and the mobile helper must select the same device.")
         options["appium:udid"] = device
         self.mobile = mobile
+        self.target = target
+        self.native_capture = False
         self.scale = (1, 1)
         self.viewport = (1, 1)
         result = self.connection.request("POST", "/session", {"capabilities": {"alwaysMatch": options}}, timeout=300)
@@ -122,19 +126,40 @@ class WebDriverMobile:
     def call(self, method, path, data=None, timeout=20):
         return self.connection.request(method, self.prefix + path, data, timeout)
 
-    def capture(self):
+    def simulator_image(self):
+        with TemporaryDirectory(prefix="ios-webdriver-frame-") as directory:
+            image = Path(directory) / "frame.png"
+            self.mobile.simctl("io", "screenshot", "--type=png", str(image), timeout=35)
+            if image.stat().st_size > MAX_DRIVER_RESPONSE:
+                raise RuntimeError("The Simulator framebuffer exceeded the capture limit.")
+            return image.read_bytes()
+
+    def capture_image(self):
+        if self.native_capture:
+            return self.simulator_image()
         try:
-            image = base64.b64decode(self.call("GET", "/screenshot"), validate=True)
+            return base64.b64decode(self.call("GET", "/screenshot"), validate=True)
+        except TimeoutError:
+            if self.target != "ios":
+                raise
+            self.native_capture = True
+            print("The Appium screenshot timed out. Using the iOS Simulator framebuffer.", flush=True)
+            return self.simulator_image()
         except (TypeError, ValueError, binascii.Error):
             raise RuntimeError("Appium did not return a valid screenshot.") from None
+
+    def capture(self):
+        image = self.capture_image()
         if not image.startswith(PNG) or len(image) < 24:
             raise RuntimeError("Appium did not return a PNG screenshot.")
         width, height = unpack(">II", image[16:24])
-        frame = self.call("GET", "/window/rect")
+        frame = self.call("GET", "/window/rect", timeout=35 if self.native_capture else 20)
         self.viewport = (frame["width"], frame["height"])
         if not all(0 < value <= 16384 for value in (*self.viewport, width, height)):
             raise RuntimeError("Appium reported an invalid viewport.")
         self.scale = (width / self.viewport[0], height / self.viewport[1])
+        if self.native_capture and abs(self.scale[0] - self.scale[1]) > .05:
+            raise RuntimeError("The Simulator screen and Appium viewport are out of alignment.")
         return image
 
     def execute(self, command, params):

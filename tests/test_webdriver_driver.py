@@ -1,7 +1,8 @@
+from struct import pack
 import unittest
 from unittest.mock import Mock
 
-from webdriver_driver import WebDriverConnection, WebDriverMobile, parse_source
+from webdriver_driver import PNG, WebDriverConnection, WebDriverMobile, parse_source
 
 
 class WebDriverTest(unittest.TestCase):
@@ -39,3 +40,18 @@ class WebDriverTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             driver.gesture(tracks)
         driver.call.assert_called_once()
+
+    def test_cold_ios_screenshot_timeout_uses_simulator_and_keeps_native_touch_scale(self):
+        driver = WebDriverMobile.__new__(WebDriverMobile)
+        driver.target, driver.native_capture = "ios", False
+        image = PNG + b"\0" * 8 + pack(">II", 1200, 2400)
+        driver.call = Mock(side_effect=[TimeoutError(), {"width": 400, "height": 800},
+                                       {"width": 400, "height": 800}])
+        driver.simulator_image = Mock(return_value=image)
+        with unittest.mock.patch("builtins.print"):
+            self.assertEqual(driver.capture(), image)
+        self.assertEqual(driver.capture(), image)
+        self.assertTrue(driver.native_capture)
+        self.assertEqual(driver.scale, (3, 3))
+        self.assertEqual(driver.simulator_image.call_count, 2)
+        self.assertEqual(driver.call.call_args_list[1].kwargs, {"timeout": 35})
