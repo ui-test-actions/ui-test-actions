@@ -29,6 +29,7 @@ runs:
   using: composite
   steps:
     - name: Open UI session
+      id: start
       shell: bash
       env:
         UI_TEST_ACTION_PATH: ${{ github.action_path }}
@@ -41,4 +42,21 @@ runs:
         UI_TEST_DEVICE: ${{ inputs.device }}
         UI_TEST_IOS_BUNDLE_ID: ${{ inputs.ios-bundle-id }}
         PYTHONUNBUFFERED: '1'
-      run: python "$UI_TEST_ACTION_PATH/session.py"
+      run: python "$UI_TEST_ACTION_PATH/lifecycle.py" start
+    - name: Publish live connection
+      id: publish
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      with:
+        name: ui-session-${{ github.job }}-${{ github.run_attempt }}-${{ steps.start.outputs.session-id }}
+        path: ${{ steps.start.outputs.file }}
+        if-no-files-found: error
+        retention-days: 1
+    - name: Hold UI session open
+      if: always() && steps.start.outcome == 'success'
+      shell: bash
+      env:
+        UI_TEST_ACTION_PATH: ${{ github.action_path }}
+        UI_TEST_DURATION: ${{ inputs.duration-minutes }}
+        UI_TEST_CONNECTION_FILE: ${{ steps.start.outputs.file }}
+        UI_TEST_PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+      run: python "$UI_TEST_ACTION_PATH/lifecycle.py" hold

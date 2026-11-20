@@ -41,7 +41,7 @@ def duration_setting(name, low, high):
     return value
 
 
-def setup_desktop(target, work, processes):
+def setup_desktop(target, processes):
     if target == "linux" and not os.environ.get("DISPLAY"):
         run("sudo", "apt-get", "update", timeout=120)
         run("sudo", "apt-get", "install", "-y", "xvfb", "xauth", "xdotool", timeout=120)
@@ -352,7 +352,7 @@ def stop(*_args):
     raise KeyboardInterrupt
 
 
-def main():
+def main(control):
     signal.signal(signal.SIGTERM, stop)
     target = os.environ["UI_TEST_TARGET"]
     if TARGET_OS.get(target) != platform.system():
@@ -367,11 +367,10 @@ def main():
         work = Path(directory)
         try:
             binary = download_tunnel(work)
-            setup_desktop(target, work, processes)
+            setup_desktop(target, processes)
             launch_app(startup)
             with Session(digest, Desktop(target), target) as session:
                 session.capture()
-                stopped = threading.Event()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)
                 serving.start()
                 try:
@@ -381,10 +380,19 @@ def main():
                     print(f"{target} session ready for {duration} minute(s)")
                     with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
                         summary.write(f"### Live UI session\n\n[{target}]({address}) · {duration} minute(s)\n")
-                    while (remaining := session.deadline - time.monotonic()) > 0:
+                    data = {
+                        "url": address,
+                        "target": target,
+                        "session_id": session.id,
+                        "expires_unix": int(time.time() + duration * 60),
+                    }
+                    unpublished = control / "connection.tmp"
+                    unpublished.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+                    unpublished.replace(control / "connection.json")
+                    while (remaining := session.deadline - time.monotonic()) > 0 and not (control / "stop").exists():
                         if processes[-1].poll() is not None:
                             raise RuntimeError("Cloudflare process exited during the session")
-                        stopped.wait(min(remaining, 2))
+                        time.sleep(min(remaining, 0.25))
                 finally:
                     session.deadline = 0
                     session.shutdown()
@@ -400,4 +408,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    control = Path(sys.argv[1])
+    outcome = "failure"
+    try:
+        main(control)
+        outcome = "success"
+    finally:
+        temporary = control / "outcome.tmp"
+        temporary.write_text(outcome, encoding="utf-8")
+        temporary.replace(control / "outcome")
