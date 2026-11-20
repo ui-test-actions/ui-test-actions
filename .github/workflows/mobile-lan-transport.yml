@@ -19,6 +19,11 @@ on:
       ios_token_sha256:
         description: SHA-256 of the external iOS UI token
         type: string
+      ios_backend:
+        description: Simulator UI driver in app mode
+        type: choice
+        options: [visible, axe]
+        default: visible
 permissions:
   contents: read
   actions: read
@@ -36,6 +41,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     env:
       LAN_TARGET: ${{ matrix.target }}
+      LAN_IOS_BACKEND: ${{ inputs.ios_backend }}
     defaults:
       run:
         shell: bash

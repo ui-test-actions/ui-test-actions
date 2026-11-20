@@ -29,17 +29,19 @@ if [[ "$target" == android ]]; then
 else
   test "$(uname -m)" = arm64
   ditto -x -k "$package/sample-app.zip" "$staging"
-  asset=AXe-macOS-v2.1.1-universal.tar.gz
-  curl --fail --silent --show-error --location --retry 3 \
-    "https://github.com/cameroncooke/AXe/releases/download/v2.1.1/$asset" -o "$staging/$asset"
-  printf '%s  %s\n' 8788838b1b32059d143cf06541b72fcaead85c16274457cdbff086510a5b17fa "$staging/$asset" |
-    shasum -a 256 -c -
-  tar -xzf "$staging/$asset" -C "$staging"
-  axe=$(find "$staging" -name axe -type f -print -quit)
-  test -x "$axe"
   {
     printf 'LAN_DEVICE=%s\n' "$(cat "$RUNNER_TEMP/mobile-lan-preflight/device")"
     echo LAN_APP_ID=dev.p2pkit.sample
-    printf 'LAN_AXE=%s\n' "$axe"
   } >> "$GITHUB_ENV"
+  if [[ "${LAN_IOS_BACKEND:-visible}" == axe ]]; then
+    asset=AXe-macOS-v2.1.1-universal.tar.gz
+    curl --fail --silent --show-error --location --retry 3 \
+      "https://github.com/cameroncooke/AXe/releases/download/v2.1.1/$asset" -o "$staging/$asset"
+    printf '%s  %s\n' 8788838b1b32059d143cf06541b72fcaead85c16274457cdbff086510a5b17fa "$staging/$asset" |
+      shasum -a 256 -c -
+    tar -xzf "$staging/$asset" -C "$staging"
+    axe=$(find "$staging" -name axe -type f -print -quit)
+    test -x "$axe"
+    printf 'LAN_AXE=%s\n' "$axe" >> "$GITHUB_ENV"
+  fi
 fi

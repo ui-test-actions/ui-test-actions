@@ -10,6 +10,7 @@ if [[ "$target" == android ]]; then
 else
   xcrun simctl install "$LAN_DEVICE" "$staging/p2pkit-sample.app"
   xcrun simctl launch "$LAN_DEVICE" "$LAN_APP_ID"
+  if [[ "${LAN_IOS_BACKEND:-visible}" != axe ]]; then exit 0; fi
   python3 - "$LAN_DEVICE" "$staging/preflight.png" <<'PY'
 from pathlib import Path
 import subprocess
