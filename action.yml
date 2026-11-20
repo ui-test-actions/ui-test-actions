@@ -45,6 +45,7 @@ runs:
         python "$UI_TEST_ACTION_PATH/lifecycle.py" start
     - name: Publish live connection
       id: publish
+      continue-on-error: true
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: ui-session-${{ github.job }}-${{ github.run_attempt }}-${{ steps.start.outputs.session-id }}
@@ -52,7 +53,7 @@ runs:
         if-no-files-found: error
         retention-days: 1
     - name: Hold UI session open
-      if: always() && steps.start.outcome == 'success'
+      if: success() && steps.start.outcome == 'success'
       shell: bash
       env:
         UI_TEST_ACTION_PATH: ${{ github.action_path }}
