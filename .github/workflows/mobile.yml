@@ -112,7 +112,7 @@ jobs:
           name: android-environment-permissions
           path: ${{ runner.temp }}/android-environment
           retention-days: 7
-      - uses: ui-test-actions/ui-test-actions@c788f818ee688f49385fb9885350158da8127d07
+      - uses: ui-test-actions/ui-test-actions@77fffa0eac959dc008d36f59d194c23cb3b0432b
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
