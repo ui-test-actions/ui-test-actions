@@ -1,22 +1,27 @@
 """Runner-side connection providers. None of these configure the app's network."""
 
-from http.client import HTTPException
+from http.client import HTTPConnection, HTTPException
 from ipaddress import IPv4Address, IPv4Network
+import json
 import os
+import re
 import secrets
+import socket
 import ssl
 import subprocess
 import time
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode, urlsplit
 from urllib.request import ProxyHandler, Request, build_opener
 
 from agent import NoRedirect
-from tunnel import ConnectorCancelled, ConnectorUnavailable, HOSTNAME, Tunnel, download_tunnel
+from tunnel import ConnectorCancelled, ConnectorUnavailable, HOSTNAME, QUICK_URL, Tunnel, download_tunnel
 
 
 LOOPBACK = "127.0.0.1"
 PRIVATE_NETWORKS = tuple(map(IPv4Network, ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "100.64.0.0/10")))
 ACCESS_DENIAL = {302, 303, 307, 308, 401, 403}
+QUICK_DNS = "https://cloudflare-dns.com/dns-query"
 
 
 class ListenerTransport:
@@ -68,6 +73,8 @@ class CloudflareTransport:
                 raise ConnectorUnavailable("The pinned Cloudflare connector could not be prepared.") from error
             self.probe = RouteProbe(session.probe_path, session.id, self.access)
             origin = self.connector.start(time.monotonic() + 145, cancelled, self.probe)
+            if self.probe.verified_over_alternate_dns:
+                print("Verified the Quick Tunnel route using alternate DNS with hostname-verified TLS.", flush=True)
         except ConnectorUnavailable as error:
             if self.probe and self.probe.observation:
                 print(f"Cloudflare route check: {self.probe.observation}", flush=True)
@@ -115,8 +122,45 @@ class RouteProbe:
         self.access = access
         self.opener = build_opener(NoRedirect(), ProxyHandler({}))
         self.observation = None
+        self.dns_failure = False
+        self.verified_over_alternate_dns = False
+
+    def resolve_quick(self, hostname, timeout):
+        query = urlencode({"name": hostname, "type": "A"})
+        request = Request(f"{QUICK_DNS}?{query}", headers={"Accept": "application/dns-json"})
+        with self.opener.open(request, timeout=timeout) as response:
+            records = json.loads(response.read(16384))
+        if records.get("Status") != 0:
+            return None
+        for answer in records.get("Answer", []):
+            if answer.get("type") == 1:
+                ip = IPv4Address(answer["data"])
+                if ip.is_global:
+                    return str(ip)
+        return None
+
+    def quick_request(self, origin, timeout, headers):
+        # Hosted resolvers can retain a negative answer after TryCloudflare registers.
+        # The alternate lookup is scoped to this probe. Keep the URL's TLS and HTTP identities.
+        hostname = urlsplit(origin).hostname
+        started = time.monotonic()
+        ip = self.resolve_quick(hostname, timeout / 2)
+        if not ip:
+            return 0, b""
+        remaining = max(0.1, timeout - (time.monotonic() - started))
+        with socket.create_connection((ip, 443), timeout=remaining) as connection:
+            with ssl.create_default_context().wrap_socket(connection, server_hostname=hostname) as tls:
+                http = HTTPConnection(hostname, timeout=remaining)
+                http.sock = tls
+                try:
+                    http.request("GET", self.path, headers=headers)
+                    with http.getresponse() as response:
+                        return response.status, response.read(len(self.identity) + 1)
+                finally:
+                    http.close()
 
     def request(self, origin, timeout, headers):
+        self.verified_over_alternate_dns = False
         try:
             request = Request(origin + self.path, headers=headers)
             with self.opener.open(request, timeout=timeout) as response:
@@ -124,7 +168,17 @@ class RouteProbe:
         except HTTPError as error:
             error.close()
             return error.code, b""
-        except (URLError, OSError, HTTPException):
+        except URLError as error:
+            if not self.access and QUICK_URL.fullmatch(origin) and isinstance(error.reason, socket.gaierror):
+                self.dns_failure = True
+                try:
+                    result = self.quick_request(origin, timeout, headers)
+                    self.verified_over_alternate_dns = result == (200, self.identity)
+                    return result
+                except (URLError, OSError, HTTPException, ValueError, KeyError, AttributeError, TypeError):
+                    return 0, b""
+            return 0, b""
+        except (OSError, HTTPException):
             return 0, b""
 
     def __call__(self, origin, timeout):
@@ -141,6 +195,8 @@ class RouteProbe:
             self.observation = None
             return True
         self.observation = "Different origin answered." if status == 200 else self.describe(status)
+        if status == 0 and self.dns_failure:
+            self.observation = "Hosted DNS resolution failed. Alternate DNS produced no verified route."
         return False
 
     @staticmethod
@@ -215,7 +271,7 @@ def prepare_transport(work):
     if not HOSTNAME.fullmatch(hostname) or hostname.endswith(".trycloudflare.com") or not token:
         raise ValueError("Configure cloudflare-named with a dedicated DNS hostname and a connector secret.")
     if bool(access_id) != bool(access_secret) or any(
-        not value.isascii() or not value.isprintable() for value in (access_id, access_secret) if value
+        not re.fullmatch(r"[!-~]{1,4096}", value) for value in (access_id, access_secret) if value
     ):
         raise ValueError("Provide both Cloudflare Access service-token values or leave both empty.")
     access = {"CF-Access-Client-Id": access_id, "CF-Access-Client-Secret": access_secret} if access_id else None

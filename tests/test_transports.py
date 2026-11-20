@@ -2,9 +2,11 @@ import hashlib
 from http.client import HTTPConnection
 from contextlib import closing
 import io
+import json
 import os
 from pathlib import Path
 import shutil
+import socket
 import ssl
 import tempfile
 import threading
@@ -57,6 +59,31 @@ class TransportTests(unittest.TestCase):
         for responses in ([(200, b"right-runner")], [(403, b""), (200, b"other-runner")]):
             with patch.object(probe, "request", side_effect=responses):
                 self.assertFalse(probe(origin, 4))
+
+    def test_alternate_dns_is_used_only_for_quick_hostnames_and_retains_origin_identity(self):
+        probe = RouteProbe("/_ui_origin/random", "actual-runner", None)
+        with patch.object(probe.opener, "open", side_effect=URLError(socket.gaierror())), patch.object(
+            probe, "quick_request", side_effect=[(200, b"wrong"), (200, b"actual-runner")],
+        ) as alternate:
+            quick = "https://ui-random.trycloudflare.com"
+            self.assertFalse(probe(quick, 4))
+            self.assertTrue(probe(quick, 4))
+            self.assertTrue(probe.verified_over_alternate_dns)
+            self.assertFalse(probe("https://ui.example.com", 4))
+            self.assertFalse(probe.verified_over_alternate_dns)
+            self.assertEqual(alternate.call_count, 2)
+
+    def test_alternate_dns_uses_public_a_records_only(self):
+        probe = RouteProbe("/_ui_origin/random", "actual-runner", None)
+        address = "ui-random.trycloudflare.com"
+        results = {"Status": 0, "Answer": [{"type": 5, "data": "other.example.com"},
+                                           {"type": 1, "data": "127.0.0.1"},
+                                           {"type": 1, "data": "104.16.1.1"}]}
+        with patch.object(probe.opener, "open", return_value=io.BytesIO(json.dumps(results).encode())) as query:
+            self.assertEqual(probe.resolve_quick(address, 2), "104.16.1.1")
+            request = query.call_args.args[0]
+            self.assertTrue(request.full_url.startswith("https://cloudflare-dns.com/dns-query?"))
+            self.assertNotIn("Authorization", request.headers)
 
     def test_fallback_is_opt_in_and_only_before_publication(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -142,7 +169,6 @@ class ClientTests(unittest.TestCase):
         with self.assertRaises(ClientError):
             Client({**config, "ca_pem": unrelated}, self.token_file).fetch("/v1/session", retries=0)
         with self.assertRaises(ssl.SSLCertVerificationError):
-            import socket
             trusted = ssl.create_default_context(cadata=certificate)
             with socket.create_connection(("127.0.0.1", session.server_port)) as connection:
                 trusted.wrap_socket(connection, server_hostname="127.0.0.2")

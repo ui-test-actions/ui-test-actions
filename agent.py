@@ -44,6 +44,11 @@ class Client:
             if connection.get("transport") not in (None, "cloudflare-named"):
                 raise ClientError("Only a named tunnel can use Cloudflare Access credentials.")
             access = json.loads(Path(access_file).read_text(encoding="utf-8"))
+            if not isinstance(access, dict) or not all(
+                isinstance(access.get(key), str) and re.fullmatch(r"[!-~]{1,4096}", access[key])
+                for key in ("client_id", "client_secret")
+            ):
+                raise ClientError("The private Access file must contain a valid credential pair.")
             self.headers.update({
                 "CF-Access-Client-Id": access["client_id"], "CF-Access-Client-Secret": access["client_secret"],
             })
