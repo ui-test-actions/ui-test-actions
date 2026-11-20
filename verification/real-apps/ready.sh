@@ -3,7 +3,8 @@ set -euo pipefail
 
 case "${1:?choose a target}" in
   linux)
-    xdotool search --onlyvisible --name '^Notepad Next$' >/dev/null
+    pgrep -x NotepadNext >/dev/null
+    grep -Fq 'void MainWindow::activateEditor(ScintillaNext*)' real-app-evidence/app.log
     ;;
   windows)
     tasklist.exe | grep -Fi 'notepad++.exe' >/dev/null
