@@ -1,0 +1,19 @@
+{
+  "target": "ios",
+  "actual_ui_after_click": "AFTER \u00b7 Button tapped",
+  "click_hold_ms": 240,
+  "scroll_observed_labels": [
+    "Swipe row 10",
+    "Swipe row 20"
+  ],
+  "frame_dimensions": [
+    1206,
+    2622
+  ],
+  "exact_unicode_clipboard": true,
+  "first_pinch_http_status": 504,
+  "seconds_remaining_after_timeout": 187,
+  "pinch_state_after_timeout": false,
+  "gesture_retry_fingers": 2,
+  "actual_ui_after_pinch": "Pinch expanded"
+}
