@@ -81,7 +81,7 @@ case "$stage" in
       printf 'LAN delivery attempt %s\n' "$attempt" | tee -a "$result"
       if "${command[@]}" | tee -a "$result"; then
         # Give the peer time to finish before its cleanup can remove the interface.
-        sleep 15
+        sleep 30
         exit 0
       fi
       if [[ "$attempt" != 3 ]]; then sleep 3; fi
