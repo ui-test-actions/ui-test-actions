@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "objective": "Verify the failure classifier with a harmless Mousepad caret operation.",
+  "status": "unexpected_state",
+  "steps": [
+    {
+      "number": 1,
+      "before": "22a8159cba9fc156945a",
+      "plan": {
+        "summary": "Negative control: moving the caret should not fabricate a different window title.",
+        "action": {
+          "command": "keyboard.press",
+          "params": {
+            "keys": [
+              "left"
+            ]
+          }
+        },
+        "before": {
+          "element": {
+            "selector": {
+              "role": "frame",
+              "name": "~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+              "visible": true
+            },
+            "state": "present"
+          },
+          "timeout_ms": 6000
+        },
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "frame",
+              "name": "UNEXPECTED-SENTINEL-Mousepad",
+              "visible": true
+            },
+            "state": "present"
+          },
+          "timeout_ms": 700
+        }
+      }
+    }
+  ],
+  "states": {
+    "22a8159cba9fc156945a": {
+      "visits": 2,
+      "first": "initial.png",
+      "visible_nodes": 15
+    }
+  },
+  "transitions": [],
+  "target": "linux",
+  "failure_stage": "assertion",
+  "error": "HTTP 408 (condition_timeout)",
+  "driver_error": "condition_timeout",
+  "recheck": "still_unobserved"
+}

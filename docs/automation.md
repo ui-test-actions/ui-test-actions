@@ -2,6 +2,8 @@
 
 An existing agent can use the HTTP API directly, the standard-library [Python client](../agent.py), or the browser controller. The agent runs on its current machine. The app, driver, and tunnel connector run in the GitHub job.
 
+Use [agent-led UI exploration](exploration.md) to give the agent a test objective and run its decisions with deterministic, observed assertions.
+
 Download the current job's `connection.json` and keep the private session token in a file on the agent host. Its URL is an HTTPS origin and its session ID identifies the intended runner. The command-line client checks that ID before making a request and refuses HTTP redirects.
 
 ```bash

@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "objective": "Use the live Tk UI to apply a change. Verify the fixture background switches from #192b42 to #17633b using the screenshot.",
+  "status": "passed",
+  "steps": [
+    {
+      "number": 1,
+      "before": "59f6ba99bfa54bf75075",
+      "plan": {
+        "summary": "Click Apply change and verify the fixture background becomes green.",
+        "before": {
+          "pixel": {
+            "x": 91,
+            "y": 110,
+            "rgb": [
+              25,
+              43,
+              66
+            ]
+          },
+          "timeout_ms": 5000
+        },
+        "expect": {
+          "pixel": {
+            "x": 91,
+            "y": 110,
+            "rgb": [
+              23,
+              99,
+              59
+            ]
+          },
+          "timeout_ms": 5000
+        },
+        "action": {
+          "command": "pointer.click",
+          "params": {
+            "x": 348,
+            "y": 277
+          }
+        }
+      },
+      "outcome": "passed",
+      "after": "59f6ba99bfa54bf75075"
+    },
+    {
+      "number": 2,
+      "before": "59f6ba99bfa54bf75075",
+      "plan": {
+        "summary": "The post-action screenshot still shows the expected green state.",
+        "finish": true,
+        "expect": {
+          "pixel": {
+            "x": 91,
+            "y": 110,
+            "rgb": [
+              23,
+              99,
+              59
+            ]
+          }
+        }
+      },
+      "outcome": "finished"
+    }
+  ],
+  "states": {
+    "59f6ba99bfa54bf75075": {
+      "visits": 2,
+      "first": "initial.png",
+      "visible_nodes": 5
+    }
+  },
+  "transitions": [
+    {
+      "step": 1,
+      "from": "59f6ba99bfa54bf75075",
+      "to": "59f6ba99bfa54bf75075"
+    }
+  ],
+  "target": "windows"
+}

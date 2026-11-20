@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "objective": "In Mousepad, replace the current document with the exact text below and save it using the visible application. Verify the editor content and that the document is no longer marked unsaved.\n\nمرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+  "status": "passed",
+  "steps": [
+    {
+      "number": 1,
+      "before": "da8ad5a768f60ec802ac",
+      "plan": {
+        "summary": "Replace the focused editable Mousepad document with the specified multilingual text.",
+        "action": {
+          "command": "text.insert",
+          "params": {
+            "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+            "replace": true
+          }
+        },
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "properties": {
+                "editable": true
+              },
+              "text_contains": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+              "visible": true
+            },
+            "state": "present"
+          },
+          "timeout_ms": 6000
+        },
+        "before": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "text": "Original GTK test document.\n",
+              "visible": true,
+              "properties": {
+                "editable": true,
+                "focused": true
+              }
+            },
+            "state": "present"
+          }
+        }
+      },
+      "outcome": "passed",
+      "after": "51f4d06d4b98d0a4a489"
+    },
+    {
+      "number": 2,
+      "before": "51f4d06d4b98d0a4a489",
+      "plan": {
+        "summary": "Save the changed document and check that Mousepad removes its unsaved indicator.",
+        "action": {
+          "command": "keyboard.press",
+          "params": {
+            "keys": [
+              "ctrl",
+              "s"
+            ]
+          }
+        },
+        "before": {
+          "element": {
+            "selector": {
+              "role": "frame",
+              "name": "*~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+              "visible": true
+            },
+            "state": "present"
+          },
+          "timeout_ms": 6000
+        },
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "frame",
+              "name": "~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+              "visible": true
+            },
+            "state": "present"
+          },
+          "timeout_ms": 6000
+        }
+      },
+      "outcome": "passed",
+      "after": "22a8159cba9fc156945a"
+    },
+    {
+      "number": 3,
+      "before": "22a8159cba9fc156945a",
+      "plan": {
+        "summary": "The editor still displays the exact saved multilingual document.",
+        "finish": true,
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+              "visible": true,
+              "properties": {
+                "editable": true
+              }
+            },
+            "state": "present"
+          }
+        }
+      },
+      "outcome": "finished"
+    }
+  ],
+  "states": {
+    "da8ad5a768f60ec802ac": {
+      "visits": 1,
+      "first": "initial.png",
+      "visible_nodes": 15
+    },
+    "51f4d06d4b98d0a4a489": {
+      "visits": 1,
+      "first": "step-001.png",
+      "visible_nodes": 15
+    },
+    "22a8159cba9fc156945a": {
+      "visits": 1,
+      "first": "step-002.png",
+      "visible_nodes": 15
+    }
+  },
+  "transitions": [
+    {
+      "step": 1,
+      "from": "da8ad5a768f60ec802ac",
+      "to": "51f4d06d4b98d0a4a489"
+    },
+    {
+      "step": 2,
+      "from": "51f4d06d4b98d0a4a489",
+      "to": "22a8159cba9fc156945a"
+    }
+  ],
+  "target": "linux"
+}

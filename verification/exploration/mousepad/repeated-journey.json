@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "objective": "Check mixed-direction editing in the saved test document. Add a second temporary multilingual line, verify it, restore the original content, verify the saved title and contents.",
+  "status": "passed",
+  "steps": [
+    {
+      "number": 1,
+      "before": "22a8159cba9fc156945a",
+      "plan": {
+        "summary": "Add a mixed-direction last line in the current editor.",
+        "before": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+              "properties": {
+                "editable": true
+              },
+              "visible": true
+            },
+            "state": "present"
+          }
+        },
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!\nاختبار الاتجاه RTL — ٤٥٦ ✅",
+              "properties": {
+                "editable": true
+              },
+              "visible": true
+            },
+            "state": "present"
+          }
+        },
+        "action": {
+          "command": "text.insert",
+          "params": {
+            "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!\nاختبار الاتجاه RTL — ٤٥٦ ✅",
+            "replace": true
+          }
+        }
+      },
+      "outcome": "passed",
+      "after": "c125e536abd24209d058"
+    },
+    {
+      "number": 2,
+      "before": "c125e536abd24209d058",
+      "plan": {
+        "summary": "Restore the original document while retaining exact Unicode.",
+        "before": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!\nاختبار الاتجاه RTL — ٤٥٦ ✅",
+              "properties": {
+                "editable": true
+              },
+              "visible": true
+            },
+            "state": "present"
+          }
+        },
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "text",
+              "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+              "properties": {
+                "editable": true
+              },
+              "visible": true
+            },
+            "state": "present"
+          }
+        },
+        "action": {
+          "command": "text.insert",
+          "params": {
+            "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+            "replace": true
+          }
+        }
+      },
+      "outcome": "passed",
+      "after": "22a8159cba9fc156945a"
+    },
+    {
+      "number": 3,
+      "before": "22a8159cba9fc156945a",
+      "plan": {
+        "summary": "Confirm Mousepad recognizes the restored document as unchanged on disk.",
+        "finish": true,
+        "expect": {
+          "element": {
+            "selector": {
+              "role": "frame",
+              "name": "~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+              "visible": true
+            },
+            "state": "present"
+          }
+        }
+      },
+      "outcome": "finished"
+    }
+  ],
+  "states": {
+    "22a8159cba9fc156945a": {
+      "visits": 2,
+      "first": "initial.png",
+      "visible_nodes": 15
+    },
+    "c125e536abd24209d058": {
+      "visits": 1,
+      "first": "step-001.png",
+      "visible_nodes": 15
+    }
+  },
+  "transitions": [
+    {
+      "step": 1,
+      "from": "22a8159cba9fc156945a",
+      "to": "c125e536abd24209d058"
+    },
+    {
+      "step": 2,
+      "from": "c125e536abd24209d058",
+      "to": "22a8159cba9fc156945a"
+    }
+  ],
+  "target": "linux"
+}
