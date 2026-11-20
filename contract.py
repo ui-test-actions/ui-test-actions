@@ -92,6 +92,8 @@ COMMANDS = {
     "network.profile.get": obj(),
     "network.profile.set": NETWORK_PROFILE,
     "network.profile.reset": obj(),
+    "diagnostics.sources": obj(),
+    "diagnostics.events": obj(("source",), source=string(64, 1, r"^[a-z][a-z0-9_.-]*$")),
     "visual.sample": obj(region=RECT),
     "visual.wait": obj(("baseline",), baseline=IDENTIFIER, condition=choice("changed", "stable"),
                        threshold=integer(1, 255), timeout_ms=integer(100, 10000)),

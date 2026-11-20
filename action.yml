@@ -58,6 +58,9 @@ inputs:
   network-control-socket:
     description: Optional private runner-local socket for an isolated test network
     default: ''
+  diagnostic-logs:
+    description: Optional JSON map of temporary JSONL files and explicitly allowed diagnostic event names
+    default: '{}'
   tunnel-hostname:
     description: Optional hostname of a dedicated remotely managed Cloudflare Tunnel
     default: ''
@@ -94,6 +97,7 @@ runs:
         UI_TEST_IOS_AXE: ${{ inputs.ios-axe-path }}
         UI_TEST_FILE_EXCHANGE: ${{ inputs.file-exchange }}
         UI_TEST_NETWORK_CONTROL: ${{ inputs.network-control-socket }}
+        UI_TEST_DIAGNOSTIC_LOGS: ${{ inputs.diagnostic-logs }}
         UI_TEST_TUNNEL_HOSTNAME: ${{ inputs.tunnel-hostname }}
         UI_TEST_TUNNEL_TOKEN: ${{ inputs.tunnel-token }}
         UI_TEST_ORIGIN_PORT: ${{ inputs.origin-port }}

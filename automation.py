@@ -26,11 +26,12 @@ def error_result(error):
 
 
 class Automation:
-    def __init__(self, session, driver, exchange=None, network=None):
+    def __init__(self, session, driver, exchange=None, network=None, diagnostics=None):
         self.session = session
         self.driver = driver
         self.exchange = exchange
         self.network = network
+        self.diagnostics = diagnostics
         self.recording = Recording(session)
         self.trace = InteractionTrace(session)
         self.timings = deque(maxlen=256)
@@ -46,6 +47,8 @@ class Automation:
             provided.update(("files.list", "files.stage", "files.read"))
         if self.network:
             provided.update(("network.profile.get", "network.profile.set", "network.profile.reset"))
+        if self.diagnostics:
+            provided.update(("diagnostics.sources", "diagnostics.events"))
         if "tree.snapshot" in provided:
             provided.update(("element.find", "element.assert", "element.wait"))
             if "pointer.click" in provided:
@@ -149,6 +152,8 @@ class Automation:
             return {"startup": self.session.startup, "actions": list(self.timings)}
         if name.startswith("network.profile."):
             return self.network.execute(name, params)
+        if name.startswith("diagnostics."):
+            return self.diagnostics.execute(name, params)
         if name.startswith("files."):
             return self.exchange.execute(name, params)
         if name.startswith("pointer."):

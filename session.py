@@ -231,7 +231,7 @@ def download_tunnel(work):
 
 
 class Session(ThreadingHTTPServer):
-    def __init__(self, digest, backend, target, driver=None, port=0, exchange=None, network=None):
+    def __init__(self, digest, backend, target, driver=None, port=0, exchange=None, network=None, diagnostics=None):
         super().__init__(("127.0.0.1", port), Handler)
         self.digest = digest
         self.backend = backend
@@ -241,7 +241,7 @@ class Session(ThreadingHTTPServer):
         self.deadline = 0
         self.size = (0, 0)
         self.startup = {}
-        self.automation = Automation(self, driver, exchange, network)
+        self.automation = Automation(self, driver, exchange, network, diagnostics)
         self.workers = threading.BoundedSemaphore(24)
 
     def process_request(self, request, address):
@@ -535,6 +535,12 @@ def main(control):
                 from network_control import NetworkControl
                 network = NetworkControl(Path(network_path), Path(os.environ["RUNNER_TEMP"]))
                 network.execute("network.profile.get", {})
+            diagnostics = None
+            if logs := os.environ.get("UI_TEST_DIAGNOSTIC_LOGS"):
+                from diagnostic_sources import DiagnosticSources
+                definition = DiagnosticSources(logs, Path(os.environ["RUNNER_TEMP"]))
+                if definition.sources:
+                    diagnostics = definition
             startup_observation = launch_app(startup)
             if target == "android" or native_ios:
                 run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "Pillow==12.2.0", timeout=180)
@@ -559,7 +565,7 @@ def main(control):
             elif axe_path:
                 from ios_axe import AxeSimulator
                 driver = backend = AxeSimulator(axe_path, driver)
-            with Session(digest, backend, target, driver, port, exchange, network) as session:
+            with Session(digest, backend, target, driver, port, exchange, network, diagnostics) as session:
                 session.startup = startup_observation
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)

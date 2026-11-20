@@ -57,14 +57,10 @@ def bind(value, inputs):
     return value
 
 
-def compile_workflow(workflow, inputs, capabilities):
+def expand_steps(workflow):
     if (not isinstance(workflow, dict) or workflow.get("version") != 1 or
             set(workflow) - {"version", "steps", "target", "inputs", "blocks"}):
         raise ValueError("Expected a workflow version 1 with steps.")
-    names = workflow.get("inputs", [])
-    if (not isinstance(names, list) or any(not isinstance(name, str) or not NAME.fullmatch(name) for name in names)
-            or len(names) != len(set(names)) or not isinstance(inputs, dict) or set(inputs) != set(names)):
-        raise ValueError("Supply exactly the workflow's declared inputs.")
     source = workflow.get("steps")
     if not isinstance(source, list) or not 1 <= len(source) <= INPUT_LIMIT:
         raise ValueError(f"A workflow requires 1–{INPUT_LIMIT} steps.")
@@ -84,6 +80,15 @@ def compile_workflow(workflow, inputs, capabilities):
             steps.append(item)
         if len(steps) > INPUT_LIMIT:
             raise ValueError(f"Reusable blocks expanded beyond {INPUT_LIMIT} steps.")
+    return steps
+
+
+def compile_workflow(workflow, inputs, capabilities):
+    steps = expand_steps(workflow)
+    names = workflow.get("inputs", [])
+    if (not isinstance(names, list) or any(not isinstance(name, str) or not NAME.fullmatch(name) for name in names)
+            or len(names) != len(set(names)) or not isinstance(inputs, dict) or set(inputs) != set(names)):
+        raise ValueError("Supply exactly the workflow's declared inputs.")
     steps = bind(steps, inputs)
     commands = capabilities["commands"]
     baselines = set()
@@ -245,12 +250,22 @@ def connection_options(parser):
     parser.add_argument("--inputs", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--screenshots", action="store_true", help="Retain a screenshot after every step")
+    parser.add_argument("--diagnostics", action="store_true", help="Capture a private diagnostics bundle on divergence")
+    parser.add_argument("--diagnostic-app-id")
+    parser.add_argument("--diagnostic-recording-seconds", type=int, default=0)
 
 
 def run_options(args, workflow):
     client = Client(read_mapping(args.connection), args.token_file, args.access_file)
     report = replay(client, workflow, read_mapping(args.inputs) if args.inputs else {}, args.output, args.screenshots)
-    print(json.dumps({"status": report["status"], "report": str(args.output / "report.json")}))
+    result = {"status": report["status"], "report": str(args.output / "report.json")}
+    if report["status"] == "diverged" and (args.diagnostics or args.diagnostic_app_id or args.diagnostic_recording_seconds):
+        from diagnose import collect
+        directory = args.output / "diagnostics"
+        collect(client, directory, report=report, app_id=args.diagnostic_app_id,
+                recording_seconds=args.diagnostic_recording_seconds)
+        result["diagnostics"] = str(directory / "manifest.json")
+    print(json.dumps(result))
     return 0 if report["status"] == "passed" else 1
 
 
