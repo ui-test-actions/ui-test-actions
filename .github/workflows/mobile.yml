@@ -83,7 +83,7 @@ jobs:
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
           echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@be8e8b048eeb2ba79fd9a7a15dd93a70051914ec
+      - uses: ui-test-actions/ui-test-actions@c0159b03218b304731bc8806831a3bccde3d8fe8
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}

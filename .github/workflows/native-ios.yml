@@ -41,7 +41,7 @@ jobs:
           echo "NATIVE_IOS_DEVICE=$simulator" >> "$GITHUB_ENV"
           echo "NATIVE_IOS_VERSION=$ios_version" >> "$GITHUB_ENV"
           curl --fail --silent --show-error --retry 5 --retry-connrefused http://127.0.0.1:4723/status
-      - uses: ui-test-actions/ui-test-actions@a041c2189effd579e66d6fac6ceecab531252c09
+      - uses: ui-test-actions/ui-test-actions@c0159b03218b304731bc8806831a3bccde3d8fe8
         with:
           target: ios
           token-sha256: ${{ inputs.token_sha256 }}
@@ -51,7 +51,7 @@ jobs:
           deeplink-schemes: ui-test-fixture
           webdriver-url: http://127.0.0.1:4723
           webdriver-capabilities: >-
-            {"platformName":"iOS","appium:automationName":"XCUITest","appium:bundleId":"dev.uitest.fixture","appium:waitForIdleTimeout":2,"appium:isHeadless":true,"appium:platformVersion":"${{ env.NATIVE_IOS_VERSION }}","appium:simulatorStartupTimeout":150000}
+            {"platformName":"iOS","appium:automationName":"XCUITest","appium:bundleId":"dev.uitest.fixture","appium:waitForIdleTimeout":2,"appium:isHeadless":true,"appium:platformVersion":"${{ env.NATIVE_IOS_VERSION }}","appium:simulatorStartupTimeout":150000,"appium:wdaLaunchTimeout":180000,"appium:showXcodeLog":true}
       - name: Retain backend diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
