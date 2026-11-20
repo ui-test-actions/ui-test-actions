@@ -76,6 +76,11 @@ static int open_port(const char *name) {
     address.sll_ifindex = if_nametoindex(name);
     if (!address.sll_ifindex || bind(fd, (struct sockaddr *)&address, sizeof(address)) == -1)
         die("bind AF_PACKET");
+    struct packet_mreq membership = {0};
+    membership.mr_ifindex = address.sll_ifindex;
+    membership.mr_type = PACKET_MR_PROMISC;
+    if (setsockopt(fd, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &membership, sizeof(membership)) == -1)
+        die("enable TAP capture");
 #endif
     return fd;
 }
