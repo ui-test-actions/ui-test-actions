@@ -20,13 +20,18 @@ def observe(target, artifact, token, output):
     if not image.startswith(b"\x89PNG\r\n\x1a\n"):
         raise ValueError(f"The {target} screenshot was not PNG")
     (output / f"{target}.png").write_bytes(image)
-    result = client.command("tree.snapshot", {})
-    if not result["ok"]:
-        raise RuntimeError(f"The {target} accessibility observation failed")
+    commands = json.loads(client.fetch("/v2/capabilities"))["commands"]
+    nodes = []
+    if "tree.snapshot" in commands:
+        result = client.command("tree.snapshot", {})
+        if not result["ok"]:
+            raise RuntimeError(f"The {target} accessibility observation failed")
+        nodes = result["result"]["nodes"]
     fields = ("name", "text", "role", "resource_id", "visible", "enabled", "bounds")
     observation = {
         "target": target, "seconds_remaining": description["seconds_remaining"],
-        "nodes": [{field: node[field] for field in fields if field in node} for node in result["result"]["nodes"]],
+        "accessibility_available": "tree.snapshot" in commands,
+        "nodes": [{field: node[field] for field in fields if field in node} for node in nodes],
     }
     (output / f"{target}.json").write_text(json.dumps(observation, ensure_ascii=False, indent=2) + "\n",
                                           encoding="utf-8")
