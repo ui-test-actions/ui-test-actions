@@ -68,12 +68,15 @@ class MobileEnvironment:
     def android_permission(self, app, permission):
         output = self.driver.shell("dumpsys", "package", app).decode()
         users = re.split(r"^ +User (\d+):", output, flags=re.M)
-        active = dict(zip(users[1::2], users[2::2])).get("0", "")
+        active = next((section for user, section in zip(users[1::2], users[2::2])
+                       if user == "0" and "installed=true" in section.split("\n", 1)[0]), None)
+        if active is None:
+            raise CommandError("environment_unavailable", "Android did not report the app as installed for user 0.", 422)
         entry = re.search(rf"^ +{re.escape(permission)}: granted=(true|false)\b", active, flags=re.M)
         if entry:
             return entry[1] == "true"
         requested = re.search(r"^( +)requested permissions:\s*\n((?:\1 +[^\n]+\n?)*)", users[0], flags=re.M)
-        if "installed=true" in active.split("\n", 1)[0] and requested and permission in requested[2].split():
+        if requested and permission in requested[2].split():
             return False
         raise CommandError("environment_unavailable", "Android did not report this app's runtime permission.", 422)
 
