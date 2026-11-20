@@ -108,14 +108,21 @@ export class UiTestClient {
 
   private request(method: string, params: object): Promise<unknown> {
     if (this.ended) return Promise.reject(new UiError("The UI MCP client is closed", { code: "connection_closed" }))
+    if (this.calls.size >= 32) {
+      return Promise.reject(new UiError("Too many pending UI requests", { code: "queue_full" }))
+    }
     const id = ++this.sequence
+    const message = JSON.stringify({ jsonrpc: "2.0", id, method, params }) + "\n"
+    if (Buffer.byteLength(message) > 256 * 1024) {
+      return Promise.reject(new UiError("The UI request exceeds the transport limit", { code: "request_too_large" }))
+    }
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.calls.delete(id)
         reject(new UiError("The UI command timed out", { code: "timeout" }))
       }, this.timeout)
       this.calls.set(id, { resolve, reject, timer })
-      this.child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id, method, params }) + "\n")
+      this.child.stdin.write(message)
     })
   }
 

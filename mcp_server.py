@@ -154,7 +154,7 @@ class MCP:
             except (ValueError, RecursionError):
                 result = self.error(None, -32700, "Parse error")
             if result is not None:
-                sink.write(json.dumps(result, ensure_ascii=False).encode("utf-8") + b"\n")
+                sink.write(json.dumps(result).encode("utf-8") + b"\n")
                 sink.flush()
 
 

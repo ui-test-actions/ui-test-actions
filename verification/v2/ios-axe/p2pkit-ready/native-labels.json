@@ -1,0 +1,176 @@
+[
+  {
+    "role": "AXApplication",
+    "name": "p2pkit-sample",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXScrollArea",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXSlider",
+    "name": "Vertical scroll bar, 1 page",
+    "text": "0%",
+    "resource_id": null
+  },
+  {
+    "role": "AXSlider",
+    "name": "Vertical scroll bar, 1 page",
+    "text": "0%",
+    "resource_id": null
+  },
+  {
+    "role": "AXStaticText",
+    "name": "P2pKit Sample",
+    "text": "",
+    "resource_id": "sample-title"
+  },
+  {
+    "role": "AXButton",
+    "name": "Test Diagnostics",
+    "text": "",
+    "resource_id": "test-diagnostics"
+  },
+  {
+    "role": "AXStaticText",
+    "name": "p2pkit@fd3cd74 (source 2026-11-19T17:12:28Z)",
+    "text": "",
+    "resource_id": "sample-build-info"
+  },
+  {
+    "role": "AXStaticText",
+    "name": "Status: Not started",
+    "text": "",
+    "resource_id": "sample-status"
+  },
+  {
+    "role": "AXTextField",
+    "name": "",
+    "text": "iPhone",
+    "resource_id": null
+  },
+  {
+    "role": "AXButton",
+    "name": "Start",
+    "text": "",
+    "resource_id": "start-kit"
+  },
+  {
+    "role": "AXStaticText",
+    "name": "Peers (0)",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXStaticText",
+    "name": "Manual connect (skip Bonjour)",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXTextField",
+    "name": "",
+    "text": "Host (e.g. 192.168.1.42)",
+    "resource_id": null
+  },
+  {
+    "role": "AXTextField",
+    "name": "",
+    "text": "Port",
+    "resource_id": null
+  },
+  {
+    "role": "AXTextField",
+    "name": "",
+    "text": "Peer pairing QR text (p2pkit:v2:…)",
+    "resource_id": null
+  },
+  {
+    "role": "AXButton",
+    "name": "Dial manual peer",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXStaticText",
+    "name": "Sessions (0, 0 connected)",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXStaticText",
+    "name": "Messages (0)",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXCheckBox",
+    "name": "Diagnostic log (0)",
+    "text": "1",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXGroup",
+    "name": "",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXStaticText",
+    "name": "Diagnostic log (0)",
+    "text": "",
+    "resource_id": null
+  },
+  {
+    "role": "AXCheckBox",
+    "name": "",
+    "text": "1",
+    "resource_id": null
+  }
+]
