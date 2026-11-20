@@ -6,6 +6,8 @@ Use [agent-led UI exploration](exploration.md) to give the agent a test objectiv
 
 Use [failure investigation](failure-investigation.md) to retain private evidence when a replay diverges and reproduce the failing prefix.
 
+Use the [CLI, Python SDK, TypeScript SDK, or local MCP adapter](clients.md) to control one or more named sessions through the same API.
+
 Use [record and replay](record-replay.md) to turn actions from a live session or a passing exploration report into a parameterized workflow.
 
 Use [multi-device orchestration](multi-device.md) to synchronize workflows and share test context across live sessions.

@@ -16,10 +16,10 @@ from explore import UI, validate_selector
 from workflow import NAME, bind, compile_workflow, read_mapping, replay
 
 
-def load_devices(path):
+def load_devices(path, *, minimum=2):
     specs = read_mapping(path)
-    if not 2 <= len(specs) <= 8 or any(not NAME.fullmatch(name) for name in specs):
-        raise ValueError("Provide 2–8 named device configurations.")
+    if not minimum <= len(specs) <= 8 or any(not NAME.fullmatch(name) for name in specs):
+        raise ValueError(f"Provide {minimum}–8 named device configurations.")
     devices = {}
     for name, spec in specs.items():
         if (not isinstance(spec, dict) or set(spec) - {"connection", "token_file", "access_file"} or
