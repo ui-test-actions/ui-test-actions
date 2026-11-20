@@ -61,7 +61,7 @@ class Device:
             {"text": item["label"], "visible": True, "center": item["center"]}
             for item in read(self.screenshot(), self.ocr, self.crop)]}
 
-    def find(self, predicate, label, *, scroll=0, timeout=35):
+    def find(self, predicate, label, *, scroll=0, timeout=35, precise=False):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
             tree = self.snapshot()
@@ -69,11 +69,11 @@ class Device:
             if matches:
                 return tree["snapshot_id"], matches[0]
             if scroll:
-                self.drag(scroll)
+                self.drag(scroll, precise=precise)
             time.sleep(.6)
         raise RuntimeError(f"{self.target} did not show {label}")
 
-    def drag(self, direction):
+    def drag(self, direction, *, precise=False):
         if not self.screen_size:
             self.screenshot()
         width, height = self.screen_size
@@ -85,8 +85,11 @@ class Device:
             left, top, right, bottom = self.crop
             x = left + (right - left) * 3 // 4
             shallow, deep = top + (bottom - top) // 2, bottom - (bottom - top) // 6
+            if precise:
+                shallow = deep - (bottom - top) // 5
             start, end = (deep, shallow) if direction > 0 else (shallow, deep)
-        self.command("pointer.drag", {"x": x, "y": start, "end_x": x, "end_y": end, "duration_ms": 450})
+        self.command("pointer.drag", {"x": x, "y": start, "end_x": x, "end_y": end,
+                                     "duration_ms": 520 if precise else 450})
         time.sleep(1 if self.ocr else .6)
 
     def click(self, predicate, label, *, scroll=0):
@@ -121,12 +124,12 @@ class Device:
 
         self.click(eligible, repr(label), scroll=scroll)
 
-    def message(self, value):
+    def message(self, value, *, precise=False):
         if self.ocr:
             def is_send(node):
                 return node["text"].startswith("Send all (")
 
-            _, button = self.find(is_send, "visible iOS message composer", scroll=1)
+            _, button = self.find(is_send, "visible iOS message composer", scroll=1, precise=precise)
             if button["center"][1] < self.crop[1] + 42:
                 self.drag(-1)
                 _, button = self.find(is_send, "iOS composer below the status bar")
@@ -208,15 +211,21 @@ def exercise_link(android, ios, android_name, ios_name, output):
     try:
         profile("get", {})
         reopen_pair()
-        profile("set", {"delay_ms": 500, "jitter_ms": 25, "rate_kbit": 512, "seconds": 40})
-        ios.message("SLOW2")
-        android.find(lambda node: has_line(node, from_ios("SLOW2")), "message over the slow link", scroll=-1)
+        if ios.ocr:
+            ios.find(lambda node: node.get("text", "").startswith("Peers ("), "iOS peer list", scroll=-1)
+        delayed = profile("set", {"delay_ms": 500, "jitter_ms": 25, "rate_kbit": 512, "seconds": 55})
+        ios.message("SLOW", precise=True)
+        android.find(lambda node: has_line(node, from_ios("SLOW")), "message over the slow link", scroll=-1)
+        if android.command("network.profile.get", {})["generation"] != delayed["generation"]:
+            raise RuntimeError("The latency profile expired before slow-link message receipt was verified")
         android.screenshot("slow-message")
-        evidence["slow_receiver_line"] = from_ios("SLOW2")
+        evidence["slow_receiver_line"] = from_ios("SLOW")
         # Independent native pings sample the active profile throughout the job.
         time.sleep(9)
         profile("set", {"loss_percent": 25, "seed": 123, "seconds": 25})
         time.sleep(14)
+        profile("reset", {})
+        reopen_pair()
         offline = profile("set", {"offline": True, "seconds": 36})
         evidence["reachable_during_outage"] = readiness()
         android.find(lambda node: node.get("text") == "No peers connected",
@@ -239,20 +248,21 @@ def exercise_link(android, ios, android_name, ios_name, output):
             raise RuntimeError("The traffic profile did not expire on schedule")
 
         reopen_pair()
-        ios.message("LINK UP")
-        android.find(lambda node: has_line(node, from_ios("LINK UP")), "fresh iOS message after recovery", scroll=-1)
-        android.screenshot("recovered-ios-message")
+        evidence["restored_pair"] = {"android": "Broadcast (1)", "ios": "Sessions (1, 1 connected)"}
         android.message("REOPEN")
         _, message = ios.find(lambda node: any(ios_received_message(
             field, android_name, "REOPEN", visual=bool(ios.ocr)) for field in ios.content(node)),
-            "fresh Android message after recovery", scroll=1)
+            "fresh Android message after recovery", scroll=1, precise=True)
         ios.screenshot("recovered-android-message")
-        evidence["recovered_receiver_lines"] = {"android": from_ios("LINK UP"),
-            "ios": next(field for field in ios.content(message)
+        evidence["recovered_receiver_lines"] = {"ios": next(field for field in ios.content(message)
                         if ios_received_message(field, android_name, "REOPEN", visual=bool(ios.ocr)))}
     finally:
+        try:
+            android.command("network.profile.reset", {})
+            evidence["reset_confirmed"] = True
+        except (ClientError, RuntimeError):
+            evidence["reset_confirmed"] = False
         (output / "network.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        android.command("network.profile.reset", {})
 
 
 def run_pair(android, ios, android_name, ios_name, nonce, initiator, output, network_faults=False):

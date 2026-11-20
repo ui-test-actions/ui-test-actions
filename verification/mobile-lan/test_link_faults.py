@@ -22,6 +22,7 @@ class IsolatedLinkTest(unittest.IsolatedAsyncioTestCase):
                 inspect = await asyncio.to_thread(client.execute, "network.profile.get", {})
                 self.assertEqual(inspect["generation"], 0)
                 applied = await asyncio.to_thread(client.execute, "network.profile.set", {"offline": True, "seconds": 1})
+                self.assertGreater(applied["controller_epoch_ms"], 0)
                 counts = Counter()
                 for direction in (0, 1):
                     queue = FrameQueue(faults, direction, counts)

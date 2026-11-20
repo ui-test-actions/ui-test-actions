@@ -40,10 +40,11 @@ class NetworkControl:
             if len(line) > MAX_MESSAGE or not line.endswith(b"\n"):
                 raise ValueError("Invalid link controller reply.")
             reply = json.loads(line)
-            if set(reply) != {"profile", "generation", "remaining_ms"}:
+            required = {"profile", "generation", "remaining_ms"}
+            if not isinstance(reply, dict) or not required <= reply.keys() or reply.keys() - required - {"controller_epoch_ms"}:
                 raise ValueError("Invalid link controller reply.")
             validate(reply["profile"], NETWORK_PROFILE, "profile")
-            for field in ("generation", "remaining_ms"):
+            for field in reply.keys() - {"profile"}:
                 if type(reply[field]) is not int or reply[field] < 0:
                     raise ValueError("Invalid link controller reply.")
             return reply

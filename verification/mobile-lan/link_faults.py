@@ -5,6 +5,7 @@ from contextlib import suppress
 import json
 import os
 import random
+import time
 
 from contract import NETWORK_PROFILE, validate
 from network_control import MAX_MESSAGE, NETWORK_COMMANDS
@@ -40,7 +41,8 @@ class LinkFaults:
 
     def inspect(self):
         return {"profile": self.profile, "generation": self.generation,
-                "remaining_ms": max(0, round((self.expires - self.loop.time()) * 1000))}
+                "remaining_ms": max(0, round((self.expires - self.loop.time()) * 1000)),
+                "controller_epoch_ms": time.time_ns() // 1_000_000}
 
     async def command(self, reader, writer):
         try:
