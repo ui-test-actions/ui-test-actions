@@ -20,12 +20,19 @@ class SimulatorStartupTest(unittest.TestCase):
         self.assertEqual(native.call_args_list, [
             call(*inventory, timeout=20),
             call(*inventory, timeout=40),
-            call("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", "ios-test"),
+            call("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", "ios-test", timeout=20),
         ])
         with patch.dict(os.environ, {}, clear=True), patch("mobile_driver._run") as query:
             driver = MobileDriver(Mock(), "ios", checked_ios_device=selected)
         self.assertEqual(driver.device, "ios-test")
         query.assert_not_called()
+
+    def test_retries_a_slow_simulator_window_launch(self):
+        devices = b'{"devices":{"com.apple.SimRuntime.iOS-26":[{"udid":"ios-test","state":"Booted"}]}}'
+        launch = ("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", "ios-test")
+        with patch("mobile.output", side_effect=[devices, subprocess.TimeoutExpired(launch, 20), b""]) as native:
+            self.assertEqual(open_simulator("ios-test"), "ios-test")
+        self.assertEqual(native.call_args_list[-2:], [call(*launch, timeout=20), call(*launch, timeout=40)])
 
 
 class AndroidTreeTest(unittest.TestCase):
