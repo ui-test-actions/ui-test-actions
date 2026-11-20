@@ -17,6 +17,11 @@ import threading
 import time
 from urllib.request import urlopen
 
+from automation import Automation, error_result
+from contract import CommandError
+from exchange import Exchange
+from tunnel import Tunnel, take_named_configuration
+
 
 CLOUDFLARED_VERSION = "2026.11.1"
 CLOUDFLARED_ASSETS = {
@@ -42,9 +47,18 @@ def duration_setting(name, low, high):
 
 
 def setup_desktop(target, processes):
-    if target == "linux" and not os.environ.get("DISPLAY"):
+    if target == "linux":
         run("sudo", "apt-get", "update", timeout=120)
-        run("sudo", "apt-get", "install", "-y", "xvfb", "xauth", "xdotool", timeout=120)
+        run("sudo", "apt-get", "install", "-y", "xvfb", "xauth", "xdotool", "xclip", "openbox", "wmctrl",
+            "python3-pyatspi", "at-spi2-core", "dbus-x11", timeout=180)
+        os.environ.setdefault("QT_LINUX_ACCESSIBILITY_ALWAYS_ON", "1")
+        if not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
+            bus = run("dbus-launch", stdout=subprocess.PIPE, text=True).stdout
+            for line in bus.splitlines():
+                key, _, value = line.partition("=")
+                if key in ("DBUS_SESSION_BUS_ADDRESS", "DBUS_SESSION_BUS_PID"):
+                    os.environ[key] = value
+    if target == "linux" and not os.environ.get("DISPLAY"):
         read_fd, write_fd = os.pipe()
         try:
             processes.append(subprocess.Popen(
@@ -58,11 +72,19 @@ def setup_desktop(target, processes):
         if not display.isdecimal():
             raise RuntimeError("Xvfb did not allocate a display")
         os.environ["DISPLAY"] = f":{display}"
+        processes.append(subprocess.Popen(["openbox"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
+        wm_ready = time.monotonic() + 5
+        while time.monotonic() < wm_ready:
+            if subprocess.run(["wmctrl", "-m"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
+                break
+            time.sleep(0.1)
     deps = ["Pillow==12.2.0"]
     if target in ("windows", "ios"):
         deps.append("PyAutoGUI==0.9.54")
     if target in ("macos", "ios"):
         deps.append("pyobjc-framework-Quartz==12.1")
+    if target == "macos":
+        deps.append("pyobjc-framework-ApplicationServices==12.1")
     run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", *deps, timeout=180)
     if target == "windows":
         import ctypes
@@ -181,8 +203,8 @@ def download_tunnel(work):
 
 
 class Session(ThreadingHTTPServer):
-    def __init__(self, digest, backend, target):
-        super().__init__(("127.0.0.1", 0), Handler)
+    def __init__(self, digest, backend, target, driver=None, port=0, exchange=None):
+        super().__init__(("127.0.0.1", port), Handler)
         self.digest = digest
         self.backend = backend
         self.target = target
@@ -190,6 +212,28 @@ class Session(ThreadingHTTPServer):
         self.id = os.urandom(12).hex()
         self.deadline = 0
         self.size = (0, 0)
+        self.automation = Automation(self, driver, exchange)
+        self.workers = threading.BoundedSemaphore(24)
+
+    def process_request(self, request, address):
+        if not self.workers.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, address)
+        except BaseException:
+            self.workers.release()
+            raise
+
+    def process_request_thread(self, request, address):
+        try:
+            super().process_request_thread(request, address)
+        finally:
+            self.workers.release()
+
+    def handle_error(self, request, address):
+        # Request bodies, authorization headers and platform arguments are never logged here.
+        print("An HTTP request ended unexpectedly", flush=True)
 
     def capture(self):
         from struct import unpack
@@ -242,26 +286,52 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/":
             self.reply(200, (ROOT / "client.html").read_bytes(), "text/html; charset=utf-8")
         elif self.authorized():
-            if self.path == "/v1/session":
+            if self.path == "/v2/capabilities":
+                self.reply(200, {
+                    "api_version": 2, "id": self.server.id, "target": self.server.target,
+                    "screen": {"width": self.server.size[0], "height": self.server.size[1]},
+                    "commands": self.server.automation.capabilities(),
+                    "limits": {"max_batch_steps": 12, "replay_window": 64, "max_request_bytes": 65536},
+                })
+            elif self.path == "/v2/recording":
+                data = self.server.automation.recording.latest
+                if data:
+                    self.reply(200, data, "image/gif")
+                else:
+                    self.reply(404, {"ok": False, "error": {
+                        "code": "recording_missing", "message": "Stop a recording before downloading it.",
+                    }})
+            elif self.path == "/v1/session":
                 self.reply(200, {
                     "id": self.server.id,
                     "target": self.server.target,
                     "seconds_remaining": max(0, round(self.server.deadline - time.monotonic())),
                 })
             elif self.path == "/v1/screenshot":
-                with self.server.lock:
+                if not self.server.lock.acquire(blocking=False):
+                    self.reply(429, {"error": "The session is busy"})
+                    return
+                try:
+                    if time.monotonic() >= self.server.deadline:
+                        self.reply(410, {"error": "Session ended"})
+                        return
                     try:
                         screenshot = self.server.capture()
                     except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
                         print(f"Screenshot backend error: {type(error).__name__}", flush=True)
                         self.reply(502, {"error": "Screenshot failed"})
                         return
+                finally:
+                    self.server.lock.release()
                 self.reply(200, screenshot, "image/png")
             else:
                 self.reply(404, {"error": "Unknown endpoint"})
 
     def do_POST(self):
         if not self.authorized():
+            return
+        if self.path in ("/v2/action", "/v2/batch"):
+            self.execute_v2()
             return
         if self.path != "/v1/input":
             self.reply(404, {"error": "Unknown endpoint"})
@@ -277,6 +347,7 @@ class Handler(BaseHTTPRequestHandler):
                 if time.monotonic() >= self.server.deadline:
                     self.reply(410, {"error": "Session ended"})
                     return
+                self.server.automation.snapshot = None
                 self.apply_input(data)
         except (ValueError, KeyError, TypeError) as error:
             message = str(error) if type(error) is ValueError else "Malformed input"
@@ -287,6 +358,33 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(502, {"error": "Input failed"})
             return
         self.reply(200, {"ok": True})
+
+    def execute_v2(self):
+        try:
+            if self.headers.get("Transfer-Encoding") or len(self.headers.get_all("Content-Length", [])) != 1:
+                raise CommandError("invalid_request", "Provide a single Content-Length header.")
+            if self.headers.get_content_type() != "application/json":
+                raise CommandError("invalid_media_type", "Expected application/json.", 415)
+            try:
+                size = int(self.headers["Content-Length"])
+            except ValueError:
+                raise CommandError("invalid_request", "Invalid Content-Length.") from None
+            if not 1 <= size <= 65536:
+                raise CommandError("request_too_large", "The request must contain 1–65536 bytes.", 413)
+            try:
+                request = json.loads(self.rfile.read(size).decode("utf-8"))
+            except (ValueError, RecursionError):
+                raise CommandError("invalid_json", "Provide well-formed UTF-8 JSON.") from None
+            if not self.server.lock.acquire(blocking=False):
+                raise CommandError("session_busy", "Another command is running. Retry the same request ID.", 429)
+            try:
+                self.server.automation.check_live()
+                status, payload = self.server.automation.execute(request, batch=self.path == "/v2/batch")
+            finally:
+                self.server.lock.release()
+        except CommandError as error:
+            status, payload = error.status, {"ok": False, "error": error_result(error)}
+        self.reply(status, payload)
 
     def apply_input(self, data):
         kind = data.get("action")
@@ -310,26 +408,6 @@ class Handler(BaseHTTPRequestHandler):
         if type(milliseconds) is not int or not 100 <= milliseconds <= 3000:
             raise ValueError("duration_ms must be between 100 and 3000")
         self.server.backend.pointer(kind, points, milliseconds / 1000)
-
-
-def start_tunnel(binary, port, log, processes):
-    config = log.with_suffix(".yml")
-    config.write_text("{}\n", encoding="utf-8")
-    with log.open("wb") as output:
-        tunnel = subprocess.Popen([
-            str(binary), "--config", str(config), "tunnel", "--no-autoupdate",
-            "--protocol", "http2", "--url", f"http://127.0.0.1:{port}",
-        ], stdout=output, stderr=subprocess.STDOUT)
-    processes.append(tunnel)
-    deadline = time.monotonic() + 85
-    while time.monotonic() < deadline and tunnel.poll() is None:
-        diagnostics = log.read_text(encoding="utf-8", errors="replace")
-        address = re.search(r"https://[a-z0-9-]+\.trycloudflare\.com", diagnostics)
-        if address and "Registered tunnel connection" in diagnostics:
-            return address.group()
-        time.sleep(1)
-    print(log.read_text(encoding="utf-8", errors="replace"))
-    raise RuntimeError("Cloudflare tunnel did not connect")
 
 
 def launch_app(timeout):
@@ -356,6 +434,32 @@ def stop(*_args):
     raise KeyboardInterrupt
 
 
+class SimulatorDriver:
+    def __init__(self, mobile, window):
+        self.mobile = mobile
+        self.window = window
+
+    def capabilities(self):
+        return set(self.mobile.capabilities()) | set(self.window.capabilities())
+
+    def execute(self, command, params):
+        driver = self.mobile if command in self.mobile.capabilities() else self.window
+        return driver.execute(command, params)
+
+    def close(self):
+        self.mobile.close()
+
+
+def load_driver(backend, target):
+    if target in ("android", "ios"):
+        from desktop_driver import DesktopDriver
+        from mobile_driver import MobileDriver
+        mobile = MobileDriver(backend, target)
+        return SimulatorDriver(mobile, DesktopDriver(backend, target)) if target == "ios" else mobile
+    from desktop_driver import DesktopDriver
+    return DesktopDriver(backend, target)
+
+
 def main(control):
     signal.signal(signal.SIGTERM, stop)
     target = os.environ["UI_TEST_TARGET"]
@@ -366,7 +470,9 @@ def main(control):
         raise ValueError("token-sha256 must be a 64-character lowercase SHA-256 hex digest")
     duration = duration_setting("UI_TEST_DURATION", 1, 180)
     startup = duration_setting("UI_TEST_STARTUP_TIMEOUT", 1, 1800)
+    named, port = take_named_configuration()
     processes = []
+    driver = tunnel = None
     with tempfile.TemporaryDirectory(prefix="live-ui-") as directory:
         work = Path(directory)
         try:
@@ -377,18 +483,26 @@ def main(control):
             if target == "ios":
                 from mobile import open_simulator
                 open_simulator(device)
+            exchange = None
+            if target in ("linux", "windows", "macos") and os.environ.get("UI_TEST_FILE_EXCHANGE") == "1":
+                exchange = Exchange(work / "files")
+                os.environ["UI_TEST_EXCHANGE_DIR"] = str(exchange.directory)
             launch_app(startup)
             if target == "android":
                 from mobile import Android
                 backend = Android(device)
+                run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "Pillow==12.2.0", timeout=180)
             else:
                 backend = Desktop(target)
-            with Session(digest, backend, target) as session:
+            driver = load_driver(backend, target)
+            with Session(digest, backend, target, driver, port, exchange) as session:
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)
                 serving.start()
                 try:
-                    address = start_tunnel(binary, session.server_port, work / "tunnel.log", processes)
+                    tunnel = Tunnel(binary, session.server_port, work, **named)
+                    cancelled = (control / "stop").exists
+                    address = tunnel.start(time.monotonic() + 110, cancelled)
                     session.deadline = time.monotonic() + duration * 60
                     print(f"UI_SESSION_URL={address}")
                     print(f"{target} session ready for {duration} minute(s)")
@@ -404,13 +518,27 @@ def main(control):
                     unpublished.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
                     unpublished.replace(control / "connection.json")
                     while (remaining := session.deadline - time.monotonic()) > 0 and not (control / "stop").exists():
-                        if processes[-1].poll() is not None:
-                            raise RuntimeError("Cloudflare process exited during the session")
+                        if tunnel.process.poll() is not None:
+                            if not tunnel.hostname:
+                                raise RuntimeError("The Quick Tunnel process exited. Start a fresh session.")
+                            print("Restarting the named Cloudflare connector", flush=True)
+                            tunnel.start(min(time.monotonic() + 55, session.deadline), cancelled)
                         time.sleep(min(remaining, 0.25))
                 finally:
                     session.deadline = 0
+                    session.automation.recording.stop.set()
                     session.shutdown()
         finally:
+            if tunnel:
+                try:
+                    tunnel.close()
+                except (RuntimeError, OSError, subprocess.SubprocessError):
+                    print("The Cloudflare connector could not complete cleanup", flush=True)
+            if hasattr(driver, "close"):
+                try:
+                    driver.close()
+                except (RuntimeError, OSError, subprocess.SubprocessError):
+                    print("The platform driver could not complete cleanup", flush=True)
             for process in reversed(processes):
                 if process.poll() is None:
                     process.terminate()

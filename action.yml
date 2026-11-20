@@ -22,6 +22,30 @@ inputs:
   device:
     description: ADB serial or iOS simulator UDID, or empty to use the only attached/booted device
     default: ''
+  app-ids:
+    description: Comma-separated application identifiers approved for lifecycle operations
+    default: ''
+  app-installs:
+    description: JSON mapping approved application identifiers to local build artifacts
+    default: '{}'
+  deeplink-schemes:
+    description: Comma-separated deep-link schemes approved by the workflow
+    default: ''
+  android-ime:
+    description: Enable the temporary Unicode input method on an Android emulator
+    default: '1'
+  file-exchange:
+    description: Enable the private, bounded file exchange on a desktop runner
+    default: '0'
+  tunnel-hostname:
+    description: Optional hostname of a dedicated remotely managed Cloudflare Tunnel
+    default: ''
+  tunnel-token:
+    description: Optional GitHub secret containing the remotely managed tunnel connector token
+    default: ''
+  origin-port:
+    description: Fixed loopback origin port configured for a named tunnel
+    default: '8787'
 runs:
   using: composite
   steps:
@@ -37,6 +61,14 @@ runs:
         UI_TEST_READY: ${{ inputs.ready }}
         UI_TEST_STARTUP_TIMEOUT: ${{ inputs.startup-timeout-seconds }}
         UI_TEST_DEVICE: ${{ inputs.device }}
+        UI_TEST_APP_IDS: ${{ inputs.app-ids }}
+        UI_TEST_APP_INSTALLS: ${{ inputs.app-installs }}
+        UI_TEST_DEEPLINK_SCHEMES: ${{ inputs.deeplink-schemes }}
+        UI_TEST_ANDROID_IME: ${{ inputs.android-ime }}
+        UI_TEST_FILE_EXCHANGE: ${{ inputs.file-exchange }}
+        UI_TEST_TUNNEL_HOSTNAME: ${{ inputs.tunnel-hostname }}
+        UI_TEST_TUNNEL_TOKEN: ${{ inputs.tunnel-token }}
+        UI_TEST_ORIGIN_PORT: ${{ inputs.origin-port }}
         PYTHONUNBUFFERED: '1'
       run: |
         UI_TEST_BASH="$BASH"

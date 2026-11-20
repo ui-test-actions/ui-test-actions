@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dev.uitest.sessionime">
+  <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="35" />
+  <application android:label="UI Test Session Input" android:allowBackup="false">
+    <service android:name=".SessionIme" android:permission="android.permission.BIND_INPUT_METHOD" android:exported="true">
+      <intent-filter>
+        <action android:name="android.view.InputMethod" />
+      </intent-filter>
+      <meta-data android:name="android.view.im" android:resource="@xml/ime_config" />
+    </service>
+  </application>
+</manifest>

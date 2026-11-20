@@ -20,7 +20,7 @@
 <form id="controls" hidden>
   <button type="button" id="refresh">Refresh screenshot</button>
   <label for="entry">Type into focused field</label>
-  <input id="entry" maxlength="256" required pattern="[ -~]+">
+  <textarea id="entry" maxlength="8192" required dir="auto" rows="2"></textarea>
   <button>Send text</button>
 </form>
 <p role="status" id="status">Enter the token to view the live screen.</p>
@@ -28,7 +28,7 @@
 <script>
   const $ = id => document.getElementById(id);
   const screen = $('screen');
-  let token = '', imageURL, start, busy = false;
+  let token = '', imageURL, start, busy = false, unicode = false;
 
   async function request(path, body) {
     const headers = { Authorization: 'Bearer ' + token };
@@ -37,8 +37,11 @@
       headers['Content-Type'] = 'application/json';
       Object.assign(options, { method: 'POST', body: JSON.stringify(body) });
     }
-    const response = await fetch('/v1/' + path, options);
-    if (!response.ok) throw new Error('Request failed (HTTP ' + response.status + ').');
+    const response = await fetch(path.startsWith('/') ? path : '/v1/' + path, options);
+    if (!response.ok) {
+      const details = await response.json().catch(() => ({}));
+      throw new Error(details.error?.message || details.error || 'Request failed (HTTP ' + response.status + ').');
+    }
     return response;
   }
 
@@ -67,6 +70,9 @@
       $('controls').hidden = true;
       screen.hidden = true;
       const session = await (await request('session')).json();
+      const capabilities = await request('/v2/capabilities').then(result => result.json()).catch(() => ({}));
+      unicode = !!capabilities.commands?.['text.insert'];
+      $('entry').maxLength = unicode ? 8192 : 256;
       await snapshot();
       $('controls').hidden = false;
       $('status').textContent = 'Connected to ' + session.target + '. Click or drag on the screenshot.';
@@ -82,7 +88,13 @@
   $('controls').onsubmit = event => {
     event.preventDefault();
     perform(async () => {
-      await send({ action: 'type', text: $('entry').value });
+      if (unicode) {
+        await request('/v2/action', { command: 'text.insert', params: { text: $('entry').value } });
+        await new Promise(resolve => setTimeout(resolve, 250));
+        await snapshot();
+      } else {
+        await send({ action: 'type', text: $('entry').value });
+      }
       $('entry').value = '';
     });
   };
