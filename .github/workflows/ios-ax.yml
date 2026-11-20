@@ -1,17 +1,25 @@
 name: Verify iOS Simulator accessibility bridge
 on:
   workflow_dispatch:
+    inputs:
+      token_sha256:
+        description: SHA-256 digest of the external client token
+        required: true
+        type: string
 permissions:
   contents: read
 jobs:
-  observe:
+  ios:
     runs-on: macos-26
-    timeout-minutes: 18
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-      - name: Validate pinned AXe against the native fixture
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare the pinned AXe adapter and app
         shell: bash
         run: |
           work="$RUNNER_TEMP/ios-ax"
@@ -22,7 +30,8 @@ jobs:
             shasum -a 256 -c -
           tar -xzf "$work/$asset" -C "$work/axe"
           axe=$(find "$work/axe" -name axe -type f -print -quit)
-          simulator=$(xcrun simctl list devices available -j | python3 -c '
+          test -x "$axe"
+          simulator=$(xcrun simctl list devices available -j | python -c '
           import json, sys
           devices = json.load(sys.stdin)["devices"]
           print(next(item["udid"] for key in reversed(sorted(devices)) if ".iOS-" in key
@@ -30,29 +39,36 @@ jobs:
           ')
           bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
-          open -a Simulator --args -CurrentDeviceUDID "$simulator"
           xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
-          xcrun simctl launch "$simulator" dev.uitest.fixture
-          "$axe" describe-ui --udid "$simulator" > "$work/proof/before.json"
-          "$axe" --output json displays --udid "$simulator" > "$work/proof/display.json" || true
-          xcrun simctl io "$simulator" screenshot "$work/proof/before.png"
-          "$axe" --output json tap --label 'Apply change' --element-type Button --udid "$simulator" > "$work/proof/tap.json"
-          "$axe" describe-ui --udid "$simulator" > "$work/proof/after.json"
-          xcrun simctl io "$simulator" screenshot "$work/proof/after.png"
-          python3 - "$work/proof" <<'PY'
+          echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
+          echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
+      - uses: ui-test-actions/ui-test-actions@bb6e52724ff3a8b1aaf45f585880795db03ed669
+        with:
+          target: ios
+          duration-minutes: '10'
+          token-sha256: ${{ inputs.token_sha256 }}
+          device: ${{ env.AXE_DEVICE }}
+          ios-axe-path: ${{ env.AXE_BINARY }}
+          app-ids: dev.uitest.fixture
+          launch: xcrun simctl launch "$AXE_DEVICE" dev.uitest.fixture
+          ready: xcrun simctl spawn "$AXE_DEVICE" launchctl list | grep -q 'UIKitApplication:dev.uitest.fixture'
+      - name: Assert the final app state independently of the external client
+        shell: bash
+        run: |
+          "$AXE_BINARY" describe-ui --udid "$AXE_DEVICE" > "$RUNNER_TEMP/ios-ax/proof/final.json"
+          python - "$RUNNER_TEMP/ios-ax/proof/final.json" <<'PY'
           import json, sys
           from pathlib import Path
-          proof = Path(sys.argv[1])
-          for filename, expected in [("before.json", "BEFORE · Ready for input"), ("after.json", "AFTER · Button tapped")]:
-              observation = json.dumps(json.loads((proof / filename).read_text()), ensure_ascii=False)
-              if expected not in observation:
-                  raise SystemExit(f"Expected fixture state missing from {filename}")
+          observation = json.dumps(json.loads(Path(sys.argv[1]).read_text()), ensure_ascii=False)
+          if 'AFTER · مرحبًا ١٢٣ — English 🌍' not in observation:
+              raise SystemExit("The fixture did not apply the exact Unicode input")
+          print("Exact UIKit label confirmed independently after session teardown")
           PY
       - name: Retain bridge observations
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: ios-ax-probe
+          name: ios-ax-proof
           path: ${{ runner.temp }}/ios-ax/proof/
           if-no-files-found: ignore
           retention-days: 7
