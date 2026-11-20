@@ -71,12 +71,22 @@ case "$stage" in
     ;;
   verify)
     if [[ "$target" == android ]]; then
-      adb -s emulator-5554 shell ping -I wlan0 -c 3 -W 4 192.168.137.2 | tee "$evidence/android-to-mac.txt"
+      command=(adb -s emulator-5554 shell ping -I wlan0 -c 3 -W 4 192.168.137.2)
+      result="$evidence/android-to-mac.txt"
     else
-      ping -c 3 -W 4000 192.168.137.10 | tee "$evidence/mac-to-android.txt"
+      command=(ping -S 192.168.137.2 -c 3 -W 4000 192.168.137.10)
+      result="$evidence/mac-to-android.txt"
     fi
-    # Give the other job time to perform its check.
-    sleep 30
+    for attempt in 1 2 3; do
+      printf 'LAN delivery attempt %s\n' "$attempt" | tee -a "$result"
+      if "${command[@]}" | tee -a "$result"; then
+        # Give the peer time to finish before its cleanup can remove the interface.
+        sleep 15
+        exit 0
+      fi
+      if [[ "$attempt" != 3 ]]; then sleep 3; fi
+    done
+    exit 1
     ;;
   probe)
     (
