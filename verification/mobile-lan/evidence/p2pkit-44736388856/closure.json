@@ -1,0 +1,44 @@
+{
+  "android": {
+    "last_success": {
+      "target": "android",
+      "requested_at": "2026-11-20T12:48:39+00:00",
+      "http_status": 200,
+      "accessible": true,
+      "seconds_remaining": 6
+    },
+    "first_unavailable": {
+      "target": "android",
+      "requested_at": "2026-11-20T12:48:48+00:00",
+      "http_status": 530,
+      "accessible": false
+    },
+    "recheck": {
+      "target": "android",
+      "requested_at": "2026-11-20T12:48:57+00:00",
+      "http_status": 530,
+      "accessible": false
+    }
+  },
+  "ios": {
+    "last_success": {
+      "target": "ios",
+      "requested_at": "2026-11-20T12:49:57+00:00",
+      "http_status": 200,
+      "accessible": true,
+      "seconds_remaining": 4
+    },
+    "first_unavailable": {
+      "target": "ios",
+      "requested_at": "2026-11-20T12:50:06+00:00",
+      "http_status": 530,
+      "accessible": false
+    },
+    "recheck": {
+      "target": "ios",
+      "requested_at": "2026-11-20T12:50:14+00:00",
+      "http_status": 530,
+      "accessible": false
+    }
+  }
+}

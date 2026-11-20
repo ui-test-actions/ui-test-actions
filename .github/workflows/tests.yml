@@ -1,9 +1,9 @@
 name: Fast automation regressions
 on:
   push:
-    paths: ['*.py', 'tests/**', 'mobile_ime/**', '.github/workflows/tests.yml', 'action.yml']
+    paths: ['*.py', 'tests/**', 'mobile_ime/**', 'verification/mobile-lan/*.py', 'verification/mobile-lan/*.c', '.github/workflows/tests.yml', 'action.yml']
   pull_request:
-    paths: ['*.py', 'tests/**', 'mobile_ime/**', '.github/workflows/tests.yml', 'action.yml']
+    paths: ['*.py', 'tests/**', 'mobile_ime/**', 'verification/mobile-lan/*.py', 'verification/mobile-lan/*.c', '.github/workflows/tests.yml', 'action.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,3 +24,9 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install Pillow==12.2.0
       - run: python -m unittest discover -s tests -v
+      - name: Test mobile LAN relay and packet filtering
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          python -m pip install websockets==15.0.1
+          python -m unittest discover -s verification/mobile-lan -v
+          cc -Wall -Wextra -Werror -fsyntax-only verification/mobile-lan/frame-port.c

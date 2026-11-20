@@ -79,6 +79,8 @@ An agent can inspect the screenshot, use a fresh selector or coordinates, then c
 
 ## Access and verification
 
+To test native peer discovery and communication between GitHub-hosted Android and Apple Silicon iOS, follow the [hosted mobile LAN guide](docs/mobile-lan.md).
+
 Quick Tunnels are the default. Cloudflare terminates HTTPS and gives the job a temporary hostname. Each API request checks the session bearer token. The artifact contains connection metadata. Use dedicated test jobs and synthetic data. The authenticated controller can operate the runner's visible UI. After the time limit or cancellation, the runner closes the listener and tunnel. Remove the private token file when the session ends. [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)
 
 The v2 APIs add Unicode text and clipboard, screenshots and recordings, structured commands, batching, and backend capability discovery. Existing v1 clients remain supported, including their ASCII text endpoint. The hosted report includes the target matrix, upstream app pins, workflow links, captured evidence, and gaps. [Five-platform hour and cancellation evidence](verification/v2/lifetime/) · [v2 verification report](verification/v2/README.md) · [original v1 runner checks](verification/README.md)
