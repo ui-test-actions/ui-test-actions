@@ -191,7 +191,7 @@ def exercise_link(android, ios, android_name, ios_name, output):
         return f"{ios_name} → {message}"
 
     def has_line(node, line):
-        return any(line == field for field in android.content(node))
+        return any(field == line or field.endswith(" " + line) for field in android.content(node))
 
     try:
         profile("get", {})

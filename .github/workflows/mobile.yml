@@ -88,7 +88,7 @@ jobs:
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
           echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@13dc5b59c0561855107eabe1bafc6077849d5755
+      - uses: ui-test-actions/ui-test-actions@cef3c5e0e7a2551dc161137141618b6bfeb6d650
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
@@ -118,4 +118,6 @@ jobs:
         shell: bash
         run: |
           adb -s "$PROOF_DEVICE" shell cmd locale get-app-locales dev.uitest.fixture | grep -F ' are []'
-          adb -s "$PROOF_DEVICE" shell dumpsys package dev.uitest.fixture | grep -F 'android.permission.CAMERA: granted=false'
+          state=$(adb -s "$PROOF_DEVICE" shell dumpsys package dev.uitest.fixture)
+          printf '%s\n' "$state" | grep -E '^[[:space:]]+android\.permission\.CAMERA([[:space:]]*$|:)'
+          if [[ "$state" == *'android.permission.CAMERA: granted=true'* ]]; then exit 1; fi
