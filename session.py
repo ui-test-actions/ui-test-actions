@@ -1,4 +1,4 @@
-"""Start a UI session and publish its temporary HTTPS address."""
+"""Run the UI API and publish its session endpoint."""
 
 import hashlib
 import hmac
@@ -8,30 +8,22 @@ import os
 from pathlib import Path
 import platform
 import re
+import secrets
+import ssl
 import signal
 import subprocess
 import sys
-import tarfile
 import tempfile
 import threading
 import time
-from urllib.request import urlopen
 
 from automation import Automation, error_result
 from contract import CommandError
 from exchange import Exchange
 from lease import HoldLease
-from tunnel import Tunnel, take_named_configuration
+from transports import prepare_transport
 
 
-CLOUDFLARED_VERSION = "2026.11.1"
-CLOUDFLARED_ASSETS = {
-    ("Linux", "amd64"): ("linux-amd64", "97bb3b02d23a5980fc9c15a1a270e692da1923f103f920d5b16d4931d5ab55e7"),
-    ("Linux", "arm64"): ("linux-arm64", "b155cec3e48e489cfb8e5c602769fb8c771083018d8881d68b4d18a791567c5a"),
-    ("Darwin", "amd64"): ("darwin-amd64.tgz", "5e0403b188dfee71fbd9b995e7dc9910d61b661c52371935ab6475d41185632f"),
-    ("Darwin", "arm64"): ("darwin-arm64.tgz", "02fe4bcf08f2c09699cff30658228a739a0c47fb75f3653d1b8772a27ade4462"),
-    ("Windows", "amd64"): ("windows-amd64.exe", "341deda3db5ec498a0482254d6c38c0b7cf01a30c37bb5dd95d2216d08955e35"),
-}
 TARGET_OS = {"linux": "Linux", "windows": "Windows", "macos": "Darwin", "android": "Linux", "ios": "Darwin"}
 ROOT = Path(__file__).resolve().parent
 
@@ -197,42 +189,15 @@ class Desktop:
                     q.CGEventPost(q.kCGHIDEventTap, event)
 
 
-def download_tunnel(work):
-    architecture = platform.machine().lower()
-    architecture = {"x86_64": "amd64", "aarch64": "arm64"}.get(architecture, architecture)
-    suffix, digest = CLOUDFLARED_ASSETS[platform.system(), architecture]
-    asset = f"cloudflared-{suffix}"
-    url = f"https://github.com/cloudflare/cloudflared/releases/download/{CLOUDFLARED_VERSION}/{asset}"
-    download = work / asset
-    for attempt in range(3):
-        try:
-            with urlopen(url, timeout=45) as response, download.open("wb") as destination:
-                while chunk := response.read(1024 * 1024):
-                    destination.write(chunk)
-            break
-        except OSError:
-            if attempt == 2:
-                raise
-            time.sleep(2 ** attempt)
-    with download.open("rb") as source:
-        if hashlib.file_digest(source, "sha256").hexdigest() != digest:
-            raise RuntimeError("cloudflared download checksum mismatch")
-    binary = work / ("cloudflared.exe" if platform.system() == "Windows" else "cloudflared")
-    if suffix.endswith(".tgz"):
-        with tarfile.open(download) as archive, binary.open("wb") as destination:
-            source = archive.extractfile("cloudflared")
-            if source is None:
-                raise RuntimeError("cloudflared binary missing from archive")
-            destination.write(source.read())
-    else:
-        download.replace(binary)
-    binary.chmod(0o700)
-    return binary
-
-
 class Session(ThreadingHTTPServer):
-    def __init__(self, digest, backend, target, driver=None, port=0, exchange=None, network=None, diagnostics=None):
-        super().__init__(("127.0.0.1", port), Handler)
+    def __init__(self, digest, backend, target, driver=None, exchange=None, network=None, diagnostics=None,
+                 *, transport=None):
+        super().__init__(transport.bind if transport else ("127.0.0.1", 0), Handler)
+        self.context = transport.context if transport else None
+        self.expected_host = None
+        if transport and transport.restrict_host:
+            self.expected_host = f"{self.server_address[0]}:{self.server_port}"
+        self.probe_path = "/_ui_origin/" + secrets.token_hex(16)
         self.digest = digest
         self.backend = backend
         self.target = target
@@ -259,6 +224,18 @@ class Session(ThreadingHTTPServer):
             super().process_request_thread(request, address)
         finally:
             self.workers.release()
+
+    def finish_request(self, request, address):
+        if self.context is None:
+            super().finish_request(request, address)
+            return
+        # Negotiate TLS only after reserving a bounded request worker.
+        request.settimeout(5)
+        try:
+            with self.context.wrap_socket(request, server_side=True) as connection:
+                super().finish_request(connection, address)
+        except ssl.SSLError:
+            pass
 
     def handle_error(self, request, address):
         # Request bodies, authorization headers and platform arguments are never logged here.
@@ -298,6 +275,13 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(payload)
 
+    def origin_allowed(self):
+        expected = self.server.expected_host
+        if expected is None or self.headers.get_all("Host") == [expected]:
+            return True
+        self.reply(421, {"error": "Incorrect origin"})
+        return False
+
     def authorized(self):
         header = self.headers.get("Authorization", "")
         scheme, _, token = header.partition(" ")
@@ -307,13 +291,21 @@ class Handler(BaseHTTPRequestHandler):
         if not hmac.compare_digest(hashlib.sha256(token.encode()).hexdigest(), self.server.digest):
             self.reply(401, {"error": "Invalid session token"})
             return False
+        session_id = self.headers.get("X-UI-Session-ID")
+        if session_id is not None and session_id != self.server.id:
+            self.reply(409, {"error": {"code": "session_mismatch", "message": "The endpoint serves a different session."}})
+            return False
         if time.monotonic() >= self.server.deadline:
             self.reply(410, {"error": "Session ended"})
             return False
         return True
 
     def do_GET(self):
-        if self.path == "/":
+        if not self.origin_allowed():
+            return
+        if self.path == self.server.probe_path:
+            self.reply(200, self.server.id.encode("ascii"), "text/plain")
+        elif self.path == "/":
             self.reply(200, (ROOT / "client.html").read_bytes(), "text/html; charset=utf-8")
         elif self.authorized():
             if self.path == "/v2/capabilities":
@@ -358,7 +350,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.reply(404, {"error": "Unknown endpoint"})
 
     def do_POST(self):
-        if not self.authorized():
+        if not self.origin_allowed() or not self.authorized():
             return
         if self.path in ("/v2/action", "/v2/batch"):
             self.execute_v2()
@@ -508,13 +500,12 @@ def main(control):
         raise ValueError("token-sha256 must be a 64-character lowercase SHA-256 hex digest")
     duration = duration_setting("UI_TEST_DURATION", 1, 180)
     startup = duration_setting("UI_TEST_STARTUP_TIMEOUT", 1, 1800)
-    named, port = take_named_configuration()
     processes = []
-    driver = tunnel = network = None
+    driver = transport = network = None
     with tempfile.TemporaryDirectory(prefix="live-ui-") as directory:
         work = Path(directory)
         try:
-            binary = download_tunnel(work)
+            transport = prepare_transport(work)
             device = os.environ.get("UI_TEST_DEVICE", "")
             webdriver_url = os.environ.get("UI_TEST_WEBDRIVER_URL")
             axe_path = os.environ.get("UI_TEST_IOS_AXE")
@@ -565,23 +556,27 @@ def main(control):
             elif axe_path:
                 from ios_axe import AxeSimulator
                 driver = backend = AxeSimulator(axe_path, driver)
-            with Session(digest, backend, target, driver, port, exchange, network, diagnostics) as session:
+            with Session(digest, backend, target, driver, exchange, network, diagnostics,
+                         transport=transport) as session:
                 session.startup = startup_observation
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)
                 serving.start()
                 try:
-                    tunnel = Tunnel(binary, session.server_port, work, **named)
                     cancelled = (control / "stop").exists
-                    address = tunnel.start(time.monotonic() + 110, cancelled)
+                    address = transport.start(session, cancelled)
+                    if cancelled():
+                        raise RuntimeError("Session startup was cancelled.")
                     session.deadline = time.monotonic() + duration * 60
                     print(f"UI_SESSION_URL={address}")
-                    print(f"{target} session ready for {duration} minute(s)")
+                    print(f"{target} session ready for {duration} minute(s) via {transport.kind}")
                     with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
-                        summary.write(f"### Live UI session\n\n[{target}]({address}) · {duration} minute(s)\n")
+                        summary.write(f"### Live UI session\n\n[{target}]({address}) · {transport.kind} · {duration} minute(s)\n")
                     data = {
                         "url": address,
                         "target": target,
+                        "transport": transport.kind,
+                        **transport.metadata(),
                         "session_id": session.id,
                         "expires_unix": int(time.time() + duration * 60),
                     }
@@ -592,23 +587,18 @@ def main(control):
                     while (remaining := session.deadline - time.monotonic()) > 0 and not (control / "stop").exists():
                         if not lease.active():
                             raise RuntimeError("The GitHub hold step stopped renewing its lease.")
-                        if tunnel.process.poll() is not None:
-                            if not tunnel.hostname:
-                                raise RuntimeError("The Quick Tunnel process exited. Start a fresh session.")
-                            print("Restarting the named Cloudflare connector", flush=True)
-                            tunnel.start(min(time.monotonic() + 55, session.deadline),
-                                         lambda: cancelled() or not lease.active())
+                        transport.maintain(session.deadline, lambda: cancelled() or not lease.active())
                         time.sleep(min(remaining, 0.25))
                 finally:
                     session.deadline = 0
                     session.automation.recording.stop.set()
                     session.shutdown()
         finally:
-            if tunnel:
+            if transport:
                 try:
-                    tunnel.close()
+                    transport.close()
                 except (RuntimeError, OSError, subprocess.SubprocessError):
-                    print("The Cloudflare connector could not complete cleanup", flush=True)
+                    print("The session transport could not confirm cleanup", flush=True)
             if network:
                 try:
                     network.execute("network.profile.reset", {})

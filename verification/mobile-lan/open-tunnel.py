@@ -7,8 +7,7 @@ import threading
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from session import download_tunnel
-from tunnel import Tunnel
+from tunnel import Tunnel, download_tunnel
 
 
 def main():

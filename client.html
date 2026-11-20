@@ -32,7 +32,7 @@
 
   async function request(path, body) {
     const headers = { Authorization: 'Bearer ' + token };
-    const options = { headers, cache: 'no-store' };
+    const options = { headers, cache: 'no-store', redirect: 'error' };
     if (body) {
       headers['Content-Type'] = 'application/json';
       Object.assign(options, { method: 'POST', body: JSON.stringify(body) });

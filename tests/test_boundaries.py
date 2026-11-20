@@ -12,7 +12,8 @@ from urllib.error import HTTPError
 from agent import Client, ClientError, NoRedirect
 from contract import CommandError, validate_operation
 from exchange import Exchange, MAX_FILE, MAX_FILES
-from tunnel import Tunnel, take_named_configuration
+from transports import prepare_transport
+from tunnel import Tunnel
 
 
 class ExchangeTest(unittest.TestCase):
@@ -75,10 +76,12 @@ class TransportTest(unittest.TestCase):
             "UI_TEST_TUNNEL_HOSTNAME": "ui.example.com", "UI_TEST_TUNNEL_TOKEN": "private",
             "TUNNEL_LOGLEVEL": "debug", "TUNNEL_TOKEN": "ignored",
         }):
-            options, port = take_named_configuration()
-            self.assertNotIn("UI_TEST_TUNNEL_TOKEN", os.environ)
             with tempfile.TemporaryDirectory() as directory:
-                connector = Tunnel(Path("cloudflared"), port, Path(directory), **options)
+                transport = prepare_transport(Path(directory))
+                self.assertNotIn("UI_TEST_TUNNEL_TOKEN", os.environ)
+                self.assertEqual(transport.kind, "cloudflare-named")
+                connector = Tunnel(Path("cloudflared"), transport.bind[1], Path(directory),
+                                   transport.hostname, transport.token)
                 self.assertEqual(connector.token_file.read_text(encoding="utf-8"), "private")
                 self.assertNotIn("private", connector.command)
                 self.assertNotIn("TUNNEL_LOGLEVEL", connector.env)

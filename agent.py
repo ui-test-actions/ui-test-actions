@@ -3,14 +3,16 @@
 
 import argparse
 from http.client import HTTPException
+from ipaddress import IPv4Address
 import json
 from pathlib import Path
 import re
+import ssl
 import sys
 import time
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
-from urllib.request import HTTPRedirectHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, HTTPSHandler, ProxyHandler, Request, build_opener
 import uuid
 
 
@@ -28,24 +30,27 @@ class ClientError(Exception):
 
 class Client:
     def __init__(self, connection, token_file, access_file=None):
-        parsed = urlsplit(connection["url"])
-        if (parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password
-                or parsed.path not in ("", "/") or parsed.query or parsed.fragment):
-            raise ClientError("Use an HTTPS origin from a trusted connection artifact.")
-        self.origin = parsed.geturl().rstrip("/")
+        self.origin, self.opener = open_origin(connection)
         self.session_id = connection.get("session_id")
         token = Path(token_file).read_text(encoding="utf-8").strip()
         if not re.fullmatch(r"[0-9a-f]{64}", token):
             raise ClientError("The private token file must contain one 64-digit hexadecimal token.")
         self.headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
+        if self.session_id:
+            self.headers["X-UI-Session-ID"] = self.session_id
+        if connection.get("cloudflare_access") and not access_file:
+            raise ClientError("This session requires a private Cloudflare Access credentials file.")
         if access_file:
+            if connection.get("transport") not in (None, "cloudflare-named"):
+                raise ClientError("Only a named tunnel can use Cloudflare Access credentials.")
             access = json.loads(Path(access_file).read_text(encoding="utf-8"))
             self.headers.update({
                 "CF-Access-Client-Id": access["client_id"], "CF-Access-Client-Secret": access["client_secret"],
             })
-        self.opener = build_opener(NoRedirect)
 
     def fetch(self, path, body=None, retries=2):
+        if not path.startswith("/") or path.startswith("//") or "\\" in path or not path.isprintable():
+            raise ClientError("Expected an absolute path on the existing session origin.")
         payload = json.dumps(body, ensure_ascii=False).encode("utf-8") if body is not None else None
         for attempt in range(retries + 1):
             try:
@@ -56,7 +61,11 @@ class Client:
                     raise ClientError("The response exceeds the client download limit.")
                 return data
             except HTTPError as error:
-                raw = error.read(512 * 1024)
+                try:
+                    with error:
+                        raw = error.read(512 * 1024)
+                except (OSError, HTTPException):
+                    raw = b""
                 try:
                     error_payload = json.loads(raw)
                     if not isinstance(error_payload, dict):
@@ -71,15 +80,19 @@ class Client:
                 upstream_unavailable = error.code in (502, 503, 504) and not (
                     isinstance(status, dict) and status.get("code")
                 )
-                if attempt < retries and (busy or upstream_unavailable):
+                if attempt < retries and (busy or body is None and upstream_unavailable):
                     time.sleep(0.5 * (attempt + 1))
                     continue
                 if isinstance(status, dict):
                     status = status.get("code", "http_error")
                 else:
                     status = "http_error"
+                if body is not None and upstream_unavailable:
+                    raise uncertain_action(error.code) from None
                 raise ClientError(f"HTTP {error.code} ({status})", error.code, error_payload) from None
             except (URLError, TimeoutError, HTTPException, ConnectionError):
+                if body is not None:
+                    raise uncertain_action() from None
                 if attempt >= retries:
                     raise ClientError("The session could not be reached. Confirm the job is still running.") from None
                 time.sleep(0.5 * (attempt + 1))
@@ -87,7 +100,7 @@ class Client:
     def identify(self):
         data = json.loads(self.fetch("/v1/session"))
         if self.session_id and data["id"] != self.session_id:
-            raise ClientError("The HTTPS origin returned a different session.")
+            raise ClientError("The endpoint returned a different session.")
         return data
 
     def command(self, name, params, request_id=None):
@@ -99,6 +112,39 @@ class Client:
         return json.loads(self.fetch("/v2/batch", {
             "request_id": request_id or uuid.uuid4().hex, "steps": steps,
         }))
+
+
+def open_origin(connection):
+    kind = connection.get("transport")
+    try:
+        url = connection["url"]
+        parsed = urlsplit(url)
+        port = parsed.port
+        if (not re.fullmatch(r"[!-~]+", url) or not parsed.hostname or "@" in parsed.netloc
+                or "\\" in url or parsed.path not in ("", "/") or parsed.query or parsed.fragment):
+            raise ValueError()
+        if kind == "local" and parsed.scheme == "http" and port and parsed.netloc == f"127.0.0.1:{port}":
+            return parsed.geturl().rstrip("/"), build_opener(NoRedirect(), ProxyHandler({}))
+        if parsed.scheme == "https" and kind == "private" and port:
+            if parsed.netloc != f"{IPv4Address(parsed.hostname)}:{port}":
+                raise ValueError()
+            certificate = connection["ca_pem"]
+            if not re.fullmatch(r"-----BEGIN CERTIFICATE-----\r?\n[A-Za-z0-9+/=\r\n]+-----END CERTIFICATE-----\s*", certificate):
+                raise ValueError()
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            context.minimum_version = ssl.TLSVersion.TLSv1_2
+            context.load_verify_locations(cadata=certificate)
+            return parsed.geturl().rstrip("/"), build_opener(NoRedirect(), ProxyHandler({}), HTTPSHandler(context=context))
+        if parsed.scheme == "https" and kind in (None, "cloudflare-quick", "cloudflare-named"):
+            return parsed.geturl().rstrip("/"), build_opener(NoRedirect())
+    except (ValueError, KeyError, TypeError, ssl.SSLError):
+        pass
+    raise ClientError("Invalid transport or origin. Use the connection artifact from your trusted run.")
+
+
+def uncertain_action(status=None):
+    message = "The action response was lost. Inspect the live UI before deciding whether to retry."
+    return ClientError(message, status, {"ok": False, "error": {"code": "action_outcome_unknown", "message": message}})
 
 
 def main():
