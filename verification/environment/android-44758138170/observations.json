@@ -1,0 +1,119 @@
+[
+  {
+    "checkpoint": "before",
+    "labels": [
+      "en-US",
+      "LTR",
+      "Camera denied",
+      "PORTRAIT",
+      "Enter test text",
+      "APPLY CHANGE",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5"
+    ],
+    "expected": [
+      "LTR",
+      "PORTRAIT"
+    ]
+  },
+  {
+    "checkpoint": "arabic",
+    "labels": [
+      "ar-SA",
+      "RTL",
+      "Camera denied",
+      "PORTRAIT",
+      "Enter test text",
+      "APPLY CHANGE",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5"
+    ],
+    "expected": [
+      "ar[- ]?SA",
+      "RTL",
+      "PORTRAIT"
+    ]
+  },
+  {
+    "checkpoint": "granted",
+    "labels": [
+      "ar-SA",
+      "RTL",
+      "Camera granted",
+      "PORTRAIT",
+      "Enter test text",
+      "APPLY CHANGE",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5"
+    ],
+    "expected": [
+      "RTL",
+      "camera granted"
+    ]
+  },
+  {
+    "checkpoint": "denied",
+    "labels": [
+      "ar-SA",
+      "RTL",
+      "Camera denied",
+      "PORTRAIT",
+      "Enter test text",
+      "APPLY CHANGE",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5"
+    ],
+    "expected": [
+      "RTL",
+      "camera denied"
+    ]
+  },
+  {
+    "checkpoint": "landscape",
+    "labels": [
+      "ar-SA",
+      "RTL",
+      "Camera denied",
+      "LANDSCAPE",
+      "Enter test text",
+      "APPLY CHANGE"
+    ],
+    "expected": [
+      "RTL",
+      "LANDSCAPE"
+    ]
+  },
+  {
+    "checkpoint": "restored",
+    "labels": [
+      "en-US",
+      "LTR",
+      "Camera denied",
+      "PORTRAIT",
+      "Enter test text",
+      "APPLY CHANGE",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5"
+    ],
+    "expected": [
+      "LTR",
+      "PORTRAIT",
+      "Camera denied"
+    ]
+  }
+]

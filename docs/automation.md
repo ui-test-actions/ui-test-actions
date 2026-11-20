@@ -2,7 +2,9 @@
 
 An existing agent can use the HTTP API directly, the standard-library [Python client](../agent.py), or the browser controller. The agent runs on its current machine. The app, driver, and tunnel connector run in the GitHub job.
 
-Use [agent-led UI exploration](exploration.md) to give the agent a test objective and run its decisions with deterministic, observed assertions.
+Use [agent-led UI exploration](exploration.md) to give the agent a test objective and run its decisions with deterministic, observed assertions. Use [environment controls](environment.md) to exercise app behavior under isolated network faults and mobile locale or permission changes.
+
+Use [failure investigation](failure-investigation.md) to retain private evidence when a replay diverges and reproduce the failing prefix.
 
 Use [record and replay](record-replay.md) to turn actions from a live session or a passing exploration report into a parameterized workflow.
 

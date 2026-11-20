@@ -1,0 +1,40 @@
+{
+  "event_counts": {
+    "connection.state.changed": 5,
+    "connection.authentication.succeeded": 3
+  },
+  "observed": [
+    {
+      "event": "connection.state.changed",
+      "state": "Connected"
+    },
+    {
+      "event": "connection.authentication.succeeded",
+      "state": "authenticated"
+    },
+    {
+      "event": "connection.state.changed",
+      "state": "Failed"
+    },
+    {
+      "event": "connection.state.changed",
+      "state": "Connected"
+    },
+    {
+      "event": "connection.authentication.succeeded",
+      "state": "authenticated"
+    },
+    {
+      "event": "connection.state.changed",
+      "state": "Failed"
+    },
+    {
+      "event": "connection.state.changed",
+      "state": "Connected"
+    },
+    {
+      "event": "connection.authentication.succeeded",
+      "state": "authenticated"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+    requested permissions:
+      android.permission.CAMERA
+    User 0: ceDataInode=352482 deDataInode=57715 installed=true hidden=false suspended=false distractionFlags=0 stopped=true notLaunched=true enabled=0 instant=false virtual=false quarantined=false
+      runtime permissions:
+    User 0:

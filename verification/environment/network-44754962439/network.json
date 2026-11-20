@@ -1,0 +1,90 @@
+{
+  "profiles": [
+    {
+      "epoch": 1795186081.1997263,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 30,
+        "seed": 0
+      },
+      "generation": 0,
+      "remaining_ms": 0
+    },
+    {
+      "epoch": 1795186081.8679428,
+      "profile": {
+        "delay_ms": 500,
+        "jitter_ms": 25,
+        "loss_percent": 0,
+        "rate_kbit": 512,
+        "offline": false,
+        "seconds": 40,
+        "seed": 0
+      },
+      "generation": 1,
+      "remaining_ms": 40000
+    },
+    {
+      "epoch": 1795186119.580262,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 25,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 25,
+        "seed": 123
+      },
+      "generation": 2,
+      "remaining_ms": 25000
+    },
+    {
+      "epoch": 1795186444.7626386,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": true,
+        "seconds": 38,
+        "seed": 0
+      },
+      "generation": 8,
+      "remaining_ms": 38000
+    },
+    {
+      "epoch": 1795186484.4937963,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 30,
+        "seed": 0
+      },
+      "generation": 9,
+      "remaining_ms": 0
+    }
+  ],
+  "slow_receiver_line": "iPhone → SLOW",
+  "reachable_during_outage": [
+    "android",
+    "ios"
+  ],
+  "outage_observation": {
+    "epoch": 1795186452.69169,
+    "android": "No peers connected"
+  },
+  "restored_pair": {
+    "android": "Broadcast (1)",
+    "ios": "Sessions (1, 1 connected)"
+  },
+  "recovered_receiver_lines": {
+    "ios": "Android-9812 -> MANGO"
+  }
+}

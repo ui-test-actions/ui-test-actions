@@ -1,0 +1,83 @@
+{
+  "legacy_runner_time_offset_seconds": 9.0,
+  "slow_rtt_ms": [
+    1219.0,
+    1111.0,
+    1074.0,
+    1375.0,
+    1067.0,
+    1029.0,
+    1036.0,
+    1036.0
+  ],
+  "loss_probe_results": [
+    true,
+    false,
+    false,
+    true,
+    false
+  ],
+  "offline_probe_results": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "restored_rtt_ms": [
+    66.6,
+    60.7,
+    64.8,
+    65.1,
+    144.0,
+    60.7,
+    82.3,
+    87.1,
+    61.4,
+    60.3,
+    73.4,
+    63.0,
+    61.7,
+    68.2,
+    60.2,
+    88.6,
+    126.0,
+    86.2
+  ],
+  "counters": {
+    "sent": {
+      "mdns": 96,
+      "arp": 22,
+      "icmp": 393,
+      "p2pkit_mdns_query": 9,
+      "p2pkit_mdns_response": 5,
+      "tcp": 912,
+      "fault_flushed": 3,
+      "fault_drop": 80
+    },
+    "received": {
+      "arp": 22,
+      "icmp": 393,
+      "mdns": 22,
+      "p2pkit_mdns_query": 6,
+      "p2pkit_mdns_response": 6,
+      "tcp": 1024,
+      "fault_drop": 39,
+      "fault_flushed": 1
+    },
+    "link": {
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 30,
+        "seed": 0
+      },
+      "generation": 10,
+      "remaining_ms": 0
+    }
+  }
+}
