@@ -10,6 +10,16 @@ python3 agent.py connection.json --token-file "$TOKEN_FILE" screenshot before.pn
 python3 agent.py connection.json --token-file "$TOKEN_FILE" action tree.snapshot
 ```
 
+For a command with parameters, pass a UTF-8 JSON file. These commands focus a field at example coordinates and replace its contents. Set the coordinates from the current screenshot or focus a unique element with `element.click`.
+
+```bash
+printf '%s\n' '{"x":320,"y":200}' > click.json
+printf '%s\n' '{"text":"مرحبًا بالعالم، ١٢٣؟ 🌍","replace":true}' > text.json
+python3 agent.py connection.json --token-file "$TOKEN_FILE" action pointer.click --params-file click.json
+python3 agent.py connection.json --token-file "$TOKEN_FILE" action text.insert --params-file text.json
+python3 agent.py connection.json --token-file "$TOKEN_FILE" screenshot after.png
+```
+
 ## Inspect, act, and verify
 
 | Request | Result |
@@ -40,7 +50,7 @@ Focus the editable control before inserting text. On desktop, the driver writes 
 
 Use `tree.snapshot` for semantic state where exposed. A node may include a name, role, text, enabled and visible flags, parent ID, and bounding rectangle. Source availability depends on accessibility trust and on the app exposing the control. Password values are filtered when the native source identifies secure fields.
 
-`element.find` matches any conjunction of exact selector properties and optional `text_contains`. Use a fresh unique snapshot reference for `element.click`. The server re-observes the element before targeting its center and rejects a changed or ambiguous reference. Inspect screenshots for overlapping controls and coordinate-only surfaces.
+`element.find` matches all supplied selector properties. Match exact `role`, `name`, `text`, `resource_id`, `visible`, or `enabled`, use `text_contains` for a substring, or query native flags such as `properties: {"editable":true}`. Flags are driver-dependent. Use `snapshot_id` from the observation and `id` from the chosen node for `element.click`. The server re-observes the element before targeting its center and rejects a changed or ambiguous reference. Inspect screenshots for overlapping controls and coordinate-only surfaces.
 
 ```json
 {
@@ -53,7 +63,7 @@ Use `tree.snapshot` for semantic state where exposed. A node may include a name,
 }
 ```
 
-Use the correct platform modifier, such as `command` on macOS. An absence assertion fails when a truncated tree cannot establish absence. A batch stops at the first failed action and returns the number of completed steps. Earlier steps remain applied. Capture fresh state before deciding how to recover. The wait timeout covers polling and may be exceeded by an individual native observation already in progress.
+Use the correct platform modifier, such as `command` on macOS and the visible iOS Simulator. An absence assertion fails when a truncated tree cannot establish absence. A batch validates every command and argument shape before applying any step. If an action then fails during execution, the batch stops and reports the completed count. Earlier steps remain applied. Capture fresh state before deciding how to recover. The wait timeout covers polling and may be exceeded by an individual native observation already in progress.
 
 ### Visual evidence
 
@@ -63,7 +73,15 @@ Start recording with `recording.start`, drive the app, and call `recording.stop`
 
 ### Gestures, apps, and files
 
-Pointer coordinates are pixels measured from the top-left of the latest screenshot. The desktop driver supports pointer motion, click counts, hold, mouse buttons, scrolling, dragging, and native window operations. Android's default ADB driver uses single-touch events. Appium can supply multiple synchronized touch tracks when explicitly configured. A touch track starts with a point at zero milliseconds. All tracks share the same sequence of segment durations.
+Pointer coordinates are pixels measured from the top-left of the latest screenshot. The desktop driver provides pointer motion, click counts, hold, mouse buttons, scrolling, dragging, and native window commands. Android's default ADB driver uses single-touch events, with absolute orientation controls through `device.orientation`. The visible iOS Simulator has `device.rotate` for a relative quarter-turn and `pointer.pinch` for the Simulator's mirrored two-finger gesture. Place the cursor on one side of the simulator's gesture center and move out to spread or in to contract. Capture again after rotating. Use app-specific state to verify a gesture took effect.
+
+Appium provides `pointer.gesture` for synchronized touch tracks when configured. A touch track starts with a point at zero milliseconds. All tracks share the same sequence of segment durations.
+
+On desktop, configure a fixed command for a process the session should own. This enables `app.status`, `app.launch`, `app.close`, and `app.restart` for that ID. Use an executable that stays associated with the app process. Capture current windows separately with `windows.list`; process exit alone does not establish that the app's UI is ready.
+
+```yaml
+desktop-apps: '{"test-app":{"argv":["/absolute/path/to/app","--test-mode"]}}'
+```
 
 Allowlist mobile app IDs in `app-ids` to use app launch, close, restart, reset, or uninstall where advertised. Use `app-installs` to map approved IDs to test package paths configured by the workflow. Clients request an ID. They do not supply a package path. Deep links are restricted to configured schemes. State-reset and uninstall operations are destructive to the test app's local data.
 
@@ -75,6 +93,8 @@ One driver operation controls a given runner at a time. Retry temporary `429 ses
 
 Operation failures include `unsupported_command`, `invalid_arguments`, `stale_snapshot`, `target_not_found`, `driver_timeout`, `condition_timeout`, and `assertion_failed`. A job expiry invalidates the credential and terminates the connector. Start a new job and get a fresh connection artifact when the session ends. The client cannot carry state or replay IDs between runners.
 
+For delayed UI transitions, wait on a specific semantic or visual condition with a bounded timeout. For virtualized lists, observe current items, scroll in bounded steps, and re-resolve the item after each scroll. For dialogs and app permission prompts, first inspect the frontmost window or device image. Coordinate actions operate inside the current screenshot and cannot infer the intended UI element.
+
 ## Optional runner-local Appium
 
 Supply `webdriver-url` and trusted `webdriver-capabilities` to use an Appium server started by the consumer workflow on the same runner. Bind Appium to loopback and install an appropriate driver. The connector routes only to this action's authenticated HTTP API. Appium's API and insecure extensions are outside the remote command contract. Keep insecure Appium server features disabled.
@@ -82,7 +102,7 @@ Supply `webdriver-url` and trusted `webdriver-capabilities` to use an Appium ser
 ```yaml
 webdriver-url: http://127.0.0.1:4723
 webdriver-capabilities: >-
-  {"platformName":"iOS","appium:automationName":"XCUITest","appium:bundleId":"dev.example.TestApp"}
+  {"platformName":"Android","appium:automationName":"UiAutomator2","appium:appPackage":"dev.example.TestApp"}
 ```
 
 The action selects the same device for Appium, screenshots, and native helpers. The Appium adapter uses W3C touch input and the page source, then destroys its session at teardown. Startup depends on the Appium version, Xcode, and the test application. See the verification report for the hosted status of this opt-in path. [WebDriver routes](https://appium.io/docs/en/latest/reference/api/webdriver/) · [XCUITest driver](https://appium.github.io/appium-xcuitest-driver/latest/reference/capabilities/)
@@ -91,6 +111,6 @@ The action selects the same device for Appium, screenshots, and native helpers. 
 
 The default Quick Tunnel gives a temporary HTTPS address and uses the action's per-session bearer token. Its connector retries registration during startup. An exited Quick Tunnel creates a new address on a new run. Cloudflare sets no uptime guarantee and applies an in-flight request limit. [Quick Tunnel documentation](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)
 
-For a fixed hostname, provision a dedicated remotely managed Cloudflare Tunnel. Set its service to `http://127.0.0.1:8787` and configure the action with `tunnel-hostname`, `origin-port` if different, and `tunnel-token: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}`. Serialize runs per hostname with GitHub workflow concurrency, since multiple connectors on the same hostname can route to different runners. The action attempts bounded restarts of an exited named connector during a live session. The connector token is passed through a private file and stays outside the app launch environment.
+For a fixed hostname, provision a dedicated remotely managed Cloudflare Tunnel. Set its service to `http://127.0.0.1:8787` and configure the action with `tunnel-hostname`, `origin-port` if different, and `tunnel-token: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}`. Serialize runs per hostname with GitHub workflow concurrency, since multiple connectors on the same hostname can route to different runners. The action attempts bounded restarts of an exited named connector during a live session. The connector token is passed through a private file and stays outside the app launch environment. Named Tunnel and Cloudflare Access are configured by the consumer and have local regression coverage. Their deployment requires real Cloudflare account configuration and an external acceptance check before relying on them.
 
 Cloudflare Access is optional in front of a named tunnel. Automated clients can supply Access service-token headers in addition to the session bearer. The Python client accepts a private file containing `client_id` and `client_secret` with `--access-file`. Cloudflare terminates TLS on the edge. Run the action on dedicated GitHub-hosted test jobs with test data and least-privilege GitHub permissions. The authenticated desktop can operate any UI visible to that runner account. [Tunnel configuration](https://developers.cloudflare.com/tunnel/get-started/) · [Access service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)

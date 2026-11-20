@@ -1,0 +1,34 @@
+{
+  "request_id": "7771e9b8858b4584a70694886312d4d8",
+  "command": "element.wait",
+  "ok": true,
+  "result": {
+    "matched": 1,
+    "snapshot_id": "2069d30e95c9132276ff745c",
+    "nodes": [
+      {
+        "id": "atspi:0.0.2.1.0.0",
+        "role": "text",
+        "name": "",
+        "parent_id": "atspi:0.0.2.1.0",
+        "text": "ملف من نافذة GTK — file dialog ١٢٣ 🌍",
+        "enabled": true,
+        "visible": true,
+        "bounds": {
+          "x": 321,
+          "y": 233,
+          "width": 638,
+          "height": 412
+        },
+        "properties": {
+          "focused": true,
+          "selected": false,
+          "checked": false,
+          "editable": true,
+          "password": false
+        }
+      }
+    ],
+    "satisfied": true
+  }
+}

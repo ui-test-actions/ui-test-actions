@@ -30,14 +30,15 @@ jobs:
           ')
           bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
+          open -a Simulator --args -CurrentDeviceUDID "$simulator"
           xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
           xcrun simctl launch "$simulator" dev.uitest.fixture
           "$axe" describe-ui --udid "$simulator" > "$work/proof/before.json"
-          "$axe" --output json displays --udid "$simulator" > "$work/proof/display.json"
-          "$axe" screenshot --udid "$simulator" --output "$work/proof/before.png"
-          "$axe" tap --label 'Apply change' --udid "$simulator"
+          "$axe" --output json displays --udid "$simulator" > "$work/proof/display.json" || true
+          xcrun simctl io "$simulator" screenshot "$work/proof/before.png"
+          "$axe" --output json tap --label 'Apply change' --element-type Button --udid "$simulator" > "$work/proof/tap.json"
           "$axe" describe-ui --udid "$simulator" > "$work/proof/after.json"
-          "$axe" screenshot --udid "$simulator" --output "$work/proof/after.png"
+          xcrun simctl io "$simulator" screenshot "$work/proof/after.png"
           python3 - "$work/proof" <<'PY'
           import json, sys
           from pathlib import Path
