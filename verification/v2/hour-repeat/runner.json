@@ -1,0 +1,29 @@
+{
+  "run": 44690683337,
+  "ref": "803d83d50713f845db414c30c7c826071ede907c",
+  "events": [
+    {
+      "timestamp": "2026-11-20T06:54:40.6380631Z",
+      "event": "linux session ready for 60 minute(s)"
+    },
+    {
+      "timestamp": "2026-11-20T07:54:41.5469921Z",
+      "event": "UI session closed"
+    }
+  ],
+  "elapsed_seconds": 3600.908929,
+  "raw_bearer_absent_from_log_and_connection_artifact": true,
+  "late_exact_copyback_with_seconds_remaining": 27,
+  "after_expiry": [
+    {
+      "observed_at": "2026-11-20T07:54:46+00:00",
+      "seconds_relative_to_expiry": 6.54,
+      "authenticated_status": 530
+    },
+    {
+      "observed_at": "2026-11-20T07:54:55+00:00",
+      "seconds_relative_to_expiry": 15.55,
+      "authenticated_status": 530
+    }
+  ]
+}
