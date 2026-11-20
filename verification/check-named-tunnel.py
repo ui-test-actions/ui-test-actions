@@ -37,8 +37,10 @@ def main():
     report = {"target": initial["target"], "opening_countdown": initial["seconds_remaining"],
               "runner_auth_rejection": rejected(origin_auth, {401}), "reconnected": True}
     if args.access_file:
-        edge_auth = Client(config, args.token_file)
-        report["edge_access_rejection"] = rejected(edge_auth, {302, 303, 307, 401, 403})
+        edge_auth = Client(config, args.token_file, args.access_file)
+        edge_auth.headers.pop("CF-Access-Client-Id")
+        edge_auth.headers.pop("CF-Access-Client-Secret")
+        report["edge_access_rejection"] = rejected(edge_auth, {302, 303, 307, 308, 401, 403})
     capture = valid.fetch("/v1/screenshot")
     if not capture.startswith(b"\x89PNG\r\n\x1a\n"):
         raise RuntimeError("The authenticated capture was not a PNG.")

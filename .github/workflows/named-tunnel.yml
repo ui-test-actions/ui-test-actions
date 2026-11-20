@@ -10,6 +10,10 @@ on:
         type: string
         description: SHA-256 digest of the test session bearer
         required: true
+      access:
+        description: Verify an Access Service Auth policy with the configured test credential pair
+        type: boolean
+        default: true
       duration:
         type: string
         description: Minutes after the app is ready
@@ -31,10 +35,28 @@ jobs:
         with:
           python-version: '3.12'
       - run: sudo apt-get -o DPkg::Lock::Timeout=60 install -y --no-install-recommends python3-tk
-      - uses: ui-test-actions/ui-test-actions@2ef8755b2707f82c048eb6d53cc0426349e60350
+      - name: Check account-specific configuration
+        shell: bash
+        env:
+          CONNECTOR_CONFIGURED: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN != '' }}
+          ACCESS_REQUIRED: ${{ inputs.access }}
+          ACCESS_CONFIGURED: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID != '' && secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET != '' }}
+        run: |
+          if [[ "$CONNECTOR_CONFIGURED" != true ]]; then
+            printf '%s\n' 'Set the connector secret for the dedicated Named Tunnel.' >&2
+            exit 1
+          fi
+          if [[ "$ACCESS_REQUIRED" == true && "$ACCESS_CONFIGURED" != true ]]; then
+            printf '%s\n' 'Configure both Access service-token secrets for the dedicated test policy.' >&2
+            exit 1
+          fi
+      - uses: ui-test-actions/ui-test-actions@3ce171874f2b3abe7334a31cbf7f6a81a8a1ca84
         with:
           target: linux
           token-sha256: ${{ inputs.token_sha256 }}
+          transport: cloudflare-named
+          access-client-id: ${{ inputs.access && secrets.CLOUDFLARE_ACCESS_CLIENT_ID || '' }}
+          access-client-secret: ${{ inputs.access && secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET || '' }}
           tunnel-hostname: ${{ inputs.hostname }}
           tunnel-token: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
           origin-port: '8787'
