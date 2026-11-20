@@ -99,6 +99,13 @@ def android_metrics(shell, identifier):
             cpu = re.search(rf"^\s*\+?([0-9.]+)%\s+{pid}/{re.escape(identifier)}:", output, re.MULTILINE)
             if cpu:
                 result["cpu_recent_percent"] = float(cpu[1])
+    try:
+        clock = shell("ps", "-p", str(pid), "-o", "PID,TIME", timeout=5).decode("ascii", errors="replace")
+    except (OSError, RuntimeError, subprocess.SubprocessError):
+        return result
+    match = re.search(rf"^\s*{pid}\s+([0-9:.\-]+)\s*$", clock, re.MULTILINE)
+    if match:
+        result.update(cpu_ms=ps_cpu_ms(match[1]), cpu_source="android:ps TIME")
     return result
 
 

@@ -33,7 +33,10 @@ def measurements(observations, samples):
     for sample in samples:
         for metric in ("cpu_recent_percent", "cpu_one_core_percent", "rss_bytes", "pss_bytes", "working_set_bytes"):
             if metric in sample:
-                grouped[f"app.{sample.get('source', 'native')}.{metric}"].append(sample[metric])
+                source = sample.get("source", "native")
+                if metric == "cpu_one_core_percent":
+                    source = sample.get("cpu_source", source)
+                grouped[f"app.{source}.{metric}"].append(sample[metric])
     return {name: {"samples": len(values), "median": median(values), "maximum": max(values)}
             for name, values in sorted(grouped.items())}
 

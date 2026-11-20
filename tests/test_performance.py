@@ -30,11 +30,13 @@ class NativeMetricsTest(unittest.TestCase):
             b"PID NAME\n591 dev.example.app\n717 dev.example.app:worker\n",
             b"TOTAL PSS: 1855 TOTAL RSS: 11445 TOTAL SWAP PSS: 0\n",
             b"  2.7% 591/dev.example.app: 2.2% user + 0.5% kernel\n",
+            b"PID TIME\n 591 00:00:02\n",
         ])
         result = android_metrics(shell, "dev.example.app")
         self.assertEqual(result["pss_bytes"], 1855 * 1024)
         self.assertEqual(result["rss_bytes"], 11445 * 1024)
         self.assertEqual(result["cpu_recent_percent"], 2.7)
+        self.assertEqual(result["cpu_ms"], 2000)
 
     def test_android_exit_reason_is_labeled_by_the_os(self):
         shell = Mock(side_effect=[b"PID NAME\n43 other\n", b"reason=6 (ANR) subreason=0\n"])
