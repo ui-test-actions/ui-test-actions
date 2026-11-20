@@ -1,0 +1,91 @@
+{
+  "requested_at": "2026-11-20T18:38:30.517+00:00",
+  "run_id": 44794382020,
+  "first_terminal": {
+    "at": "2026-11-20T18:38:45.752+00:00",
+    "http": 530,
+    "seconds_from_submission": 15.237
+  },
+  "samples": [
+    {
+      "at": "2026-11-20T18:38:31.078+00:00",
+      "http": 200,
+      "seconds_remaining": 273,
+      "deadline_estimate": 1795200183.798355,
+      "seconds_from_submission": 0.562
+    },
+    {
+      "at": "2026-11-20T18:38:32.531+00:00",
+      "http": 200,
+      "seconds_remaining": 272,
+      "deadline_estimate": 1795200184.255692,
+      "seconds_from_submission": 2.016
+    },
+    {
+      "at": "2026-11-20T18:38:33.985+00:00",
+      "http": 200,
+      "seconds_remaining": 270,
+      "deadline_estimate": 1795200183.7094545,
+      "seconds_from_submission": 3.47
+    },
+    {
+      "at": "2026-11-20T18:38:35.512+00:00",
+      "http": 200,
+      "seconds_remaining": 269,
+      "deadline_estimate": 1795200184.1994953,
+      "seconds_from_submission": 4.996
+    },
+    {
+      "at": "2026-11-20T18:38:36.963+00:00",
+      "http": 200,
+      "seconds_remaining": 267,
+      "deadline_estimate": 1795200183.6885254,
+      "seconds_from_submission": 6.447
+    },
+    {
+      "at": "2026-11-20T18:38:38.414+00:00",
+      "http": 200,
+      "seconds_remaining": 266,
+      "deadline_estimate": 1795200184.1394491,
+      "seconds_from_submission": 7.899
+    },
+    {
+      "at": "2026-11-20T18:38:39.936+00:00",
+      "http": 200,
+      "seconds_remaining": 264,
+      "deadline_estimate": 1795200183.6260943,
+      "seconds_from_submission": 9.421
+    },
+    {
+      "at": "2026-11-20T18:38:41.393+00:00",
+      "http": 200,
+      "seconds_remaining": 263,
+      "deadline_estimate": 1795200184.1153793,
+      "seconds_from_submission": 10.877
+    },
+    {
+      "at": "2026-11-20T18:38:42.848+00:00",
+      "http": 200,
+      "seconds_remaining": 261,
+      "deadline_estimate": 1795200183.5713348,
+      "seconds_from_submission": 12.332
+    },
+    {
+      "at": "2026-11-20T18:38:44.302+00:00",
+      "http": 200,
+      "seconds_remaining": 260,
+      "deadline_estimate": 1795200184.025961,
+      "seconds_from_submission": 13.787
+    },
+    {
+      "at": "2026-11-20T18:38:45.752+00:00",
+      "http": 530,
+      "seconds_from_submission": 15.237
+    },
+    {
+      "at": "2026-11-20T18:38:47.206+00:00",
+      "http": 530,
+      "seconds_from_submission": 16.691
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "run_id": 44792825836,
+  "probe": "An unauthenticated temporary HTTPS canary with a fixed synthetic response",
+  "reproduced": {
+    "ubuntu-24.04": {
+      "python": "socket.gaierror",
+      "curl_exit": 6
+    },
+    "macos-15": {
+      "python": "socket.gaierror",
+      "curl_exit": 6,
+      "external_https": 200,
+      "external_body_match": true,
+      "external_utc": "2026-11-20T18:27:39Z"
+    },
+    "macos-26": {
+      "python": "socket.gaierror",
+      "curl_exit": 6,
+      "external_https": 200,
+      "external_body_match": true,
+      "external_utc": "2026-11-20T18:27:39Z"
+    }
+  },
+  "control": "Both macOS origins resolved and returned the expected body from the controller while the runner-local resolvers still failed."
+}

@@ -1,0 +1,7 @@
+{
+  "target": "android",
+  "app": "P2pKit Sample",
+  "ui_observed": "state: Running",
+  "transport": "cloudflare-quick",
+  "seconds_remaining": 742
+}

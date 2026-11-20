@@ -35,7 +35,7 @@ Set `transport-fallback: local` only when a same-job observer is useful if Quick
 
 In Cloudflare, create a dedicated remotely managed tunnel. Publish your assigned hostname with service `http://127.0.0.1:8787`. Keep the connector token in the GitHub Actions secret `CLOUDFLARE_TUNNEL_TOKEN`. Use one active connector for a hostname during a session. If you share the hostname across workflows in the same repository, use the same concurrency group. Use separate hostnames for parallel sessions or separate repositories. Cloudflare can route requests among replicas of the same tunnel. [Cloudflare routes and replicas](https://developers.cloudflare.com/tunnel/configuration/)
 
-Add this at workflow level:
+Add the concurrency group at workflow level.
 
 ```yaml
 concurrency:
@@ -120,3 +120,7 @@ Use the same trusted artifact and private token file to reconnect. Each official
 The Python client retries transient failures on reads and retries a command when the runner explicitly reports `session_busy` before dispatch. If a mutation loses its response, it returns `action_outcome_unknown`. Inspect the live result before retrying. If you resend with the same request ID, the runner can return its cached response within the session's 64-response replay window. Creating a new session does not replay commands. The browser controller uses the same bearer and refuses redirects on API requests.
 
 [Hosted results and provider-specific limits](../verification/transports/README.md)
+
+## Provider interface
+
+The session lifecycle owns the app, API authentication, action replay protection and lease. An adapter supplies the socket binding and optional TLS context and reports the origin after setup. It can maintain its connector until the existing deadline and releases its resources during close. New adapter code can implement that contract without changing the UI automation API or the application LAN.
