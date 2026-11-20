@@ -7,6 +7,11 @@ on:
         type: choice
         options: [android, ios]
         required: true
+      ios_runner:
+        description: Hosted macOS image for the iOS simulator
+        type: choice
+        options: [macos-26, macos-15]
+        default: macos-26
       token_sha256:
         description: SHA-256 of the client session token
         type: string
@@ -19,7 +24,7 @@ permissions:
   contents: read
 jobs:
   mobile:
-    runs-on: ${{ fromJSON('{"android":"ubuntu-24.04","ios":"macos-26"}')[inputs.target] }}
+    runs-on: ${{ inputs.target == 'android' && 'ubuntu-24.04' || inputs.ios_runner }}
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
