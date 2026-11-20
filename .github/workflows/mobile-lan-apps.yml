@@ -1,0 +1,67 @@
+name: Build pinned P2pKit mobile LAN sample apps
+on: workflow_dispatch
+permissions:
+  contents: read
+env:
+  P2PKIT_REF: fd3cd74fcc82d342ee6c5a305f7ed15b0b7ed19d
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: android
+            runner: ubuntu-24.04
+          - target: ios
+            runner: macos-26
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+        working-directory: p2pkit
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: p2pKit/P2pKit
+          ref: ${{ env.P2PKIT_REF }}
+          path: p2pkit
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: |
+            21
+            17
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6
+      - name: Build Android sample APK
+        if: matrix.target == 'android'
+        run: |
+          test "$(git rev-parse HEAD)" = "$P2PKIT_REF"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'platforms;android-37.0' 'ndk;29.0.14206865'
+          ./gradlew :p2p-sample-android:assembleDebug --console=plain
+          mkdir -p "$RUNNER_TEMP/p2p-sample"
+          cp "$(find samples/p2p-sample-android/build/outputs/apk/debug -name '*.apk' -print -quit)" "$RUNNER_TEMP/p2p-sample/sample.apk"
+      - name: Build iOS Simulator sample
+        if: matrix.target == 'ios'
+        run: |
+          test "$(uname -m)" = arm64
+          test "$(git rev-parse HEAD)" = "$P2PKIT_REF"
+          command -v xcodegen || brew install xcodegen
+          (cd samples/iosApp && xcodegen generate)
+          xcodebuild -project samples/iosApp/p2pkit-sample.xcodeproj -scheme p2pkit-sample \
+            -configuration Debug -destination 'generic/platform=iOS Simulator' -arch arm64 \
+            -derivedDataPath "$RUNNER_TEMP/p2p-derived" CODE_SIGNING_ALLOWED=NO -quiet build
+          mkdir -p "$RUNNER_TEMP/p2p-sample"
+          ditto -c -k --keepParent "$RUNNER_TEMP/p2p-derived/Build/Products/Debug-iphonesimulator/p2pkit-sample.app" "$RUNNER_TEMP/p2p-sample/sample-app.zip"
+      - name: Record source and hashes
+        run: |
+          cd "$RUNNER_TEMP/p2p-sample"
+          shasum -a 256 sample* > SHA256SUMS
+          printf '%s\n' "$P2PKIT_REF" > SOURCE_COMMIT
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: p2pkit-sample-${{ matrix.target }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/p2p-sample
+          if-no-files-found: error
+          retention-days: 14
