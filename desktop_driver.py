@@ -621,6 +621,8 @@ class MacAccessibility:
         self.native.AXUIElementSetAttributeValue.restype = ctypes.c_int
         self.native.AXUIElementSetAttributeValue.argtypes = [ctypes.c_void_p] * 3
         self.cf = ctypes.CDLL("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")
+        self.cf.CFStringCreateWithCString.restype = ctypes.c_void_p
+        self.cf.CFStringCreateWithCString.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_uint32]
         self.cf.CFRelease.restype = None
         self.cf.CFRelease.argtypes = [ctypes.c_void_p]
 
@@ -710,16 +712,17 @@ class MacAccessibility:
         return result
 
     def set_dimensions(self, window, name, kind, coordinates):
-        from Foundation import NSString
-
         value = self.native.AXValueCreate(kind, ctypes.byref(coordinates))
         if not value:
             raise OSError("macOS refused the window geometry")
         try:
-            name_ref = NSString.stringWithString_(name)
-            code = self.native.AXUIElementSetAttributeValue(
-                self.objc.pyobjc_id(window), self.objc.pyobjc_id(name_ref), value,
-            )
+            name_ref = self.cf.CFStringCreateWithCString(None, name.encode("ascii"), 0x08000100)
+            if not name_ref:
+                raise OSError("Could not allocate the macOS accessibility attribute")
+            try:
+                code = self.native.AXUIElementSetAttributeValue(self.objc.pyobjc_id(window), name_ref, value)
+            finally:
+                self.cf.CFRelease(name_ref)
         finally:
             self.cf.CFRelease(value)
         if code != 0:

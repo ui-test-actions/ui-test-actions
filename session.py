@@ -48,16 +48,32 @@ def duration_setting(name, low, high):
 
 def setup_desktop(target, processes):
     if target == "linux":
-        run("sudo", "apt-get", "update", timeout=120)
-        run("sudo", "apt-get", "install", "-y", "xvfb", "xauth", "xdotool", "xclip", "openbox", "wmctrl",
-            "python3-pyatspi", "at-spi2-core", "dbus-x11", timeout=180)
+        import select
+        apt = ("sudo", "apt-get", "-o", "Acquire::Retries=1", "-o", "Acquire::http::Timeout=20",
+               "-o", "Acquire::https::Timeout=20")
+        packages = ("xvfb", "xauth", "xdotool", "xclip", "openbox", "wmctrl",
+                    "python3-pyatspi", "at-spi2-core", "dbus-x11")
+        try:
+            run(*apt, "install", "-y", "--no-install-recommends", *packages, timeout=100)
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            run(*apt, "update", timeout=105)
+            run(*apt, "install", "-y", "--no-install-recommends", *packages, timeout=125)
         os.environ.setdefault("QT_LINUX_ACCESSIBILITY_ALWAYS_ON", "1")
         if not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
-            bus = run("dbus-launch", stdout=subprocess.PIPE, text=True).stdout
-            for line in bus.splitlines():
-                key, _, value = line.partition("=")
-                if key in ("DBUS_SESSION_BUS_ADDRESS", "DBUS_SESSION_BUS_PID"):
-                    os.environ[key] = value
+            bus = subprocess.Popen(
+                ["dbus-daemon", "--session", "--nofork", "--print-address=1"],
+                stdout=subprocess.PIPE, text=True,
+            )
+            processes.append(bus)
+            try:
+                if not select.select([bus.stdout], [], [], 5)[0]:
+                    raise RuntimeError("The accessibility D-Bus did not start.")
+                address = bus.stdout.readline().strip()
+                if not address:
+                    raise RuntimeError("The accessibility D-Bus reported no address.")
+                os.environ["DBUS_SESSION_BUS_ADDRESS"] = address
+            finally:
+                bus.stdout.close()
     if target == "linux" and not os.environ.get("DISPLAY"):
         read_fd, write_fd = os.pipe()
         try:
@@ -68,6 +84,8 @@ def setup_desktop(target, processes):
         finally:
             os.close(write_fd)
         with os.fdopen(read_fd) as pipe:
+            if not select.select([pipe], [], [], 8)[0]:
+                raise RuntimeError("Xvfb did not report readiness.")
             display = pipe.readline().strip()
         if not display.isdecimal():
             raise RuntimeError("Xvfb did not allocate a display")

@@ -58,7 +58,10 @@ class Client:
                     status = json.loads(raw).get("error", {})
                 except (ValueError, AttributeError):
                     status = {}
-                busy = error.code == 429 and isinstance(status, dict) and status.get("code") == "session_busy"
+                busy = error.code == 429 and (
+                    isinstance(status, dict) and status.get("code") == "session_busy"
+                    or body is None and status == "The session is busy"
+                )
                 upstream_unavailable = error.code in (502, 503, 504) and not (
                     isinstance(status, dict) and status.get("code")
                 )

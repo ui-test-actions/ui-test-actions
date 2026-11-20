@@ -1,10 +1,11 @@
 import ctypes
 from contextlib import nullcontext
+import sys
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, call, patch
 
-from desktop_driver import DesktopDriver, WindowsDesktop
+from desktop_driver import DesktopDriver, MacAccessibility, WindowsDesktop, _Point, linux_tree
 
 
 class DesktopDriverTests(unittest.TestCase):
@@ -66,3 +67,41 @@ class DesktopDriverTests(unittest.TestCase):
         driver.clipboard = nullcontext
         driver.global_buffer = lambda _: nullcontext(ctypes.addressof(storage))
         self.assertEqual(driver.clipboard_read(), "العربية 🌍\nsecond")
+
+    def test_mac_window_geometry_releases_temporary_cf_objects_on_failure(self):
+        driver = MacAccessibility.__new__(MacAccessibility)
+        driver.native = SimpleNamespace(
+            AXValueCreate=Mock(return_value=100),
+            AXUIElementSetAttributeValue=Mock(return_value=-25205),
+        )
+        driver.objc = SimpleNamespace(pyobjc_id=Mock(return_value=101))
+        driver.cf = SimpleNamespace(
+            CFStringCreateWithCString=Mock(return_value=102),
+            CFRelease=Mock(),
+        )
+        with self.assertRaises(OSError):
+            driver.set_dimensions(object(), "AXPosition", 1, _Point(10, 20))
+        driver.native.AXUIElementSetAttributeValue.assert_called_once_with(101, 102, 100)
+        self.assertEqual(driver.cf.CFRelease.call_args_list, [call(102), call(100)])
+
+    def test_linux_snapshot_does_not_read_password_value_or_children(self):
+        state = Mock()
+        state.contains.return_value = True
+        password = Mock()
+        password.name = "private"
+        password.getRole.return_value = "password"
+        password.getRoleName.return_value = "password text"
+        password.getState.return_value = state
+        password.queryComponent.return_value.getExtents.return_value = SimpleNamespace(
+            x=10, y=20, width=40, height=30
+        )
+        desktop = SimpleNamespace(getDesktop=lambda _: [[password]])
+        module = SimpleNamespace(
+            Registry=desktop, ROLE_PASSWORD_TEXT="password", STATE_SHOWING="showing",
+            STATE_ACTIVE="active", STATE_ENABLED="enabled", DESKTOP_COORDS="desktop",
+        )
+        with patch.dict(sys.modules, {"pyatspi": module}):
+            snapshot = linux_tree()
+        self.assertEqual(snapshot["nodes"][0]["name"], "")
+        self.assertEqual(snapshot["nodes"][0]["text"], "")
+        password.queryText.assert_not_called()

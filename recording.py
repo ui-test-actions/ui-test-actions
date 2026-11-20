@@ -1,6 +1,7 @@
 """Short, bounded visual recordings that remain private to the session."""
 
 import io
+import subprocess
 import threading
 import time
 
@@ -37,9 +38,9 @@ class Recording:
                         return
                     with Image.open(io.BytesIO(self.session.capture())) as png:
                         image = png.convert("RGB")
-                    image.thumbnail((640, 640))
+                    image.thumbnail((512, 512))
                     self.frames.append(image.quantize(colors=128))
-                except (OSError, RuntimeError, ValueError):
+                except (OSError, RuntimeError, ValueError, subprocess.SubprocessError):
                     self.failed = True
                     return
                 finally:
