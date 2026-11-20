@@ -754,6 +754,8 @@ class MacAccessibility:
 
 
 def linux_tree():
+    from collections import deque
+
     import pyatspi
 
     roots = []
@@ -768,24 +770,33 @@ def linux_tree():
     active = [window for window in roots if window.getState().contains(pyatspi.STATE_ACTIVE)]
     if active:
         roots = active
-    stack = [(str(i), item) for i, item in reversed(list(enumerate(roots)))]
+    queue = deque((str(i), item) for i, item in enumerate(roots))
     nodes = []
     truncated = False
     limit = 300
-    while stack and len(nodes) < limit:
-        path, item = stack.pop()
+    # Visit the editor and sibling controls before large nested menu trees.
+    while queue and len(nodes) < limit:
+        path, item = queue.popleft()
         try:
             state = item.getState()
             role = item.getRoleName()
             protected = item.getRole() == pyatspi.ROLE_PASSWORD_TEXT
             values = {
                 "id": "atspi:" + path, "role": role, "name": "" if protected else (item.name or "")[:512],
+                "parent_id": "atspi:" + path.rsplit(".", 1)[0] if "." in path else None,
                 "text": "", "enabled": state.contains(pyatspi.STATE_ENABLED),
                 "visible": state.contains(pyatspi.STATE_SHOWING), "bounds": None,
+                "properties": {
+                    "focused": state.contains(pyatspi.STATE_FOCUSED),
+                    "selected": state.contains(pyatspi.STATE_SELECTED),
+                    "checked": state.contains(pyatspi.STATE_CHECKED),
+                    "editable": state.contains(pyatspi.STATE_EDITABLE),
+                    "password": protected,
+                },
             }
             try:
                 rect = item.queryComponent().getExtents(pyatspi.DESKTOP_COORDS)
-                if rect.width > 0 and rect.height > 0:
+                if values["visible"] and rect.width > 0 and rect.height > 0:
                     values["bounds"] = box(rect.x, rect.y, rect.width, rect.height)
             except Exception:
                 pass
@@ -795,15 +806,15 @@ def linux_tree():
                     values["text"] = component.getText(0, min(component.characterCount, 2048))
                 except Exception:
                     pass
-                room = limit - len(nodes) - len(stack) - 1
+                room = limit - len(nodes) - len(queue) - 1
                 count = min(max(0, room), item.childCount)
                 truncated = truncated or count < item.childCount
-                stack.extend((f"{path}.{i}", item[i]) for i in range(count - 1, -1, -1))
+                queue.extend((f"{path}.{i}", item[i]) for i in range(count))
             nodes.append(values)
         except Exception:
             # A dynamic application can remove a node while the tree is being read.
             continue
-    return {"nodes": nodes, "truncated": truncated or bool(stack)}
+    return {"nodes": nodes, "truncated": truncated or bool(queue)}
 
 
 if __name__ == "__main__":

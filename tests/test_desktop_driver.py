@@ -99,6 +99,7 @@ class DesktopDriverTests(unittest.TestCase):
         module = SimpleNamespace(
             Registry=desktop, ROLE_PASSWORD_TEXT="password", STATE_SHOWING="showing",
             STATE_ACTIVE="active", STATE_ENABLED="enabled", DESKTOP_COORDS="desktop",
+            STATE_FOCUSED="focused", STATE_SELECTED="selected", STATE_CHECKED="checked", STATE_EDITABLE="editable",
         )
         with patch.dict(sys.modules, {"pyatspi": module}):
             snapshot = linux_tree()
