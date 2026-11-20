@@ -42,3 +42,14 @@ class MobileEnvironmentTest(TestCase):
                                  shell=Mock(return_value=output))
         environment = MobileEnvironment(driver, '{"dev.uitest.fixture":["camera"]}')
         self.assertFalse(environment.android_permission(APP, "android.permission.CAMERA"))
+
+    def test_permission_probe_accepts_default_denial_for_a_declared_permission(self):
+        output = (b"    requested permissions:\n      android.permission.CAMERA\n"
+                  b"    install permissions:\n      android.permission.INTERNET: granted=true\n"
+                  b"    User 0: installed=true hidden=false\n")
+        driver = SimpleNamespace(target="android", app_ids={APP}, legacy=SimpleNamespace(adb=["emulator-5554"]),
+                                 shell=Mock(return_value=output))
+        environment = MobileEnvironment(driver, '{"dev.uitest.fixture":["camera"]}')
+        self.assertFalse(environment.android_permission(APP, "android.permission.CAMERA"))
+        with self.assertRaises(CommandError):
+            environment.android_permission(APP, "android.permission.READ_CONTACTS")

@@ -70,9 +70,12 @@ class MobileEnvironment:
         users = re.split(r"^ +User (\d+):", output, flags=re.M)
         active = dict(zip(users[1::2], users[2::2])).get("0", "")
         entry = re.search(rf"^ +{re.escape(permission)}: granted=(true|false)\b", active, flags=re.M)
-        if not entry:
-            raise CommandError("environment_unavailable", "Android did not list this app's runtime permission.", 422)
-        return entry[1] == "true"
+        if entry:
+            return entry[1] == "true"
+        requested = re.search(r"^( +)requested permissions:\s*\n((?:\1 +[^\n]+\n?)*)", users[0], flags=re.M)
+        if "installed=true" in active.split("\n", 1)[0] and requested and permission in requested[2].split():
+            return False
+        raise CommandError("environment_unavailable", "Android did not report this app's runtime permission.", 422)
 
     def permission(self, app, name, state):
         if name not in self.apps[app]:
