@@ -3,6 +3,7 @@
 import json
 from shlex import quote
 import subprocess
+from uuid import UUID
 
 
 def output(*args, timeout=20, stderr=None):
@@ -59,11 +60,27 @@ def simulator_startup_output(*args):
 
 
 def open_simulator(device):
+    udid = selected_simulator(device)
+    simulator_startup_output("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", udid)
+    return udid
+
+
+def selected_simulator(requested):
+    if requested:
+        try:
+            udid = str(UUID(requested)).upper()
+            processes = output("xcrun", "simctl", "spawn", udid, "launchctl", "list",
+                               timeout=18, stderr=subprocess.DEVNULL)
+        except (ValueError, OSError, subprocess.SubprocessError):
+            pass
+        else:
+            for line in processes.splitlines():
+                fields = line.split()
+                if len(fields) == 3 and fields[0].isdigit() and fields[2] == b"com.apple.SpringBoard":
+                    return udid
     booted = json.loads(simulator_startup_output("xcrun", "simctl", "list", "devices", "booted", "-j"))
     devices = [
         item["udid"] for runtime, items in booted["devices"].items()
         if ".iOS-" in runtime for item in items if item["state"] == "Booted"
     ]
-    udid = select_device(device, devices, "booted iOS simulator")
-    simulator_startup_output("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", udid)
-    return udid
+    return select_device(requested, devices, "booted iOS simulator")

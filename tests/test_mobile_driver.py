@@ -34,6 +34,15 @@ class SimulatorStartupTest(unittest.TestCase):
             self.assertEqual(open_simulator("ios-test"), "ios-test")
         self.assertEqual(native.call_args_list[-2:], [call(*launch, timeout=20), call(*launch, timeout=40)])
 
+    def test_checks_a_configured_ios_device_without_global_inventory(self):
+        udid = "AA15EE10-9713-4C79-9B3D-C221FE21F18D"
+        with patch("mobile.output", side_effect=[b"PID\tStatus\tLabel\n1958\t0\tcom.apple.SpringBoard\n", b""]) as native:
+            self.assertEqual(open_simulator(udid), udid)
+        self.assertEqual(native.call_args_list, [
+            call("xcrun", "simctl", "spawn", udid, "launchctl", "list", timeout=18, stderr=subprocess.DEVNULL),
+            call("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", udid, timeout=20),
+        ])
+
 
 class AndroidTreeTest(unittest.TestCase):
     def test_normalizes_tree_and_redacts_password_fields(self):
