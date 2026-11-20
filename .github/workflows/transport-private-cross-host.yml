@@ -38,7 +38,7 @@ jobs:
           path: ${{ runner.temp }}/transport-proof/relay/origin
           retention-days: 1
       - name: Run the published consumer action
-        uses: ui-test-actions/ui-test-actions@3ce171874f2b3abe7334a31cbf7f6a81a8a1ca84
+        uses: ui-test-actions/ui-test-actions@dacfb11def39d0b00c1f0804be8336dca27c17f7
         with:
           transport: private
           private-address: 10.204.0.1

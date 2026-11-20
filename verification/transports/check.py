@@ -4,7 +4,6 @@ import argparse
 from base64 import b64decode
 from hashlib import sha256
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -139,7 +138,7 @@ def main():
         contents = client.command("files.read", {"name": "controls.json"})
         controls = json.loads(b64decode(contents["result"]["base64"], validate=True))
     else:
-        config, controls = connection(args.work, Path(os.environ["RUNNER_TEMP"]))
+        config, controls = connection(args.work, args.work.parent)
         expected = {"quick": "cloudflare-quick", "private": "private", "local": "local", "fallback": "local"}
         if config["transport"] != expected[args.mode]:
             raise RuntimeError("The consumer action published an unexpected transport.")

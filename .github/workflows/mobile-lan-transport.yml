@@ -86,7 +86,7 @@ jobs:
         run: bash verification/mobile-lan/trial.sh probe "$LAN_TARGET"
       - name: Expose the live P2pKit app to the same external agent
         if: inputs.mode != 'transport'
-        uses: ui-test-actions/ui-test-actions@3ce171874f2b3abe7334a31cbf7f6a81a8a1ca84
+        uses: ui-test-actions/ui-test-actions@dacfb11def39d0b00c1f0804be8336dca27c17f7
         with:
           target: ${{ matrix.target }}
           token-sha256: ${{ matrix.target == 'android' && inputs.android_token_sha256 || inputs.ios_token_sha256 }}

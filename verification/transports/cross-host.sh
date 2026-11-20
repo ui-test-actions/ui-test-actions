@@ -5,8 +5,10 @@ work="$RUNNER_TEMP/transport-proof"
 
 fetch() {
     local name="$1" directory="$2"
+    local selector=--name
+    if [[ "$name" == *'*'* ]]; then selector=--pattern; fi
     for ((attempt=0; attempt<50; attempt++)); do
-        if gh run download "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" --pattern "$name" -D "$directory" 2>/dev/null; then
+        if gh run download "$GITHUB_RUN_ID" -R "$GITHUB_REPOSITORY" "$selector" "$name" -D "$directory" 2>/dev/null; then
             return
         fi
         sleep 4
