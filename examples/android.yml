@@ -27,7 +27,7 @@ jobs:
           sudo chmod a+rw /dev/kvm
           image='system-images;android-35;google_apis;x86_64'
           tools="$ANDROID_HOME/cmdline-tools/latest/bin"
-          "$tools/sdkmanager" emulator "$image"
+          "$tools/sdkmanager" emulator "$image" 'platforms;android-35' 'build-tools;35.0.0'
           export PATH="$ANDROID_HOME/platform-tools:$PATH"
           echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
           export ANDROID_USER_HOME="$HOME/.android"
@@ -55,7 +55,9 @@ jobs:
           device: emulator-5554
           token-sha256: ${{ inputs.token_sha256 }}
           duration-minutes: '60'
+          app-ids: com.example.app
+          app-installs: '{"com.example.app":"app/build/outputs/apk/debug/app-debug.apk"}'
           launch: |
             adb -s emulator-5554 install -r app/build/outputs/apk/debug/app-debug.apk
             adb -s emulator-5554 shell am start -W -n com.example.app/.MainActivity
-          ready: adb -s emulator-5554 shell dumpsys activity activities | grep -q 'topResumedActivity.*com.example.app'
+          ready: adb -s emulator-5554 shell dumpsys activity activities | grep -q 'mResumedActivity.*com.example.app\|topResumedActivity.*com.example.app'

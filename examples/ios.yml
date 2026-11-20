@@ -47,6 +47,8 @@ jobs:
           device: ${{ env.UI_DEVICE }}
           token-sha256: ${{ inputs.token_sha256 }}
           duration-minutes: '60'
+          app-ids: com.example.app
+          app-installs: '{"com.example.app":"build/Build/Products/Debug-iphonesimulator/MyApp.app"}'
           launch: |
             xcrun simctl install "$UI_DEVICE" build/Build/Products/Debug-iphonesimulator/MyApp.app
             xcrun simctl launch "$UI_DEVICE" com.example.app

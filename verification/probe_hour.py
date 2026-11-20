@@ -1,0 +1,106 @@
+"""Drive the Linux hosted fixture near both ends of a 60-minute session."""
+
+import argparse
+from datetime import datetime, timezone
+from http.client import HTTPException, HTTPSConnection
+import json
+from pathlib import Path
+import time
+from urllib.parse import urlsplit
+
+from PIL import ImageChops
+
+from probe_fixture import Client, exercise, screenshot
+
+
+ENTRY = (320, 200)
+APPLY = (341, 267)
+WINDOW = (59, 59, 623, 438)
+STATUS = (85, 104, 599, 160)
+LATE_TEXT = "Late-hour v2 — قبل انتهاء الساعة ١٢٣"
+
+
+def wait_until(when):
+    while (remaining := when - time.time()) > 0:
+        time.sleep(min(60, remaining))
+
+
+def record(directory, **event):
+    observed = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with (directory / "observations.jsonl").open("a", encoding="utf-8") as stream:
+        stream.write(json.dumps({"observed_at": observed, **event}) + "\n")
+
+
+def authenticate_at_expiry(client, expires_at, evidence):
+    address = urlsplit(client.origin)
+    for offset in (-8, 1, 6, 15):
+        wait_until(expires_at + offset)
+        connection = HTTPSConnection(address.hostname, timeout=5)
+        try:
+            connection.request("GET", "/v1/session", headers=client.headers)
+            response = connection.getresponse()
+            status = response.status
+            response.read()
+        except (OSError, HTTPException):
+            status = "unreachable"
+        finally:
+            connection.close()
+        record(evidence, seconds_relative_to_expiry=round(time.time() - expires_at, 2), authenticated_status=status)
+        if offset >= 6 and status not in (404, 410, 502, 503, 504, 530, "unreachable"):
+            raise AssertionError(f"The session still responds after expiry with HTTP {status}.")
+
+
+def run(connection, token_file, evidence):
+    client = Client(connection, token_file)
+    first = client.identify()
+    if first["target"] != "linux" or not 3400 <= first["seconds_remaining"] <= 3600:
+        raise ValueError("Use a fresh 60-minute Linux fixture session.")
+    expires_at = connection["expires_unix"]
+    record(evidence, seconds_remaining=first["seconds_remaining"], same_session=True,
+           expires_at=datetime.fromtimestamp(expires_at, timezone.utc).isoformat())
+    exercise(connection, token_file, evidence, ENTRY, APPLY, (100, 120), WINDOW, None)
+    print("Early fixture transition verified.", flush=True)
+    for remaining in (3000, 2400, 1800, 1200, 600, 300, 120, 60):
+        wait_until(expires_at - remaining)
+        observed = Client(connection, token_file).identify()
+        if observed["id"] != first["id"]:
+            raise AssertionError("The fresh client connected to a different session.")
+        record(evidence, seconds_remaining=observed["seconds_remaining"], same_session=True)
+    wait_until(expires_at - 45)
+
+    before = screenshot(client)
+    actions = [
+        {"command": "pointer.click", "params": dict(zip(("x", "y"), ENTRY))},
+        {"command": "text.insert", "params": {"text": LATE_TEXT, "replace": True}},
+        {"command": "pointer.click", "params": dict(zip(("x", "y"), APPLY))},
+    ]
+    result = client.batch(actions)
+    time.sleep(.5)
+    after = screenshot(client)
+    difference = ImageChops.difference(before.crop(STATUS), after.crop(STATUS)).getbbox()
+    for label, frame in (("late-before", before), ("late-after", after)):
+        frame.crop(WINDOW).save(evidence / (label + ".png"))
+    if not result["ok"] or difference is None:
+        raise AssertionError("The late fixture status label did not change.")
+    client.command("pointer.click", dict(zip(("x", "y"), ENTRY)))
+    client.command("keyboard.press", {"keys": ["ctrl", "a"]})
+    client.command("keyboard.press", {"keys": ["ctrl", "c"]})
+    if client.command("clipboard.get", {})["result"]["text"] != LATE_TEXT:
+        raise AssertionError("The late text did not survive an exact clipboard copy-back.")
+    record(evidence, seconds_remaining=client.identify()["seconds_remaining"], late_batch_steps=result["completed"],
+           exact_copyback=True, label_difference_bounds=difference, same_session=True)
+    print("Late fixture transition and copy-back verified.", flush=True)
+    authenticate_at_expiry(client, expires_at, evidence)
+    print("External expiry verified.", flush=True)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("connection", type=Path)
+    parser.add_argument("--token-file", type=Path, required=True)
+    parser.add_argument("--evidence", type=Path, required=True)
+    arguments = parser.parse_args()
+    arguments.evidence.mkdir(parents=True, exist_ok=True)
+    if (arguments.evidence / "observations.jsonl").exists():
+        parser.exit(1, "Use a new directory for each run's evidence.\n")
+    run(json.loads(arguments.connection.read_text(encoding="utf-8")), arguments.token_file, arguments.evidence)
