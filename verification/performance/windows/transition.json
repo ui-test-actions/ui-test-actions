@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "pointer.click",
+      "client_action_ms": 911.422,
+      "client_assertion_ms": 1136.955,
+      "client_action_to_expectation_ms": 2048.412
+    }
+  ],
+  "target": "windows"
+}

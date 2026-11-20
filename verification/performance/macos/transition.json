@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "pointer.click",
+      "client_action_ms": 636.98,
+      "client_assertion_ms": 1088.883,
+      "client_action_to_expectation_ms": 1725.9
+    }
+  ],
+  "target": "macos"
+}

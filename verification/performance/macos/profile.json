@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "target": "macos",
+  "app_id": "owned-fixture",
+  "samples": [
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2973,
+      "state": "S<",
+      "cpu_ms": 310.0,
+      "rss_bytes": 92291072,
+      "source": "macos:ps",
+      "sample_monotonic_ms": 192745.544,
+      "at_ms": 288.491,
+      "client_poll_ms": 576.838
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2973,
+      "state": "S<",
+      "cpu_ms": 340.0,
+      "rss_bytes": 92291072,
+      "source": "macos:ps",
+      "sample_monotonic_ms": 193900.664,
+      "at_ms": 1415.871,
+      "client_poll_ms": 631.577,
+      "cpu_one_core_percent": 2.597
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2973,
+      "state": "S<",
+      "cpu_ms": 360.0,
+      "rss_bytes": 92307456,
+      "source": "macos:ps",
+      "sample_monotonic_ms": 194981.398,
+      "at_ms": 2507.588,
+      "client_poll_ms": 615.013,
+      "cpu_one_core_percent": 1.851
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2973,
+      "state": "S<",
+      "cpu_ms": 390.0,
+      "rss_bytes": 92307456,
+      "source": "macos:ps",
+      "sample_monotonic_ms": 196007.067,
+      "at_ms": 3565.495,
+      "client_poll_ms": 530.824,
+      "cpu_one_core_percent": 2.925
+    }
+  ],
+  "observations": {
+    "startup": {
+      "launch_command_ms": 7.742,
+      "workflow_readiness_ms": 1040.03
+    },
+    "actions": [
+      {
+        "command": "pointer.click",
+        "milliseconds": 95.616,
+        "ok": true
+      },
+      {
+        "command": "app.launch",
+        "milliseconds": 2.501,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 3.735,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 6.08,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 11.675,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 3.826,
+        "ok": true
+      }
+    ]
+  },
+  "metrics": {
+    "app.macos:ps.cpu_one_core_percent": {
+      "samples": 3,
+      "median": 2.597,
+      "maximum": 2.925
+    },
+    "app.macos:ps.rss_bytes": {
+      "samples": 4,
+      "median": 92299264.0,
+      "maximum": 92307456
+    },
+    "driver.app.launch.milliseconds": {
+      "samples": 1,
+      "median": 2.501,
+      "maximum": 2.501
+    },
+    "driver.pointer.click.milliseconds": {
+      "samples": 1,
+      "median": 95.616,
+      "maximum": 95.616
+    },
+    "startup.launch_command_ms": {
+      "samples": 1,
+      "median": 7.742,
+      "maximum": 7.742
+    },
+    "startup.workflow_readiness_ms": {
+      "samples": 1,
+      "median": 1040.03,
+      "maximum": 1040.03
+    }
+  }
+}

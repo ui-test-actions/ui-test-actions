@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "target": "linux",
+  "measurements": {
+    "app.linux:/proc/pid/stat.cpu_one_core_percent": {
+      "baseline_median": 0.0,
+      "candidate_median": 0.0,
+      "delta": 0.0
+    },
+    "app.linux:/proc/pid/stat.rss_bytes": {
+      "baseline_median": 24485888.0,
+      "candidate_median": 24580096.0,
+      "delta": 94208.0,
+      "percent_change": 0.385
+    },
+    "driver.app.launch.milliseconds": {
+      "baseline_median": 0.434,
+      "candidate_median": 0.4395,
+      "delta": 0.005500000000000005,
+      "percent_change": 1.267
+    },
+    "driver.pointer.click.milliseconds": {
+      "baseline_median": 10.776,
+      "candidate_median": 10.776,
+      "delta": 0.0,
+      "percent_change": 0.0,
+      "maximum_delta": 150,
+      "regression": false
+    },
+    "startup.launch_command_ms": {
+      "baseline_median": 3.731,
+      "candidate_median": 3.731,
+      "delta": 0.0,
+      "percent_change": 0.0
+    },
+    "startup.workflow_readiness_ms": {
+      "baseline_median": 1006.958,
+      "candidate_median": 1006.958,
+      "delta": 0.0,
+      "percent_change": 0.0
+    }
+  },
+  "regressed": false
+}

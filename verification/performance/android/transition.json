@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "pointer.click",
+      "client_action_ms": 680.592,
+      "client_assertion_ms": 753.545,
+      "client_action_to_expectation_ms": 1434.161
+    }
+  ],
+  "target": "android"
+}

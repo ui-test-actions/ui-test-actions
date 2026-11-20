@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "target": "linux",
+  "app_id": "owned-fixture",
+  "samples": [
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 3135,
+      "state": "S",
+      "cpu_ms": 40.0,
+      "rss_bytes": 24485888,
+      "source": "linux:/proc/pid/stat",
+      "sample_monotonic_ms": 212084.586,
+      "at_ms": 380.869,
+      "client_poll_ms": 761.577
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 3135,
+      "state": "S",
+      "cpu_ms": 50.0,
+      "rss_bytes": 24485888,
+      "source": "linux:/proc/pid/stat",
+      "sample_monotonic_ms": 213032.32,
+      "at_ms": 1403.345,
+      "client_poll_ms": 606.516,
+      "cpu_one_core_percent": 1.055
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 3135,
+      "state": "S",
+      "cpu_ms": 50.0,
+      "rss_bytes": 24485888,
+      "source": "linux:/proc/pid/stat",
+      "sample_monotonic_ms": 214081.578,
+      "at_ms": 2476.987,
+      "client_poll_ms": 553.81,
+      "cpu_one_core_percent": 0.0
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 3135,
+      "state": "S",
+      "cpu_ms": 50.0,
+      "rss_bytes": 24485888,
+      "source": "linux:/proc/pid/stat",
+      "sample_monotonic_ms": 215236.836,
+      "at_ms": 3606.752,
+      "client_poll_ms": 613.336,
+      "cpu_one_core_percent": 0.0
+    }
+  ],
+  "observations": {
+    "startup": {
+      "launch_command_ms": 3.731,
+      "workflow_readiness_ms": 1006.958
+    },
+    "actions": [
+      {
+        "command": "pointer.click",
+        "milliseconds": 10.776,
+        "ok": true
+      },
+      {
+        "command": "app.launch",
+        "milliseconds": 0.434,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 0.21,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 0.211,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 0.185,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 0.188,
+        "ok": true
+      }
+    ]
+  },
+  "metrics": {
+    "app.linux:/proc/pid/stat.cpu_one_core_percent": {
+      "samples": 3,
+      "median": 0.0,
+      "maximum": 1.055
+    },
+    "app.linux:/proc/pid/stat.rss_bytes": {
+      "samples": 4,
+      "median": 24485888.0,
+      "maximum": 24485888
+    },
+    "driver.app.launch.milliseconds": {
+      "samples": 1,
+      "median": 0.434,
+      "maximum": 0.434
+    },
+    "driver.pointer.click.milliseconds": {
+      "samples": 1,
+      "median": 10.776,
+      "maximum": 10.776
+    },
+    "startup.launch_command_ms": {
+      "samples": 1,
+      "median": 3.731,
+      "maximum": 3.731
+    },
+    "startup.workflow_readiness_ms": {
+      "samples": 1,
+      "median": 1006.958,
+      "maximum": 1006.958
+    }
+  }
+}

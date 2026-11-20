@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "pointer.click",
+      "client_action_ms": 772.969,
+      "client_assertion_ms": 884.946,
+      "client_action_to_expectation_ms": 1657.942
+    }
+  ],
+  "target": "linux"
+}

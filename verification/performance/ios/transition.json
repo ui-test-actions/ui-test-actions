@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "pointer.click",
+      "client_action_ms": 654.363,
+      "client_assertion_ms": 1539.276,
+      "client_action_to_expectation_ms": 2193.699
+    }
+  ],
+  "target": "ios"
+}

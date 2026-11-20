@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "target": "ios",
+  "app_id": "dev.uitest.fixture",
+  "samples": [
+    {
+      "id": "dev.uitest.fixture",
+      "running": true,
+      "source": "simulator:launchctl+macos:ps",
+      "pid": 5264,
+      "state": "Ss",
+      "cpu_ms": 600.0,
+      "rss_bytes": 95830016,
+      "sample_monotonic_ms": 656931.726,
+      "at_ms": 2122.252,
+      "client_poll_ms": 4244.292
+    },
+    {
+      "id": "dev.uitest.fixture",
+      "running": true,
+      "source": "simulator:launchctl+macos:ps",
+      "pid": 5264,
+      "state": "Ss",
+      "cpu_ms": 600.0,
+      "rss_bytes": 94846976,
+      "sample_monotonic_ms": 658584.042,
+      "at_ms": 5071.751,
+      "client_poll_ms": 1654.414,
+      "cpu_one_core_percent": 0.0
+    },
+    {
+      "id": "dev.uitest.fixture",
+      "running": true,
+      "source": "simulator:launchctl+macos:ps",
+      "pid": 5264,
+      "state": "Ss",
+      "cpu_ms": 600.0,
+      "rss_bytes": 94846976,
+      "sample_monotonic_ms": 659690.407,
+      "at_ms": 6452.019,
+      "client_poll_ms": 1105.881,
+      "cpu_one_core_percent": 0.0
+    },
+    {
+      "id": "dev.uitest.fixture",
+      "running": true,
+      "source": "simulator:launchctl+macos:ps",
+      "pid": 5264,
+      "state": "Ss",
+      "cpu_ms": 600.0,
+      "rss_bytes": 94830592,
+      "sample_monotonic_ms": 660958.961,
+      "at_ms": 7631.388,
+      "client_poll_ms": 1252.664,
+      "cpu_one_core_percent": 0.0
+    }
+  ],
+  "observations": {
+    "startup": {
+      "launch_command_ms": 53178.081,
+      "workflow_readiness_ms": 56629.908
+    },
+    "actions": [
+      {
+        "command": "pointer.click",
+        "milliseconds": 185.628,
+        "ok": true
+      },
+      {
+        "command": "pointer.click",
+        "milliseconds": 3.881,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 3697.083,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 1088.989,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 546.842,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 744.981,
+        "ok": true
+      }
+    ]
+  },
+  "metrics": {
+    "app.simulator:launchctl+macos:ps.cpu_one_core_percent": {
+      "samples": 3,
+      "median": 0.0,
+      "maximum": 0.0
+    },
+    "app.simulator:launchctl+macos:ps.rss_bytes": {
+      "samples": 4,
+      "median": 94846976.0,
+      "maximum": 95830016
+    },
+    "driver.pointer.click.milliseconds": {
+      "samples": 2,
+      "median": 94.7545,
+      "maximum": 185.628
+    },
+    "startup.launch_command_ms": {
+      "samples": 1,
+      "median": 53178.081,
+      "maximum": 53178.081
+    },
+    "startup.workflow_readiness_ms": {
+      "samples": 1,
+      "median": 56629.908,
+      "maximum": 56629.908
+    }
+  }
+}

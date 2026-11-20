@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "target": "windows",
+  "app_id": "owned-fixture",
+  "samples": [
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2804,
+      "cpu_ms": 78.125,
+      "working_set_bytes": 29274112,
+      "window_responding": true,
+      "source": "windows:Get-Process",
+      "sample_monotonic_ms": 298265.0,
+      "at_ms": 2505.52,
+      "client_poll_ms": 5010.892
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2804,
+      "cpu_ms": 78.125,
+      "working_set_bytes": 29274112,
+      "window_responding": true,
+      "source": "windows:Get-Process",
+      "sample_monotonic_ms": 299125.0,
+      "at_ms": 5438.589,
+      "client_poll_ms": 854.997,
+      "cpu_one_core_percent": 0.0
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2804,
+      "cpu_ms": 78.125,
+      "working_set_bytes": 29274112,
+      "window_responding": true,
+      "source": "windows:Get-Process",
+      "sample_monotonic_ms": 299968.0,
+      "at_ms": 6282.943,
+      "client_poll_ms": 833.505,
+      "cpu_one_core_percent": 0.0
+    },
+    {
+      "id": "owned-fixture",
+      "running": true,
+      "exit_code": null,
+      "pid": 2804,
+      "cpu_ms": 78.125,
+      "working_set_bytes": 29274112,
+      "window_responding": true,
+      "source": "windows:Get-Process",
+      "sample_monotonic_ms": 300781.0,
+      "at_ms": 7107.133,
+      "client_poll_ms": 814.683,
+      "cpu_one_core_percent": 0.0
+    }
+  ],
+  "observations": {
+    "startup": {
+      "launch_command_ms": 31.0,
+      "workflow_readiness_ms": 6156.0
+    },
+    "actions": [
+      {
+        "command": "pointer.click",
+        "milliseconds": 0.0,
+        "ok": true
+      },
+      {
+        "command": "app.launch",
+        "milliseconds": 0.0,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 4469.0,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 313.0,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 297.0,
+        "ok": true
+      },
+      {
+        "command": "app.metrics",
+        "milliseconds": 297.0,
+        "ok": true
+      }
+    ]
+  },
+  "metrics": {
+    "app.windows:Get-Process.cpu_one_core_percent": {
+      "samples": 3,
+      "median": 0.0,
+      "maximum": 0.0
+    },
+    "app.windows:Get-Process.working_set_bytes": {
+      "samples": 4,
+      "median": 29274112.0,
+      "maximum": 29274112
+    },
+    "driver.app.launch.milliseconds": {
+      "samples": 1,
+      "median": 0.0,
+      "maximum": 0.0
+    },
+    "driver.pointer.click.milliseconds": {
+      "samples": 1,
+      "median": 0.0,
+      "maximum": 0.0
+    },
+    "startup.launch_command_ms": {
+      "samples": 1,
+      "median": 31.0,
+      "maximum": 31.0
+    },
+    "startup.workflow_readiness_ms": {
+      "samples": 1,
+      "median": 6156.0,
+      "maximum": 6156.0
+    }
+  }
+}
