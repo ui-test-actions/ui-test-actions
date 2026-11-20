@@ -1,5 +1,6 @@
 import UIKit
 import Photos
+import AVFAudio
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -101,15 +102,23 @@ final class Fixture: UIViewController {
     func showEnvironment() {
         let locale = Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
         let direction = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? "RTL" : "LTR"
-        let photos = switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
-        case .authorized: "granted"
-        case .denied, .restricted: "denied"
-        case .limited: "limited"
+        func photos(_ level: PHAccessLevel) -> String {
+            switch PHPhotoLibrary.authorizationStatus(for: level) {
+            case .authorized: "granted"
+            case .denied, .restricted: "denied"
+            case .limited: "limited"
+            default: "undetermined"
+            }
+        }
+        let microphone = switch AVAudioApplication.shared.recordPermission {
+        case .granted: "granted"
+        case .denied: "denied"
         default: "undetermined"
         }
         let orientation = view.window?.windowScene?.interfaceOrientation.isLandscape == true ? "LANDSCAPE" : "PORTRAIT"
         status.numberOfLines = 0
-        status.text = [locale, direction, "Photos \(photos)", orientation].joined(separator: "\n")
+        status.text = [locale, direction, "Photos \(photos(.readWrite))", "Add-only \(photos(.addOnly))",
+                       "Microphone \(microphone)", orientation].joined(separator: "\n")
     }
 
     @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {

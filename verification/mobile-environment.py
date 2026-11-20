@@ -47,10 +47,11 @@ def main():
     parser.add_argument("--token-file", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--ocr", type=Path)
+    parser.add_argument("--permission", choices=("camera", "photos", "microphone"))
     args = parser.parse_args()
     client = Client(json.loads(args.connection.read_text(encoding="utf-8")), args.token_file)
     target = client.identify()["target"]
-    permission = {"ios": "photos", "android": "camera"}[target]
+    permission = args.permission or {"ios": "photos", "android": "camera"}[target]
     args.output.mkdir(exist_ok=True, parents=True)
     observations = []
 
@@ -81,13 +82,12 @@ def main():
 
     def permission_state(state):
         command("app.permission.set", {"id": APP, "permission": permission, "state": state})
-        # Revoking an Android permission can stop the app. Launch the approved fixture again.
-        if target == "android":
-            command("app.launch", {"id": APP})
+        # A privacy-state change can stop the app. Relaunch with the configured locale.
+        command("app.launch" if target == "android" else "app.restart", {"id": APP})
 
     try:
         capabilities = command("app.environment.capabilities")
-        if capabilities["apps"] != {APP: [permission]}:
+        if set(capabilities["apps"]) != {APP} or permission not in capabilities["apps"][APP]:
             raise RuntimeError("The exposed permissions did not match the workflow allowlist")
         try:
             command("app.permission.set", {"id": APP, "permission": "contacts", "state": "granted"})
@@ -96,6 +96,7 @@ def main():
                 raise
         else:
             raise RuntimeError("The session accepted a permission outside its allowlist")
+        command("app.locale.set", {"id": APP, "locale": ""})
         assert_visible("before", "LTR", "PORTRAIT")
         command("app.locale.set", {"id": APP, "locale": "ar-SA"})
         assert_visible("arabic", r"ar[- ]?SA", "RTL", "PORTRAIT")
@@ -112,7 +113,7 @@ def main():
         command("app.locale.set", {"id": APP, "locale": ""})
         if target == "ios":
             permission_state("reset")
-            assert_visible("restored", "LTR", "Photos undetermined")
+            assert_visible("restored", "LTR", f"{permission} undetermined")
         else:
             command("device.orientation", {"orientation": "portrait"})
             time.sleep(1)

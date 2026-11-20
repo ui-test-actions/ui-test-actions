@@ -112,6 +112,29 @@ jobs:
           name: android-environment-permissions
           path: ${{ runner.temp }}/android-environment
           retention-days: 7
+      - name: Sample scoped iOS fixture authorization records
+        if: inputs.scenario == 'environment' && inputs.target == 'ios'
+        shell: bash
+        run: |
+          xcrun simctl install "$PROOF_DEVICE" "$RUNNER_TEMP/LiveUIFixture.app"
+          store="$HOME/Library/Developer/CoreSimulator/Devices/$PROOF_DEVICE/data/Library/TCC/TCC.db"
+          mkdir -p "$RUNNER_TEMP/ios-environment"
+          for service in photos microphone; do
+            for state in grant revoke reset; do
+              xcrun simctl privacy "$PROOF_DEVICE" "$state" "$service" dev.uitest.fixture
+              record="$RUNNER_TEMP/ios-environment/$service-$state.txt"
+              if [[ ! -r "$store" ]] || ! sqlite3 -readonly "$store" "SELECT service,auth_value FROM access WHERE client='dev.uitest.fixture';" > "$record"; then
+                printf '%s\n' 'Fixture TCC database records unavailable.' > "$record"
+              fi
+            done
+          done
+      - name: Retain scoped iOS fixture diagnostics
+        if: inputs.scenario == 'environment' && inputs.target == 'ios'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ios-environment-permissions
+          path: ${{ runner.temp }}/ios-environment
+          retention-days: 7
       - uses: ui-test-actions/ui-test-actions@77fffa0eac959dc008d36f59d194c23cb3b0432b
         with:
           target: ${{ inputs.target }}
@@ -119,7 +142,7 @@ jobs:
           duration-minutes: ${{ inputs.duration }}
           device: ${{ env.PROOF_DEVICE }}
           app-ids: dev.uitest.fixture
-          app-environment: ${{ inputs.scenario == 'environment' && (inputs.target == 'android' && '{"dev.uitest.fixture":["camera"]}' || '{"dev.uitest.fixture":["photos"]}') || '{}' }}
+          app-environment: ${{ inputs.scenario == 'environment' && (inputs.target == 'android' && '{"dev.uitest.fixture":["camera"]}' || '{"dev.uitest.fixture":["photos","microphone"]}') || '{}' }}
           deeplink-schemes: ui-test-fixture
           app-installs: >-
             {"dev.uitest.fixture":"${{ inputs.target == 'android' && format('{0}/build/android/fixture.apk', github.workspace) || format('{0}/LiveUIFixture.app', runner.temp) }}"}
