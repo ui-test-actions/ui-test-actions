@@ -73,6 +73,7 @@ jobs:
         if: inputs.target == 'ios'
         shell: bash
         run: |
+          if [[ "${{ inputs.scenario }}" == environment ]]; then test "$(uname -m)" = arm64; fi
           xcodebuild -version
           xcrun simctl list devices available -j > simulators.json
           simulator=$(python -c '
@@ -88,7 +89,7 @@ jobs:
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
           echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@cef3c5e0e7a2551dc161137141618b6bfeb6d650
+      - uses: ui-test-actions/ui-test-actions@c788f818ee688f49385fb9885350158da8127d07
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
