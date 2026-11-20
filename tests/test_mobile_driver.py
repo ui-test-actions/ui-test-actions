@@ -2,11 +2,30 @@ import base64
 import os
 from pathlib import Path
 import struct
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import Mock, call, patch
 
+from mobile import open_simulator
 from mobile_driver import AndroidIme, MobileDriver, parse_android_tree
+
+
+class SimulatorStartupTest(unittest.TestCase):
+    def test_retries_a_slow_inventory_and_reuses_the_checked_device(self):
+        inventory = ("xcrun", "simctl", "list", "devices", "booted", "-j")
+        devices = b'{"devices":{"com.apple.SimRuntime.iOS-26":[{"udid":"ios-test","state":"Booted"}]}}'
+        with patch("mobile.output", side_effect=[subprocess.TimeoutExpired(inventory, 20), devices, b""]) as native:
+            selected = open_simulator("ios-test")
+        self.assertEqual(native.call_args_list, [
+            call(*inventory, timeout=20),
+            call(*inventory, timeout=40),
+            call("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", "ios-test"),
+        ])
+        with patch.dict(os.environ, {}, clear=True), patch("mobile_driver._run") as query:
+            driver = MobileDriver(Mock(), "ios", checked_ios_device=selected)
+        self.assertEqual(driver.device, "ios-test")
+        query.assert_not_called()
 
 
 class AndroidTreeTest(unittest.TestCase):

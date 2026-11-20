@@ -234,7 +234,7 @@ class AndroidIme:
 
 
 class MobileDriver:
-    def __init__(self, legacy, target):
+    def __init__(self, legacy, target, *, checked_ios_device=None):
         if target not in {"android", "ios"}:
             raise ValueError("Mobile driver requires Android or iOS")
         self.legacy = legacy
@@ -276,7 +276,9 @@ class MobileDriver:
                     self.ime = ime
         else:
             requested = os.environ.get("UI_TEST_DEVICE", "")
-            if self.legacy is None and requested:
+            if checked_ios_device:
+                self.device = checked_ios_device
+            elif self.legacy is None and requested:
                 from uuid import UUID
                 self.device = str(UUID(requested)).upper()
             else:

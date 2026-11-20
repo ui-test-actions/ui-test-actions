@@ -479,11 +479,11 @@ class SimulatorDriver:
         self.mobile.close()
 
 
-def load_driver(backend, target):
+def load_driver(backend, target, *, checked_ios_device=None):
     if target in ("android", "ios"):
         from desktop_driver import DesktopDriver
         from mobile_driver import MobileDriver
-        mobile = MobileDriver(backend, target)
+        mobile = MobileDriver(backend, target, checked_ios_device=checked_ios_device)
         return SimulatorDriver(mobile, DesktopDriver(backend, target)) if target == "ios" else mobile
     from app_processes import DesktopApps
     from desktop_driver import DesktopDriver
@@ -513,11 +513,12 @@ def main(control):
             if axe_path and (target != "ios" or webdriver_url):
                 raise ValueError("ios-axe-path requires an iOS Simulator without Appium.")
             native_ios = target == "ios" and bool(webdriver_url or axe_path)
+            checked_ios_device = None
             if target != "android" and not native_ios:
                 setup_desktop(target, processes)
             if target == "ios" and not webdriver_url:
                 from mobile import open_simulator
-                open_simulator(device)
+                checked_ios_device = open_simulator(device)
             exchange = None
             if target in ("linux", "windows", "macos") and os.environ.get("UI_TEST_FILE_EXCHANGE") == "1":
                 exchange = Exchange(work / "files")
@@ -532,9 +533,9 @@ def main(control):
                 backend = None if native_ios else Desktop(target)
             if native_ios:
                 from mobile_driver import MobileDriver
-                driver = MobileDriver(None, target)
+                driver = MobileDriver(None, target, checked_ios_device=checked_ios_device)
             else:
-                driver = load_driver(backend, target)
+                driver = load_driver(backend, target, checked_ios_device=checked_ios_device)
             if webdriver_url:
                 if target not in ("android", "ios"):
                     raise ValueError("The loopback Appium adapter requires an Android or iOS target.")

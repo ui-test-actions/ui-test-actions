@@ -50,10 +50,17 @@ class Android:
 
 
 def open_simulator(device):
-    booted = json.loads(output("xcrun", "simctl", "list", "devices", "booted", "-j"))
+    for timeout in (20, 40):
+        try:
+            booted = json.loads(output("xcrun", "simctl", "list", "devices", "booted", "-j", timeout=timeout))
+            break
+        except subprocess.TimeoutExpired:
+            if timeout == 40:
+                raise
     devices = [
         item["udid"] for runtime, items in booted["devices"].items()
         if ".iOS-" in runtime for item in items if item["state"] == "Booted"
     ]
     udid = select_device(device, devices, "booted iOS simulator")
     output("open", "-a", "Simulator", "--args", "-CurrentDeviceUDID", udid)
+    return udid
