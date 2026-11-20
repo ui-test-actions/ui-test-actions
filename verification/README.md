@@ -12,7 +12,7 @@ On November 20, 2026, the [desktop](../.github/workflows/desktop.yml) and [mobil
 
 The fixture was blue at the start and turned green after Apply, with the externally entered text in its status label. Desktop and iOS screenshot pairs are cropped to the fixture or Simulator window. The Android images are the full emulator framebuffer.
 
-For every target, missing and incorrect bearer tokens returned HTTP 401. A new HTTP connection authenticated with the original token and returned the same session ID. On Windows, the valid token's screenshot request returned Cloudflare HTTP 530 about 10 seconds after cancellation was requested. The completed run still returned 530.
+For every target, missing and incorrect bearer tokens returned HTTP 401. A new HTTP connection authenticated with the original token and returned the same session ID. On Windows, the valid token's screenshot request returned Cloudflare HTTP 530 about 10 seconds after cancellation was requested. The completed run still returned 530. The short Linux, macOS, Android, and iOS jobs completed successfully and returned 530 on screenshot requests after expiry. An exact match for the raw bearer token was absent from the downloaded connection artifact and GitHub job log for each of the five runs.
 
 The Linux browser screenshot shows a separate client authenticated to the same session after the terminal actions. The browser performed a second click, type, and click sequence and refreshed the screenshot.
 

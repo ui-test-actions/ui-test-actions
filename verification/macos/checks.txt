@@ -7,3 +7,7 @@ session={"id": "f096d1f8d45b41343b7bc5ee", "target": "macos", "seconds_remaining
 {"ok": true}
 {"ok": true}
 reconnect={"id": "f096d1f8d45b41343b7bc5ee", "target": "macos", "seconds_remaining": 546}
+2026-11-20T05:06:54Z
+{"conclusion":"success","status":"completed"}
+after_completed_expiry=530
+Bearer token absent from job logs and connection artifact
