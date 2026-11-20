@@ -8,7 +8,9 @@ mkdir -p "$out"
 sudo apt-get -qq update
 sudo apt-get -qq install -y dnsmasq-base libpulse0 libxcb-cursor0
 sudo chmod a+rw /dev/kvm
-"$sdk/cmdline-tools/latest/bin/sdkmanager" "$image"
+"$sdk/cmdline-tools/latest/bin/sdkmanager" 'platform-tools' "$image"
+export PATH="$sdk/platform-tools:$PATH"
+printf '%s\n' "$sdk/platform-tools" >> "$GITHUB_PATH"
 export ANDROID_USER_HOME="$HOME/.android"
 export ANDROID_AVD_HOME="$RUNNER_TEMP/ui-lan-avds"
 mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"

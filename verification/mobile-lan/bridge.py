@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 
 from websockets.asyncio.client import connect
 from websockets.asyncio.server import serve
+from websockets.exceptions import InvalidStatus
 
 FRAME_MAX = 1514
 STREAM_CHUNK = 16384
@@ -74,6 +75,8 @@ async def frame_session(reader, writer, port, interface, source, peer, ready):
     process = await asyncio.create_subprocess_exec(
         str(port), interface, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
     try:
+        if await asyncio.wait_for(process.stdout.readexactly(2), timeout=5) != b"\0\0":
+            raise RuntimeError("Native frame port failed its readiness check")
         ready.touch()
         print("Authenticated LAN peer attached", flush=True)
         await duplex(records(process.stdout, writer, source, peer),
@@ -126,6 +129,7 @@ WS_OPTIONS = {"compression": None, "max_size": STREAM_CHUNK, "max_queue": 8,
 
 async def server(args):
     active = asyncio.Lock()
+    proxy_budget = asyncio.Semaphore(8)
 
     async def peer(reader, writer):
         if active.locked():
@@ -138,8 +142,12 @@ async def server(args):
         port = inner.sockets[0].getsockname()[1]
 
         async def proxy(websocket):
-            reader, writer = await asyncio.open_connection("127.0.0.1", port)
-            await websocket_proxy(websocket, reader, writer)
+            if proxy_budget.locked():
+                await websocket.close(code=1013)
+                return
+            async with proxy_budget:
+                reader, writer = await asyncio.open_connection("127.0.0.1", port)
+                await websocket_proxy(websocket, reader, writer)
 
         async def path_check(connection, request):
             if request.path != "/lan":
@@ -162,13 +170,24 @@ async def client(args):
         try:
             async with connect(endpoint(args.origin), **WS_OPTIONS) as websocket:
                 await websocket_proxy(websocket, reader, writer)
+        except InvalidStatus as error:
+            print(f"Relay handshake returned HTTP {error.response.status_code}", flush=True)
         finally:
             writer.close()
 
     async with await asyncio.start_server(proxy, "127.0.0.1", 0) as outer:
         port = outer.sockets[0].getsockname()[1]
-        reader, writer = await asyncio.open_connection(
-            "127.0.0.1", port, ssl=tls(args, False), server_hostname="ui-mobile-lan", ssl_handshake_timeout=12)
+        context = tls(args, False)
+        deadline = asyncio.get_running_loop().time() + 145
+        while True:
+            try:
+                reader, writer = await asyncio.open_connection(
+                    "127.0.0.1", port, ssl=context, server_hostname="ui-mobile-lan", ssl_handshake_timeout=12)
+                break
+            except ConnectionError:
+                if asyncio.get_running_loop().time() >= deadline:
+                    raise
+                await asyncio.sleep(3)
         await frame_session(reader, writer, args.frame_port, args.interface, IOS, ANDROID, args.ready)
 
 

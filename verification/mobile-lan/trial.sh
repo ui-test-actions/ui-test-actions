@@ -7,6 +7,7 @@ src=verification/mobile-lan
 stage="${1:?}"
 target="${2:?}"
 mkdir -p "$dir" "$evidence"
+if [[ "$target" == android ]]; then export PATH="$ANDROID_HOME/platform-tools:$PATH"; fi
 
 case "$stage" in
   identity)

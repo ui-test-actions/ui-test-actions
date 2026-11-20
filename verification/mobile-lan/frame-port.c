@@ -107,6 +107,8 @@ static void capture(int fd) {
 int main(int argc, char **argv) {
     if (argc != 2) return 2;
     struct pollfd ports[] = {{STDIN_FILENO, POLLIN, 0}, {open_port(argv[1]), POLLIN, 0}};
+    unsigned char ready[2] = {0, 0};
+    if (!transfer(STDOUT_FILENO, ready, sizeof(ready), 1)) return 1;
     while (1) {
         int ready = poll(ports, 2, -1);
         if (ready < 0 && errno == EINTR) continue;
