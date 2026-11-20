@@ -1,0 +1,76 @@
+{
+  "session_id": "36fde729ce128bf05725dc66",
+  "unapproved_app_rejected": true,
+  "initial": {
+    "state": "before",
+    "pixel": [
+      25,
+      43,
+      66
+    ]
+  },
+  "edited": {
+    "state": "after",
+    "pixel": [
+      23,
+      99,
+      59
+    ]
+  },
+  "restarted": {
+    "state": "before",
+    "pixel": [
+      25,
+      43,
+      66
+    ]
+  },
+  "closed": {
+    "state": "outside",
+    "pixel": [
+      148,
+      223,
+      213
+    ]
+  },
+  "relaunched": {
+    "state": "before",
+    "pixel": [
+      25,
+      43,
+      66
+    ]
+  },
+  "reset": {
+    "state": "outside",
+    "pixel": [
+      148,
+      223,
+      213
+    ]
+  },
+  "launch_after_reset": {
+    "state": "before",
+    "pixel": [
+      25,
+      43,
+      66
+    ]
+  },
+  "uninstalled": {
+    "state": "outside",
+    "pixel": [
+      148,
+      223,
+      213
+    ]
+  },
+  "launch_after_install": {
+    "state": "before",
+    "pixel": [
+      25,
+      43,
+      66
+    ]
+  }
+}

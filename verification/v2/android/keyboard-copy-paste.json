@@ -1,0 +1,6 @@
+{
+  "tested": true,
+  "session_busy_retries": 3,
+  "keyboard_copy_equal": true,
+  "keyboard_paste_equal": true
+}

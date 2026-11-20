@@ -1,0 +1,40 @@
+{
+  "target": "linux",
+  "reconnected_same_session": true,
+  "editor_copy_equals_full_unicode_fixture": true,
+  "resized_window": {
+    "x": 181,
+    "y": 110,
+    "width": 780,
+    "height": 580
+  },
+  "context_menu_visual_change": {
+    "difference": 9.046,
+    "satisfied": true
+  },
+  "open_file_dialog": {
+    "title": "Open \u2014 Notepad Next",
+    "bounds": {
+      "x": 258,
+      "y": 174,
+      "width": 624,
+      "height": 412
+    }
+  },
+  "open_file_dialog_selected_metadata_file": true,
+  "returned_to_edited_document_tab": true,
+  "invalid_coordinate": "HTTP 400 (invalid_arguments)",
+  "replayed_request_returns_same_baseline": true,
+  "recording": {
+    "frames": 7,
+    "bytes": 53044,
+    "partial": false,
+    "download": "/v2/recording"
+  },
+  "auth_missing": 401,
+  "auth_wrong": 401,
+  "concurrent_screenshot_busy": true,
+  "workflow_result": "success",
+  "after_expiry": "HTTP 530",
+  "raw_token_absent_from_logs_and_artifacts": true
+}

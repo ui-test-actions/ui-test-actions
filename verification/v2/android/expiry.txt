@@ -1,0 +1,4 @@
+{"error": "HTTP 530", "observed_at": "2026-11-20T06:02:12.785946+00:00"}
+GET /v1/screenshot HTTP 530
+POST /v2/action HTTP 530
+Raw bearer absent from connection artifact and workflow logs

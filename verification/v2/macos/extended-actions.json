@@ -1,0 +1,20 @@
+{
+  "session_id": "80b8c1cd9996f645a16d86c4",
+  "initial_window_bounds": {
+    "x": 192,
+    "y": 31,
+    "width": 640,
+    "height": 677
+  },
+  "resized_window_bounds": {
+    "x": 76,
+    "y": 81,
+    "width": 800,
+    "height": 580
+  },
+  "window_resize_observed": true,
+  "window_focus": true,
+  "clipboard_roundtrip": true,
+  "exact_unicode_from_ax": true,
+  "selection_and_copy_roundtrip": true
+}

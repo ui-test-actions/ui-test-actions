@@ -1,0 +1,4 @@
+{
+  "bearer_absent_from_connection_and_runner_logs": true,
+  "post_expiry_response": "HTTP 530"
+}

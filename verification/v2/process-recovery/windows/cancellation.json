@@ -1,0 +1,23 @@
+{
+  "valid_before_cancel": 200,
+  "missing_token": 401,
+  "other_session_token": 401,
+  "cancel_probes": [
+    {
+      "seconds_after_request": 0.59,
+      "http": 200
+    },
+    {
+      "seconds_after_request": 3.18,
+      "http": 200
+    },
+    {
+      "seconds_after_request": 5.88,
+      "http": 200
+    },
+    {
+      "seconds_after_request": 8.4,
+      "http": 530
+    }
+  ]
+}

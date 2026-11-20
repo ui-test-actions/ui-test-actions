@@ -1,0 +1,23 @@
+{
+  "session_id": "93d4f8eb9615fa40b41b108e",
+  "target": "linux",
+  "clipboard_unicode_exact": true,
+  "exchange_bytes_exact": 76,
+  "duplicate_file": "HTTP 409 (file_exists)",
+  "path_traversal": "HTTP 400 (invalid_arguments)",
+  "batch_steps_and_replay": 4,
+  "visual": {
+    "difference": 22.318,
+    "satisfied": true
+  },
+  "recording": {
+    "frames": 7,
+    "bytes": 27034,
+    "partial": false,
+    "download": "/v2/recording"
+  },
+  "parallel_read_requests": {
+    "count": 24,
+    "elapsed_seconds": 2.43
+  }
+}

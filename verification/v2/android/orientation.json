@@ -1,0 +1,11 @@
+{
+  "landscape": [
+    640,
+    320
+  ],
+  "stale_visual_baseline_rejected": true,
+  "portrait": [
+    320,
+    640
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "mutation_replay_same_result": true,
+  "distinct_stale_target_rejected": true,
+  "out_of_viewport_click_rejected": true,
+  "unsupported_pointer_move_rejected": true,
+  "unauthenticated_v2_request_rejected": true
+}

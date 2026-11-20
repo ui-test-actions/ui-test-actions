@@ -1,0 +1,10 @@
+{
+  "session": "f7a2be5c379dcae48aa17b49",
+  "unapproved_app_rejected": true,
+  "app.close_absent": true,
+  "app.launch_present": true,
+  "app.restart_present": true,
+  "app.reset_absent": true,
+  "app.uninstall_absent": true,
+  "app.install_absent": true
+}

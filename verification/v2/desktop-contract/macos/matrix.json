@@ -1,0 +1,23 @@
+{
+  "session_id": "4ce42881cb33426c51afa6d6",
+  "target": "macos",
+  "clipboard_unicode_exact": true,
+  "exchange_bytes_exact": 76,
+  "duplicate_file": "HTTP 409 (file_exists)",
+  "path_traversal": "HTTP 400 (invalid_arguments)",
+  "batch_steps_and_replay": 4,
+  "visual": {
+    "difference": 21.898,
+    "satisfied": true
+  },
+  "recording": {
+    "frames": 6,
+    "bytes": 72541,
+    "partial": false,
+    "download": "/v2/recording"
+  },
+  "parallel_read_requests": {
+    "count": 24,
+    "elapsed_seconds": 2.377
+  }
+}

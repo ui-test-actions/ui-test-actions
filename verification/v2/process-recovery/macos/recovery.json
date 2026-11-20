@@ -1,0 +1,14 @@
+{
+  "target": "macos",
+  "screen": {
+    "width": 1024,
+    "height": 768
+  },
+  "observed_exit": 17,
+  "unapproved_id_rejected": true,
+  "visual_differences": {
+    "launch": 97.585,
+    "crash": 97.319,
+    "restart": 97.285
+  }
+}

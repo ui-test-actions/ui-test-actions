@@ -1,0 +1,14 @@
+{
+  "target": "linux",
+  "screen": {
+    "width": 1024,
+    "height": 768
+  },
+  "observed_exit": 17,
+  "unapproved_id_rejected": true,
+  "visual_differences": {
+    "launch": 71.611,
+    "crash": 71.711,
+    "restart": 71.611
+  }
+}
