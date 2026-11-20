@@ -9,6 +9,8 @@ import sys
 import tempfile
 import time
 
+from lease import HoldLease
+
 
 def show_log(directory):
     log = directory / "session.log"
@@ -59,10 +61,16 @@ def hold():
         raise RuntimeError("Connection file upload failed")
     try:
         outcome = work / "outcome"
+        heartbeat = work / HoldLease.heartbeat
+        renew = 0
         deadline = time.monotonic() + int(os.environ["UI_TEST_DURATION"]) * 60 + 45
         while not outcome.exists():
-            if time.monotonic() >= deadline:
+            now = time.monotonic()
+            if now >= deadline:
                 raise RuntimeError("UI server did not report completion")
+            if now >= renew:
+                heartbeat.touch()
+                renew = now + 2
             time.sleep(0.5)
         if outcome.read_text(encoding="utf-8") != "success":
             show_log(work)

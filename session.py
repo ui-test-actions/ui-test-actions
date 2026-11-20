@@ -20,6 +20,7 @@ from urllib.request import urlopen
 from automation import Automation, error_result
 from contract import CommandError
 from exchange import Exchange
+from lease import HoldLease
 from tunnel import Tunnel, take_named_configuration
 
 
@@ -561,12 +562,16 @@ def main(control):
                     unpublished = control / "connection.tmp"
                     unpublished.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
                     unpublished.replace(control / "connection.json")
+                    lease = HoldLease(control)
                     while (remaining := session.deadline - time.monotonic()) > 0 and not (control / "stop").exists():
+                        if not lease.active():
+                            raise RuntimeError("The GitHub hold step stopped renewing its lease.")
                         if tunnel.process.poll() is not None:
                             if not tunnel.hostname:
                                 raise RuntimeError("The Quick Tunnel process exited. Start a fresh session.")
                             print("Restarting the named Cloudflare connector", flush=True)
-                            tunnel.start(min(time.monotonic() + 55, session.deadline), cancelled)
+                            tunnel.start(min(time.monotonic() + 55, session.deadline),
+                                         lambda: cancelled() or not lease.active())
                         time.sleep(min(remaining, 0.25))
                 finally:
                     session.deadline = 0

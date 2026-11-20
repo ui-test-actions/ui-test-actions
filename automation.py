@@ -111,7 +111,7 @@ class Automation:
 
     def dispatch(self, name, params):
         if name == "tree.snapshot":
-            return self.capture_tree()
+            return self.capture_tree(params.get("limit", TREE_LIMIT))
         if name == "element.click":
             return self.click_element(params)
         if name.startswith("element."):
@@ -136,15 +136,15 @@ class Automation:
             if x in params and not (0 <= params[x] < width and 0 <= params[y] < height):
                 raise CommandError("invalid_arguments", "Coordinates must lie within the latest screen size.")
 
-    def capture_tree(self):
+    def capture_tree(self, limit=TREE_LIMIT):
         data = self.driver.execute("tree.snapshot", {})
         if isinstance(data, list):
             data = {"nodes": data}
         if not isinstance(data, dict) or not isinstance(data.get("nodes"), list):
             raise RuntimeError("Invalid observation")
-        nodes = data["nodes"][:TREE_LIMIT]
+        nodes = data["nodes"][:limit]
         snapshot = {"snapshot_id": secrets.token_hex(12), "nodes": nodes,
-                    "truncated": bool(data.get("truncated")) or len(data["nodes"]) > TREE_LIMIT}
+                    "truncated": bool(data.get("truncated")) or len(data["nodes"]) > limit}
         self.snapshot = snapshot
         return snapshot
 
@@ -153,6 +153,10 @@ class Automation:
         for key, value in selector.items():
             if key == "text_contains":
                 if not any(value in str(node.get(field, "")) for field in ("text", "name")):
+                    return False
+            elif key == "properties":
+                properties = node.get("properties", {})
+                if any(properties.get(flag, node.get(flag)) != expected for flag, expected in value.items()):
                     return False
             elif node.get(key) != value:
                 return False

@@ -40,8 +40,11 @@ TEXT = string(8192, 0)
 IDENTIFIER = string(256)
 BUTTON = choice("left", "middle", "right")
 RECT = obj(("x", "y", "width", "height"), **XY, width=SIZE, height=SIZE)
+ELEMENT_FLAGS = obj(**{flag: BOOLEAN for flag in (
+    "focused", "selected", "checked", "editable", "checkable", "clickable", "scrollable", "password",
+)})
 SELECTOR = obj(id=IDENTIFIER, role=IDENTIFIER, name=string(512), text=string(512), text_contains=string(512),
-               resource_id=IDENTIFIER, enabled=BOOLEAN, visible=BOOLEAN)
+               resource_id=IDENTIFIER, enabled=BOOLEAN, visible=BOOLEAN, properties=ELEMENT_FLAGS)
 REQUEST_ID = string(64, 1, r"^[a-zA-Z0-9_.-]+$")
 APP_ID = string(255, 1, r"^[a-zA-Z0-9_.-]+$")
 
@@ -70,7 +73,7 @@ COMMANDS = {
     "windows.move_resize": obj(("id", "x", "y", "width", "height"), id=IDENTIFIER,
                                x=integer(-16384, 16383), y=integer(-16384, 16383), width=SIZE, height=SIZE),
     "windows.close": obj(("id",), id=IDENTIFIER),
-    "tree.snapshot": obj(),
+    "tree.snapshot": obj(limit=integer(1, 2500)),
     "element.find": obj(("selector",), selector=SELECTOR),
     "element.click": obj(("id", "snapshot_id"), id=IDENTIFIER, snapshot_id=IDENTIFIER),
     "element.assert": obj(("selector", "state"), selector=SELECTOR, state=choice("present", "absent")),
@@ -140,7 +143,9 @@ def validate_operation(operation, commands):
         raise CommandError("unsupported_command", "The active driver does not provide this command.", 422)
     params = operation.get("params", {})
     validate(params, COMMANDS[command], "params")
-    if "selector" in params and not params["selector"]:
+    if "selector" in params and not (
+        params["selector"].keys() - {"properties"} or params["selector"].get("properties")
+    ):
         raise CommandError("invalid_arguments", "Provide at least one selector property.")
     if command == "pointer.scroll" and not (params.get("dx") or params.get("dy")):
         raise CommandError("invalid_arguments", "Provide a nonzero scroll amount.")
