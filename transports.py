@@ -136,12 +136,18 @@ class RouteProbe:
 def private_tls(work, address):
     key = work / "transport.key"
     cert = work / "transport.crt"
+    config = work / "transport-openssl.cfg"
     subject = "ui-" + secrets.token_hex(12)
+    config.write_text(
+        f"[req]\nprompt = no\ndistinguished_name = subject\nx509_extensions = server\n"
+        f"[subject]\nCN = {subject}\n[server]\nsubjectAltName = IP:{address}\n"
+        "basicConstraints = critical,CA:FALSE\nextendedKeyUsage = serverAuth\n",
+        encoding="ascii",
+    )
     try:
         subprocess.run(
             ["openssl", "req", "-x509", "-newkey", "ec", "-pkeyopt", "ec_paramgen_curve:P-256",
-             "-nodes", "-sha256", "-days", "1", "-subj", f"/CN={subject}", "-addext", f"subjectAltName=IP:{address}",
-             "-addext", "basicConstraints=critical,CA:FALSE", "-addext", "extendedKeyUsage=serverAuth",
+             "-nodes", "-sha256", "-days", "1", "-config", str(config),
              "-keyout", str(key), "-out", str(cert)],
             check=True, timeout=10, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
@@ -153,6 +159,7 @@ def private_tls(work, address):
         raise RuntimeError("Private transport requires OpenSSL and a valid session certificate.") from None
     finally:
         key.unlink(missing_ok=True)
+        config.unlink(missing_ok=True)
 
 
 def prepare_transport(work):
