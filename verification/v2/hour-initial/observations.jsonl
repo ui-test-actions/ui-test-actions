@@ -1,0 +1,12 @@
+{"observed_at": "2026-11-20T06:32:46.675953+00:00", "reconnected": true, "same_session": true, "seconds_remaining": 1890}
+{"observed_at": "2026-11-20T06:45:52+00:00", "same_session": true, "seconds_remaining": 1104}
+{"observed_at": "2026-11-20T06:49:27+00:00", "same_session": true, "seconds_remaining": 889}
+{"observed_at": "2026-11-20T06:54:27+00:00", "same_session": true, "seconds_remaining": 589}
+{"observed_at": "2026-11-20T06:59:27+00:00", "same_session": true, "seconds_remaining": 289}
+{"observed_at": "2026-11-20T07:02:27+00:00", "same_session": true, "seconds_remaining": 109}
+{"observed_at": "2026-11-20T07:03:27+00:00", "same_session": true, "seconds_remaining": 49}
+{"observed_at": "2026-11-20T07:03:47+00:00", "late_batch_steps": 3, "label_change_bounds": [0, 18, 514, 50], "same_session": true, "clipboard_returned_pasted_text": true, "widget_append_observed": true}
+{"observed_at": "2026-11-20T07:04:20+00:00", "seconds_relative_to_expiry": -6.45, "authenticated_status": 530}
+{"observed_at": "2026-11-20T07:04:28+00:00", "seconds_relative_to_expiry": 1.55, "authenticated_status": 530}
+{"observed_at": "2026-11-20T07:04:33+00:00", "seconds_relative_to_expiry": 6.55, "authenticated_status": 530}
+{"observed_at": "2026-11-20T07:04:42+00:00", "seconds_relative_to_expiry": 15.81, "authenticated_status": 530}

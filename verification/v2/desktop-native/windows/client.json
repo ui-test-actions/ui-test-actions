@@ -1,0 +1,16 @@
+{
+  "target": "windows",
+  "detail_before": {
+    "x": 685,
+    "y": 86,
+    "width": 246,
+    "height": 189
+  },
+  "detail_after": {
+    "x": 690,
+    "y": 230,
+    "width": 280,
+    "height": 195
+  },
+  "window_closed": true
+}

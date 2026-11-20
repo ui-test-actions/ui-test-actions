@@ -38,8 +38,12 @@ jobs:
           executable=$(find "$app" -name localsend_app -type f -print -quit)
           test -x "$executable"
           echo "FLUTTER_APP=$executable" >> "$GITHUB_ENV"
-          sudo apt-get -o DPkg::Lock::Timeout=60 install -y --no-install-recommends \
-            fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1 libegl1 libegl-mesa0 libgl1 libopengl0
+          apt=(sudo apt-get -o DPkg::Lock::Timeout=60 -o Acquire::Retries=1 -o Acquire::http::Timeout=20)
+          packages=(fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1 libegl1 libegl-mesa0 libgl1 libopengl0)
+          if ! timeout 120 "${apt[@]}" install -y --no-install-recommends "${packages[@]}"; then
+            timeout 120 "${apt[@]}" update
+            timeout 120 "${apt[@]}" install -y --no-install-recommends "${packages[@]}"
+          fi
       - uses: ui-test-actions/ui-test-actions@803d83d50713f845db414c30c7c826071ede907c
         with:
           target: linux

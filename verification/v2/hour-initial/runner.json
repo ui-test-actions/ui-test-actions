@@ -1,0 +1,15 @@
+{
+  "run": 44685158477,
+  "ref": "8d73e35a4acc2574c019f38d1e8d9c75813a6c02",
+  "events": [
+    {
+      "timestamp": "2026-11-20T06:04:27.2406693Z",
+      "event": "linux session ready for 60 minute(s)"
+    },
+    {
+      "timestamp": "2026-11-20T07:04:28.0374084Z",
+      "event": "UI session closed"
+    }
+  ],
+  "raw_token_absent": true
+}

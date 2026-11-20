@@ -1,0 +1,16 @@
+{
+  "target": "linux",
+  "detail_before": {
+    "x": 687,
+    "y": 126,
+    "width": 230,
+    "height": 150
+  },
+  "detail_after": {
+    "x": 692,
+    "y": 270,
+    "width": 280,
+    "height": 195
+  },
+  "window_closed": true
+}
