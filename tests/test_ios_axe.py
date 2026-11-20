@@ -39,3 +39,10 @@ class IosAxeTests(unittest.TestCase):
         ])
         with self.assertRaises(CommandError):
             driver.key(["shift", "shift", "a"])
+
+    def test_positive_scroll_offsets_move_the_finger_up_and_left(self):
+        driver = object.__new__(AxeSimulator)
+        driver.viewport = (402, 874)
+        driver.axe = Mock()
+        driver.execute("pointer.scroll", {"x": 300, "y": 600, "dx": 1, "dy": 12})
+        driver.axe.assert_called_once_with("draw", "300,600", "236,0", "--duration", "0.4")

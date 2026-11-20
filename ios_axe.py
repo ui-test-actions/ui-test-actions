@@ -168,8 +168,8 @@ class AxeSimulator:
             x, y = params["x"], params["y"]
             if command == "pointer.scroll":
                 width, height = self.viewport
-                end_x = min(width - 1, max(0, x + params.get("dx", 0) * 64))
-                end_y = min(height - 1, max(0, y + params.get("dy", 0) * 64))
+                end_x = min(width - 1, max(0, x - params.get("dx", 0) * 64))
+                end_y = min(height - 1, max(0, y - params.get("dy", 0) * 64))
             else:
                 end_x, end_y = params["end_x"], params["end_y"]
             self.axe("draw", f"{x},{y}", f"{end_x},{end_y}",
