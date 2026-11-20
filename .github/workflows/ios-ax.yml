@@ -1,0 +1,57 @@
+name: Verify iOS Simulator accessibility bridge
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  observe:
+    runs-on: macos-26
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Validate pinned AXe against the native fixture
+        shell: bash
+        run: |
+          work="$RUNNER_TEMP/ios-ax"
+          mkdir -p "$work/axe" "$work/proof"
+          asset=AXe-macOS-v2.1.1-universal.tar.gz
+          curl -fsSL --retry 3 "https://github.com/cameroncooke/AXe/releases/download/v2.1.1/$asset" -o "$work/$asset"
+          printf '%s  %s\n' 8788838b1b32059d143cf06541b72fcaead85c16274457cdbff086510a5b17fa "$work/$asset" |
+            shasum -a 256 -c -
+          tar -xzf "$work/$asset" -C "$work/axe"
+          axe=$(find "$work/axe" -name axe -type f -print -quit)
+          simulator=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          print(next(item["udid"] for key in reversed(sorted(devices)) if ".iOS-" in key
+                     for item in devices[key] if item["name"].startswith("iPhone")))
+          ')
+          bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
+          xcrun simctl bootstatus "$simulator" -b
+          xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
+          xcrun simctl launch "$simulator" dev.uitest.fixture
+          "$axe" describe-ui --udid "$simulator" > "$work/proof/before.json"
+          "$axe" --output json displays --udid "$simulator" > "$work/proof/display.json"
+          "$axe" screenshot --udid "$simulator" --output "$work/proof/before.png"
+          "$axe" tap --label 'Apply change' --udid "$simulator"
+          "$axe" describe-ui --udid "$simulator" > "$work/proof/after.json"
+          "$axe" screenshot --udid "$simulator" --output "$work/proof/after.png"
+          python3 - "$work/proof" <<'PY'
+          import json, sys
+          from pathlib import Path
+          proof = Path(sys.argv[1])
+          for filename, expected in [("before.json", "BEFORE · Ready for input"), ("after.json", "AFTER · Button tapped")]:
+              observation = json.dumps(json.loads((proof / filename).read_text()), ensure_ascii=False)
+              if expected not in observation:
+                  raise SystemExit(f"Expected fixture state missing from {filename}")
+          PY
+      - name: Retain bridge observations
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ios-ax-probe
+          path: ${{ runner.temp }}/ios-ax/proof/
+          if-no-files-found: ignore
+          retention-days: 7
