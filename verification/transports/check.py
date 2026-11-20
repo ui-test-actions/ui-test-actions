@@ -39,11 +39,11 @@ def denied(client, status):
     raise RuntimeError("An invalid request was accepted.")
 
 
-def observe(config, token_file, controls, output):
-    client = Client(config, token_file)
+def observe(config, token_file, controls, output, access_file=None):
+    client = Client(config, token_file, access_file)
     session = client.identify()
     for bad_token in ("", "0" * 64):
-        unauthorized = Client(config, token_file)
+        unauthorized = Client(config, token_file, access_file)
         if bad_token:
             unauthorized.headers["Authorization"] = "Bearer " + bad_token
         else:
@@ -85,7 +85,7 @@ def observe(config, token_file, controls, output):
             if time.monotonic() >= deadline:
                 raise
             time.sleep(.25)
-    reconnected = Client(config, token_file)
+    reconnected = Client(config, token_file, access_file)
     if reconnected.identify()["id"] != session["id"]:
         raise RuntimeError("Fresh client did not reconnect to the same session.")
     require_color(screenshot(reconnected), controls["sample"], AFTER_COLOR)
@@ -121,6 +121,11 @@ def read_live(client):
     return json.loads(client.fetch("/v1/session", retries=0))["seconds_remaining"]
 
 
+def remote_controls(client):
+    contents = client.command("files.read", {"name": "controls.json"})
+    return json.loads(b64decode(contents["result"]["base64"], validate=True))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["quick", "private", "local", "fallback", "cross"])
@@ -134,9 +139,7 @@ def main():
         config = read(args.connection)
         if config["transport"] != "private":
             raise RuntimeError("Expected a private endpoint on the other hosted runner.")
-        client = Client(config, token_file)
-        contents = client.command("files.read", {"name": "controls.json"})
-        controls = json.loads(b64decode(contents["result"]["base64"], validate=True))
+        controls = remote_controls(Client(config, token_file))
     else:
         config, controls = connection(args.work, args.work.parent)
         expected = {"quick": "cloudflare-quick", "private": "private", "local": "local", "fallback": "local"}

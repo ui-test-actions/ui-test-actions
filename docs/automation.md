@@ -133,11 +133,7 @@ Install the pinned `AXe` executable and its bundled frameworks on the GitHub run
 
 ## Connection options
 
-The default Quick Tunnel gives a temporary HTTPS address and uses the action's per-session bearer token. Its connector retries registration during startup. An exited Quick Tunnel creates a new address on a new run. Cloudflare sets no uptime guarantee and applies an in-flight request limit. [Quick Tunnel documentation](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)
-
-For a fixed hostname, provision a dedicated remotely managed Cloudflare Tunnel. Set its service to `http://127.0.0.1:8787` and configure the action with `tunnel-hostname`, `origin-port` if different, and `tunnel-token: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}`. Serialize runs per hostname with GitHub workflow concurrency, since multiple connectors on the same hostname can route to different runners. The action attempts bounded restarts of an exited named connector during a live session. The connector token is passed through a private file and stays outside the app launch environment. Named Tunnel and Cloudflare Access are configured by the consumer and have local regression coverage. Their deployment requires real Cloudflare account configuration and an external acceptance check before relying on them.
-
-Cloudflare Access is optional in front of a named tunnel. Automated clients can supply Access service-token headers in addition to the session bearer. The Python client accepts a private file containing `client_id` and `client_secret` with `--access-file`. Cloudflare terminates TLS on the edge. Run the action on dedicated GitHub-hosted test jobs with test data and least-privilege GitHub permissions. The authenticated desktop can operate any UI visible to that runner account. [Tunnel configuration](https://developers.cloudflare.com/tunnel/get-started/) · [Access service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)
+The [transport guide](transports.md) covers Quick Tunnel, Named Tunnel with Cloudflare Access, private networking, and same-runner access. The UI commands and session credentials work the same way across transports.
 
 ## Operational checks
 

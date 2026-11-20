@@ -8,6 +8,7 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from agent import Client, ClientError
+from verification.transports.check import observe, remote_controls
 
 
 def rejected(client, valid_statuses):
@@ -41,11 +42,8 @@ def main():
         edge_auth.headers.pop("CF-Access-Client-Id")
         edge_auth.headers.pop("CF-Access-Client-Secret")
         report["edge_access_rejection"] = rejected(edge_auth, {302, 303, 307, 308, 401, 403})
-    capture = valid.fetch("/v1/screenshot")
-    if not capture.startswith(b"\x89PNG\r\n\x1a\n"):
-        raise RuntimeError("The authenticated capture was not a PNG.")
     args.output.mkdir(mode=0o700)
-    (args.output / "before.png").write_bytes(capture)
+    report["visual_journey"] = observe(config, args.token_file, remote_controls(valid), args.output, args.access_file)
     deadline = time.monotonic() + initial["seconds_remaining"] + 45
     last = initial["seconds_remaining"]
     closed = []

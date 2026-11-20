@@ -4,16 +4,16 @@
 
 Use the [Named Tunnel verification workflow](../.github/workflows/named-tunnel.yml) with a dedicated remotely managed tunnel. The Cloudflare account owner must publish a hostname routed to `http://127.0.0.1:8787` and add that tunnel's connector token to this repository as the Actions secret `CLOUDFLARE_TUNNEL_TOKEN`. The runner downloads and starts the connector. The hostname should resolve to just this test tunnel during the run. The workflow serializes jobs for that hostname. [Create a Named Tunnel and route](https://developers.cloudflare.com/tunnel/get-started/)
 
-For Access, configure a self-hosted Access application for the same hostname, with a Service Auth policy allowing a dedicated test service token. Supply that service token's client ID and secret in a private local JSON file with keys `client_id` and `client_secret`. The connector token and the Access credentials serve different purposes. [Cloudflare service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)
+For Access, configure a self-hosted Access application for the same hostname, with a Service Auth policy allowing a dedicated test service token. Supply that service token's client ID and secret in a private local JSON file with keys `client_id` and `client_secret`. Set the corresponding GitHub Actions secrets `CLOUDFLARE_ACCESS_CLIENT_ID` and `CLOUDFLARE_ACCESS_CLIENT_SECRET` for the runner's route checks. The connector token and the Access credentials serve different purposes. [Cloudflare service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)
 
-Dispatch with the hostname and the test UI token digest. Download the live connection artifact and run the external acceptance script. For a tunnel without an Access application, omit the Access credential argument.
+Dispatch with the hostname and the test UI token digest. For a route without Access, set the workflow's `access` input to false. Download the live connection artifact and run the external acceptance script with Pillow installed on the observer. For a tunnel without an Access application, omit the Access credential argument.
 
 ```bash
 python3 verification/check-named-tunnel.py connection.json \
   --token-file "$TOKEN_FILE" --access-file "$ACCESS_FILE" --output named-results
 ```
 
-The script checks the runner bearer, the Access policy when configured, authenticated reconnect, a real screenshot, the final live countdown, and two terminal responses after expiry. The verification repository currently has no configured connector secret. The account-specific end-to-end check remains pending.
+The script checks the runner bearer, the Access policy when configured, authenticated reconnect, a click that changes the native fixture, before-and-after screenshots, the final live countdown, and two terminal responses after expiry. The verification repository currently has no configured connector secret. The account-specific end-to-end check remains pending.
 
 ## Physical Arabic keyboard
 

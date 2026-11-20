@@ -41,7 +41,7 @@ jobs:
           ')
           xcrun simctl bootstatus "$simulator" -b
           echo "UI_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+      - uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
         with:
           target: ios
           device: ${{ env.UI_DEVICE }}

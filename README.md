@@ -1,13 +1,13 @@
 # Live UI testing on GitHub Actions
 
-Run your app on a GitHub-hosted runner and control its live UI over HTTPS. An existing agent can inspect the screen, discover native capabilities, act, and verify the result in the same session. The browser controller shares the runner with the API. The tunnel connector runs on the runner, and the agent can use Python's standard library or an existing HTTPS client.
+Run your app on a GitHub-hosted runner and control its live UI over HTTPS. An existing agent can inspect the screen, discover native capabilities, act, and verify the result in the same session. The browser controller shares the runner with the API. The default uses a temporary Cloudflare HTTPS URL. The agent can use Python's standard library with any supported transport.
 
 ## Add the action to a workflow
 
-Start from a [desktop](examples/desktop.yml), [Android](examples/android.yml), or [iOS](examples/ios.yml) workflow and replace its build, launch, and readiness commands. The examples use the immutable v2 candidate. [Action commit](https://github.com/ui-test-actions/ui-test-actions/commit/b57a9501805d6b75f94c6fa7ac1df4e37726a959)
+Start from a [desktop](examples/desktop.yml), [Android](examples/android.yml), or [iOS](examples/ios.yml) workflow and replace its build, launch, and readiness commands. The examples pin the transport release. [Action commit](https://github.com/ui-test-actions/ui-test-actions/commit/672f07488d17d39375d8895398d72e4fb94b4437)
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+- uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
   with:
     target: linux
     token-sha256: ${{ inputs.token_sha256 }}
@@ -31,7 +31,7 @@ Declare a required string `workflow_dispatch` input named `token_sha256` and set
 | Input | Meaning |
 | --- | --- |
 | `target`, `token-sha256` | Required platform and lowercase SHA-256 digest of the one-time token. |
-| `duration-minutes` | Whole minutes after app readiness and tunnel registration, from 1 to 180. Defaults to 15. |
+| `duration-minutes` | Whole minutes after app and transport readiness, from 1 to 180. Defaults to 15. |
 | `launch`, `ready` | Optional Bash launch script and readiness check. Without `ready`, the action checks the initial screenshot. |
 | `startup-timeout-seconds` | Launch and readiness budget from 1 to 1800 seconds. Defaults to 180. |
 | `device` | ADB serial or Simulator UDID. Required if multiple eligible devices are available. |
@@ -42,7 +42,7 @@ Declare a required string `workflow_dispatch` input named `token_sha256` and set
 | `file-exchange` | Set `'1'` to enable bounded desktop file staging and retrieval. |
 | `webdriver-url`, `webdriver-capabilities` | Optional runner-local Appium server and JSON capabilities. See backend verification status before adoption. |
 | `ios-axe-path` | Optional path to a runner-installed AXe executable for native Simulator elements. The setup and tested ref are in the automation guide. |
-| `tunnel-hostname`, `tunnel-token`, `origin-port` | Optional dedicated Cloudflare named tunnel. Use a GitHub secret for its connector token. |
+| `transport`, `transport-fallback` | Select the connection method and optional startup fallback. See the [transport guide](docs/transports.md) for provider inputs and copy-paste examples. |
 
 [Automation API, platform limits, and optional inputs](docs/automation.md)
 
@@ -60,7 +60,7 @@ printf '%s\n' "$TOKEN_SHA256"
 ```
 
 1. Dispatch the workflow with the printed digest as `token_sha256`.
-2. While the job is running, download its `ui-session-…` artifact. It contains `connection.json` with the HTTPS URL, target, session ID, and expiry. The job log also displays the URL.
+2. While the job is running, download its `ui-session-…` artifact. It contains `connection.json` with the origin, transport, target, session ID, and expiry. The job log also displays the URL.
 3. Open the URL and enter the raw token from the file to use the browser controller. For an existing agent, give it the paths to `connection.json` and to the private token file on its current machine. Use an existing secure transfer if they are on different machines. Keep token contents out of chat, logs, and evidence.
 4. Run the same commands from a fresh client to reconnect. The browser and agent see the same app state. Cancel the workflow to stop early.
 
@@ -83,6 +83,6 @@ To test native peer discovery and communication between GitHub-hosted Android an
 
 See the [hosted verification index](verification/development-phase.md) for the five-platform lifetime baseline and the evidence for later capabilities.
 
-Quick Tunnels are the default. Cloudflare terminates HTTPS and gives the job a temporary hostname. Each API request checks the session bearer token. The artifact contains connection metadata. Use dedicated test jobs and synthetic data. The authenticated controller can operate the runner's visible UI. After the time limit or cancellation, the runner closes the listener and tunnel. Remove the private token file when the session ends. [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)
+Use the [transport guide](docs/transports.md) to configure Cloudflare Named Tunnel with Access, a private overlay such as WireGuard or Tailscale, or same-runner loopback. Each transport uses the session bearer and the same UI API. The runner closes the session at expiry or cancellation. The authenticated controller can operate the runner's visible UI, so use dedicated test jobs and synthetic data.
 
 The v2 APIs add Unicode text and clipboard, screenshots and recordings, structured commands, batching, and backend capability discovery. Existing v1 clients remain supported, including their ASCII text endpoint. The hosted report includes the target matrix, upstream app pins, workflow links, captured evidence, and gaps. [Five-platform hour and cancellation evidence](verification/v2/lifetime/) · [v2 verification report](verification/v2/README.md) · [original v1 runner checks](verification/README.md)

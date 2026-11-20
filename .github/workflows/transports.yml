@@ -65,7 +65,7 @@ jobs:
             printf '%s\n' "$?" > "$work/observer.exit"
           ) > "$work/observer.log" 2>&1 &
       - name: Run the published consumer action
-        uses: ui-test-actions/ui-test-actions@dacfb11def39d0b00c1f0804be8336dca27c17f7
+        uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
         with:
           target: linux
           token-sha256: ${{ steps.prepare.outputs.digest }}

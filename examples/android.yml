@@ -49,7 +49,7 @@ jobs:
           fi
           adb -s emulator-5554 shell input keyevent KEYCODE_WAKEUP
           adb -s emulator-5554 shell wm dismiss-keyguard
-      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+      - uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
         with:
           target: android
           device: emulator-5554
