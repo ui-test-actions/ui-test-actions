@@ -39,7 +39,19 @@ jobs:
           ')
           bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
+          open -a Simulator --args -CurrentDeviceUDID "$simulator"
           xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
+          xcrun simctl launch "$simulator" dev.uitest.fixture
+          observed=
+          for attempt in 1 2 3 4 5; do
+            if "$axe" describe-ui --udid "$simulator" > "$work/proof/preflight.json" 2> "$work/proof/preflight.log" &&
+                grep -q 'BEFORE' "$work/proof/preflight.json"; then
+              observed=1
+              break
+            fi
+            sleep 3
+          done
+          test -n "$observed" || { cat "$work/proof/preflight.log" >&2; exit 1; }
           echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
           echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
       - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
@@ -50,7 +62,6 @@ jobs:
           device: ${{ env.AXE_DEVICE }}
           ios-axe-path: ${{ env.AXE_BINARY }}
           app-ids: dev.uitest.fixture
-          launch: xcrun simctl launch "$AXE_DEVICE" dev.uitest.fixture
           ready: xcrun simctl spawn "$AXE_DEVICE" launchctl list | grep -q 'UIKitApplication:dev.uitest.fixture'
       - name: Assert the final app state independently of the external client
         shell: bash
