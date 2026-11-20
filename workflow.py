@@ -29,6 +29,8 @@ def source_workflow(source):
     if source.get("version") != 1:
         raise ValueError("The source must be an interaction recording or exploration report version 1.")
     if "events" in source:
+        if not isinstance(source["events"], list) or any(not isinstance(item, dict) for item in source["events"]):
+            raise ValueError("The recording must contain event objects.")
         if source.get("truncated") or any("failed" in item for item in source["events"]):
             raise ValueError("Resolve the failed or truncated recording before exporting it for replay.")
         return {"version": 1, "target": source["target"], "inputs": source["inputs"],
@@ -56,7 +58,7 @@ def bind(value, inputs):
 
 def compile_workflow(workflow, inputs, capabilities):
     if (not isinstance(workflow, dict) or workflow.get("version") != 1 or
-            set(workflow) - {"version", "steps", "target", "inputs"}):
+            set(workflow) - {"version", "steps", "target", "inputs", "blocks"}):
         raise ValueError("Expected a workflow version 1 with steps.")
     names = workflow.get("inputs", [])
     if (not isinstance(names, list) or any(not isinstance(name, str) or not NAME.fullmatch(name) for name in names)
@@ -65,7 +67,23 @@ def compile_workflow(workflow, inputs, capabilities):
     source = workflow.get("steps")
     if not isinstance(source, list) or not 1 <= len(source) <= INPUT_LIMIT:
         raise ValueError(f"A workflow requires 1–{INPUT_LIMIT} steps.")
-    steps = bind(source, inputs)
+    blocks = workflow.get("blocks", {})
+    if (not isinstance(blocks, dict) or any(not isinstance(name, str) or not NAME.fullmatch(name) or
+                                           not isinstance(items, list) or not items
+                                           for name, items in blocks.items())):
+        raise ValueError("Every reusable block needs a name and steps.")
+    steps = []
+    for item in source:
+        if isinstance(item, dict) and set(item) == {"use"}:
+            name = item["use"]
+            if not isinstance(name, str) or name not in blocks:
+                raise ValueError("A step references an unknown reusable block.")
+            steps.extend(blocks[name])
+        else:
+            steps.append(item)
+        if len(steps) > INPUT_LIMIT:
+            raise ValueError(f"Reusable blocks expanded beyond {INPUT_LIMIT} steps.")
+    steps = bind(steps, inputs)
     commands = capabilities["commands"]
     baselines = set()
     for step in steps:
@@ -134,12 +152,15 @@ def replay(client, workflow, inputs, output, screenshots=False):
         (output / "before.png").write_bytes(ui.screenshot())
         for number, step in enumerate(steps, start=1):
             result = {"step": number, "stage": "precondition"}
+            action = step.get("action")
+            if action:
+                legacy = action.get("legacy")
+                result["operation"] = f"legacy.{legacy['action']}" if legacy else action.get("command", "element.click")
             report["steps"].append(result)
             if "display" in step and list(unpack(">II", ui.screenshot()[16:24])) != step["display"]:
                 raise ValueError("The current display size differs from the recorded size.")
             if "before" in step and not ui.check(step["before"], wait=True):
                 raise ValueError("The replay precondition did not appear.")
-            action = step.get("action")
             if action:
                 result["stage"] = "action"
                 if "legacy" in action:
@@ -194,6 +215,19 @@ def read_mapping(path):
             raise ValueError("Invalid YAML workflow.") from None
     if not isinstance(value, dict):
         raise ValueError("Expected an object.")
+    stack = [(value, 0)]
+    visited = 0
+    while stack:
+        item, depth = stack.pop()
+        visited += 1
+        if depth > 40 or visited > 40000:
+            raise ValueError("The workflow document contains too many nested values.")
+        if isinstance(item, dict):
+            if any(not isinstance(key, str) for key in item):
+                raise ValueError("Workflow object keys must be strings.")
+            stack.extend((child, depth + 1) for child in item.values())
+        elif isinstance(item, list):
+            stack.extend((child, depth + 1) for child in item)
     return value
 
 
@@ -216,7 +250,11 @@ def run_options(args, workflow):
 def run_exported(workflow):
     parser = argparse.ArgumentParser(description="Replay this exported UI workflow.")
     connection_options(parser)
-    return run_options(parser.parse_args(), workflow)
+    try:
+        return run_options(parser.parse_args(), workflow)
+    except (ClientError, OSError, ValueError, KeyError, RecursionError) as error:
+        print(json.dumps({"status": "unable_to_execute", "error": str(error)}, ensure_ascii=False), file=sys.stderr)
+        return 2
 
 
 def main():

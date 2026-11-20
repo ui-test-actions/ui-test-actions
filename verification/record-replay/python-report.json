@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete"
+    },
+    {
+      "step": 2,
+      "stage": "complete"
+    },
+    {
+      "step": 3,
+      "stage": "complete"
+    },
+    {
+      "step": 4,
+      "stage": "complete"
+    },
+    {
+      "step": 5,
+      "stage": "complete"
+    },
+    {
+      "step": 6,
+      "stage": "complete"
+    },
+    {
+      "step": 7,
+      "stage": "complete"
+    }
+  ],
+  "target": "linux"
+}

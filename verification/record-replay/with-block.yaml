@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "target": "linux",
+  "inputs": [
+    "text_1",
+    "text_2",
+    "text_3"
+  ],
+  "steps": [
+    {
+      "use": "check_file_menu"
+    },
+    {
+      "use": "check_file_menu"
+    },
+    {
+      "ms": 4383,
+      "action": {
+        "command": "text.insert",
+        "params": {
+          "text": {
+            "input": "text_2"
+          },
+          "replace": true
+        }
+      }
+    },
+    {
+      "ms": 5712,
+      "action": {
+        "command": "element.wait",
+        "params": {
+          "selector": {
+            "role": "text",
+            "text": {
+              "input": "text_3"
+            },
+            "visible": true
+          },
+          "state": "present",
+          "timeout_ms": 6000
+        }
+      }
+    },
+    {
+      "ms": 6296,
+      "action": {
+        "command": "keyboard.press",
+        "params": {
+          "keys": [
+            "ctrl",
+            "s"
+          ]
+        }
+      }
+    },
+    {
+      "ms": 7056,
+      "action": {
+        "command": "element.wait",
+        "params": {
+          "selector": {
+            "role": "frame",
+            "name": "~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+            "visible": true
+          },
+          "state": "present",
+          "timeout_ms": 6000
+        }
+      }
+    }
+  ],
+  "blocks": {
+    "check_file_menu": [
+      {
+        "ms": 812,
+        "action": {
+          "command": "element.assert",
+          "params": {
+            "selector": {
+              "role": "text",
+              "text": {
+                "input": "text_1"
+              },
+              "visible": true
+            },
+            "state": "present"
+          }
+        }
+      },
+      {
+        "ms": 2450,
+        "action": {
+          "selector": {
+            "role": "menu",
+            "name": "الملف"
+          }
+        }
+      },
+      {
+        "ms": 2998,
+        "action": {
+          "command": "keyboard.press",
+          "params": {
+            "keys": [
+              "escape"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

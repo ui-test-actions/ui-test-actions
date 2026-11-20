@@ -1,7 +1,10 @@
+import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import unittest
 
 from contract import COMMANDS
-from workflow import compile_workflow, source_workflow
+from workflow import compile_workflow, read_mapping, source_workflow
 
 
 def capabilities(target="linux"):
@@ -56,3 +59,20 @@ class WorkflowTest(unittest.TestCase):
         source["status"] = "unexpected_state"
         with self.assertRaisesRegex(ValueError, "passed exploration report"):
             source_workflow(source)
+
+    def test_expands_reusable_blocks_with_inputs(self):
+        plan = {"version": 1, "inputs": ["shortcut"], "steps": [{"use": "save"}, {"use": "save"}],
+                "blocks": {"save": [{"action": {"command": "keyboard.press", "params": {"keys": {"input": "shortcut"}}}}]}}
+        stages = compile_workflow(plan, {"shortcut": ["ctrl", "s"]}, capabilities())
+        self.assertEqual(len(stages), 2)
+        self.assertEqual(stages[1]["action"]["params"]["keys"], ["ctrl", "s"])
+
+    def test_rejects_excessive_document_nesting_before_binding(self):
+        nested = []
+        for _ in range(45):
+            nested = [nested]
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "workflow.yaml"
+            path.write_text(json.dumps({"steps": nested}), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "nested values"):
+                read_mapping(path)

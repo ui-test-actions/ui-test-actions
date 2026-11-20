@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "target": "linux",
+  "inputs": [],
+  "steps": [
+    {
+      "summary": "Replace the focused editable Mousepad document with the specified multilingual text.",
+      "action": {
+        "command": "text.insert",
+        "params": {
+          "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+          "replace": true
+        }
+      },
+      "expect": {
+        "element": {
+          "selector": {
+            "role": "text",
+            "properties": {
+              "editable": true
+            },
+            "text_contains": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+            "visible": true
+          },
+          "state": "present"
+        },
+        "timeout_ms": 6000
+      },
+      "before": {
+        "element": {
+          "selector": {
+            "role": "text",
+            "text": "Original GTK test document.\n",
+            "visible": true,
+            "properties": {
+              "editable": true,
+              "focused": true
+            }
+          },
+          "state": "present"
+        }
+      }
+    },
+    {
+      "summary": "Save the changed document and check that Mousepad removes its unsaved indicator.",
+      "action": {
+        "command": "keyboard.press",
+        "params": {
+          "keys": [
+            "ctrl",
+            "s"
+          ]
+        }
+      },
+      "before": {
+        "element": {
+          "selector": {
+            "role": "frame",
+            "name": "*~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+            "visible": true
+          },
+          "state": "present"
+        },
+        "timeout_ms": 6000
+      },
+      "expect": {
+        "element": {
+          "selector": {
+            "role": "frame",
+            "name": "~/work/ui-test-actions/ui-test-actions/gtk-evidence/document.txt - Mousepad",
+            "visible": true
+          },
+          "state": "present"
+        },
+        "timeout_ms": 6000
+      }
+    },
+    {
+      "summary": "The editor still displays the exact saved multilingual document.",
+      "expect": {
+        "element": {
+          "selector": {
+            "role": "text",
+            "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!",
+            "visible": true,
+            "properties": {
+              "editable": true
+            }
+          },
+          "state": "present"
+        }
+      }
+    }
+  ]
+}

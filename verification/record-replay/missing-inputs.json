@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "status": "diverged",
+  "steps": [],
+  "target": "linux",
+  "error": "Supply exactly the workflow's declared inputs."
+}

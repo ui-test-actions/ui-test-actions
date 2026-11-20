@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "element.assert"
+    },
+    {
+      "step": 2,
+      "stage": "complete",
+      "operation": "element.click"
+    },
+    {
+      "step": 3,
+      "stage": "complete",
+      "operation": "keyboard.press"
+    },
+    {
+      "step": 4,
+      "stage": "complete",
+      "operation": "element.assert"
+    },
+    {
+      "step": 5,
+      "stage": "complete",
+      "operation": "element.click"
+    },
+    {
+      "step": 6,
+      "stage": "complete",
+      "operation": "keyboard.press"
+    },
+    {
+      "step": 7,
+      "stage": "complete",
+      "operation": "text.insert"
+    },
+    {
+      "step": 8,
+      "stage": "complete",
+      "operation": "element.wait"
+    },
+    {
+      "step": 9,
+      "stage": "complete",
+      "operation": "keyboard.press"
+    },
+    {
+      "step": 10,
+      "stage": "complete",
+      "operation": "element.wait"
+    }
+  ],
+  "target": "linux"
+}
