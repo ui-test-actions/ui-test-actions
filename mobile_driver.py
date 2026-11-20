@@ -17,6 +17,7 @@ from xml.etree import ElementTree
 
 from contract import CommandError
 from mobile import select_device
+from mobile_environment import MobileEnvironment
 
 
 _PACKAGE_ID = re.compile(r"[A-Za-z][A-Za-z_0-9]*(?:\.[A-Za-z_0-9][A-Za-z_0-9-]*)+")
@@ -259,6 +260,7 @@ class MobileDriver:
             raise ValueError("Configure a comma-separated list of URL schemes")
         if self.url_schemes & {"file", "javascript", "data", "intent"}:
             raise ValueError("Local file, executable and Android intent URL schemes are unsupported")
+        self.environment = MobileEnvironment(self, os.environ.get("UI_TEST_APP_ENVIRONMENT") or "{}")
         self.ime = None
         self.previous_rotation = None
         if target == "android":
@@ -290,7 +292,7 @@ class MobileDriver:
                 self.device = select_device(requested, available, "booted iOS simulator")
 
     def capabilities(self):
-        commands = []
+        commands = list(self.environment.capabilities())
         if self.target == "android":
             commands.extend(("pointer.click", "pointer.drag", "pointer.scroll", "keyboard.press",
                              "tree.snapshot", "device.orientation"))
@@ -515,16 +517,23 @@ class MobileDriver:
                     raise RuntimeError("Android launcher activity did not start")
         return {"id": identifier}
 
+    def _launch_simulator(self, identifier, locale, restart=True):
+        args = ["--terminate-running-process"] if restart else []
+        args.extend((self.device, identifier))
+        if locale:
+            args.extend(("-AppleLanguages", f'("{locale}")', "-AppleLocale", locale.replace("-", "_")))
+        _run("xcrun", "simctl", "launch", *args)
+
     def _ios_app(self, command, identifier):
         if command == "app.reset":
             artifact = self._app_install_path(identifier)
             self.simctl("uninstall", identifier)
             return self._install(identifier, artifact)
-        if command == "app.restart":
-            _run("xcrun", "simctl", "launch", "--terminate-running-process", self.device, identifier)
+        if command in {"app.launch", "app.restart"}:
+            self._launch_simulator(identifier, self.environment.ios_locales.get(identifier),
+                                   restart=command == "app.restart")
         else:
-            self.simctl({"app.launch": "launch", "app.close": "terminate",
-                         "app.uninstall": "uninstall"}[command], identifier)
+            self.simctl({"app.close": "terminate", "app.uninstall": "uninstall"}[command], identifier)
         return {"id": identifier}
 
     def _open_url(self, params):
@@ -561,6 +570,8 @@ class MobileDriver:
             return self._clipboard(command, params)
         if command == "app.deeplink":
             return self._open_url(params)
+        if command in self.environment.capabilities():
+            return self.environment.execute(command, params)
         if command.startswith("app."):
             identifier = self._app_id(params)
             if command == "app.metrics":
@@ -582,6 +593,7 @@ class MobileDriver:
         return handlers[command](params)
 
     def close(self):
+        self.environment.close()
         if self.target == "android":
             try:
                 if self.previous_rotation is not None:

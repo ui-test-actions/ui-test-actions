@@ -1,12 +1,16 @@
 package dev.uitest.fixture;
 
 import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -98,6 +102,16 @@ public class MainActivity extends Activity {
         if (intent.getData() != null && "ui-test-fixture".equals(intent.getData().getScheme())
                 && "verify".equals(intent.getData().getHost())) {
             status.setText("Deep link opened");
+        }
+        if (intent.getData() != null && "ui-test-fixture".equals(intent.getData().getScheme())
+                && "environment".equals(intent.getData().getHost())) {
+            Configuration config = getResources().getConfiguration();
+            String language = config.getLocales().get(0).toLanguageTag();
+            String direction = config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL ? "RTL" : "LTR";
+            String camera = checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                    ? "granted" : "denied";
+            String orientation = config.orientation == Configuration.ORIENTATION_LANDSCAPE ? "LANDSCAPE" : "PORTRAIT";
+            status.setText(String.join("\n", language, direction, "Camera " + camera, orientation));
         }
     }
 }

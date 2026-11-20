@@ -47,6 +47,7 @@ SELECTOR = obj(id=IDENTIFIER, role=IDENTIFIER, name=string(512), text=string(512
                resource_id=IDENTIFIER, enabled=BOOLEAN, visible=BOOLEAN, properties=ELEMENT_FLAGS)
 REQUEST_ID = string(64, 1, r"^[a-zA-Z0-9_.-]+$")
 APP_ID = string(255, 1, r"^[a-zA-Z0-9_.-]+$")
+LOCALE = string(35, 0, r"^(?:[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*)?$")
 
 FILE_NAME = string(100, 1, r"[a-zA-Z0-9][a-zA-Z0-9_.-]*")
 
@@ -96,6 +97,10 @@ COMMANDS = {
                        threshold=integer(1, 255), timeout_ms=integer(100, 10000)),
     "app.status": obj(("id",), id=APP_ID),
     "app.metrics": obj(("id",), id=APP_ID),
+    "app.environment.capabilities": obj(),
+    "app.locale.set": obj(("id", "locale"), id=APP_ID, locale=LOCALE),
+    "app.permission.set": obj(("id", "permission", "state"), id=APP_ID,
+                              permission=string(30, 1, r"^[a-z_]+$"), state=choice("granted", "denied", "reset")),
     "app.launch": obj(("id",), id=APP_ID),
     "app.close": obj(("id",), id=APP_ID),
     "app.restart": obj(("id",), id=APP_ID),

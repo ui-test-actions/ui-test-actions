@@ -34,6 +34,9 @@ inputs:
   app-installs:
     description: JSON mapping approved application identifiers to local build artifacts
     default: '{}'
+  app-environment:
+    description: Optional JSON mapping approved emulator or Simulator app IDs to runtime permission names
+    default: '{}'
   deeplink-schemes:
     description: Comma-separated deep-link schemes approved by the workflow
     default: ''
@@ -83,6 +86,7 @@ runs:
         UI_TEST_DESKTOP_APPS: ${{ inputs.desktop-apps }}
         UI_TEST_APP_IDS: ${{ inputs.app-ids }}
         UI_TEST_APP_INSTALLS: ${{ inputs.app-installs }}
+        UI_TEST_APP_ENVIRONMENT: ${{ inputs.app-environment }}
         UI_TEST_DEEPLINK_SCHEMES: ${{ inputs.deeplink-schemes }}
         UI_TEST_ANDROID_IME: ${{ inputs.android-ime }}
         UI_TEST_WEBDRIVER_URL: ${{ inputs.webdriver-url }}

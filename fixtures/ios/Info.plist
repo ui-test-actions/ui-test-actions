@@ -13,5 +13,11 @@
   </dict></array>
   <key>MinimumOSVersion</key><string>17.0</string>
   <key>UIDeviceFamily</key><array><integer>1</integer></array>
+  <key>CFBundleLocalizations</key><array><string>en</string><string>ar</string></array>
+  <key>NSPhotoLibraryUsageDescription</key><string>Show test authorization state.</string>
+  <key>UISupportedInterfaceOrientations</key><array>
+    <string>UIInterfaceOrientationPortrait</string><string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
   <key>UILaunchScreen</key><dict/>
 </dict></plist>

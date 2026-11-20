@@ -1,4 +1,5 @@
 import UIKit
+import Photos
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,8 +21,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         open url: URL,
         options: [UIApplication.OpenURLOptionsKey: Any] = [:]
     ) -> Bool {
-        guard url.scheme == "ui-test-fixture", url.host == "verify" else { return false }
-        (window?.rootViewController as? Fixture)?.showDeepLink()
+        guard url.scheme == "ui-test-fixture", let fixture = window?.rootViewController as? Fixture else {
+            return false
+        }
+        switch url.host {
+        case "verify": fixture.showDeepLink()
+        case "environment": fixture.showEnvironment()
+        default: return false
+        }
         return true
     }
 }
@@ -89,6 +96,20 @@ final class Fixture: UIViewController {
 
     func showDeepLink() {
         status.text = "Deep link opened"
+    }
+
+    func showEnvironment() {
+        let locale = Locale.current.identifier.replacingOccurrences(of: "_", with: "-")
+        let direction = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? "RTL" : "LTR"
+        let photos = switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+        case .authorized: "granted"
+        case .denied, .restricted: "denied"
+        case .limited: "limited"
+        default: "undetermined"
+        }
+        let orientation = view.window?.windowScene?.interfaceOrientation.isLandscape == true ? "LANDSCAPE" : "PORTRAIT"
+        status.numberOfLines = 0
+        status.text = [locale, direction, "Photos \(photos)", orientation].joined(separator: "\n")
     }
 
     @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {
