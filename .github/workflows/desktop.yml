@@ -31,11 +31,12 @@ jobs:
       - name: Install Linux fixture dependency
         if: inputs.target == 'linux'
         run: sudo apt-get update && sudo apt-get install -y python3-tk
-      - uses: ui-test-actions/ui-test-actions@af3c8d69a98c90a15c39055be1b019d82e5ce307
+      - uses: ui-test-actions/ui-test-actions@8d73e35a4acc2574c019f38d1e8d9c75813a6c02
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
           duration-minutes: ${{ inputs.duration }}
+          file-exchange: '1'
           launch: |
             fixture_python=python
             if [[ "$RUNNER_OS" == Linux ]]; then fixture_python=/usr/bin/python3; fi
