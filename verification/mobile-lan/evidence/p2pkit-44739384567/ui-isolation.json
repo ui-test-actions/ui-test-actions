@@ -1,0 +1,12 @@
+[
+  {
+    "target": "android",
+    "correct_bearer_status": 200,
+    "other_device_bearer_status": 401
+  },
+  {
+    "target": "ios",
+    "correct_bearer_status": 200,
+    "other_device_bearer_status": 401
+  }
+]

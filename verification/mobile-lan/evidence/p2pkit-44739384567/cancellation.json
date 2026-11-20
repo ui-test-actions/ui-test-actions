@@ -1,0 +1,146 @@
+{
+  "before": [
+    {
+      "target": "android",
+      "queried_at": "2026-11-20T13:10:21.731+00:00",
+      "status": 200,
+      "seconds_remaining": 89
+    },
+    {
+      "target": "ios",
+      "queried_at": "2026-11-20T13:10:21.732+00:00",
+      "status": 200,
+      "seconds_remaining": 280
+    }
+  ],
+  "cancel_requested_at": "2026-11-20T13:10:22.573+00:00",
+  "cancel_acknowledged_at": "2026-11-20T13:10:25.187+00:00",
+  "after": [
+    [
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:25.187+00:00",
+        "status": 200,
+        "seconds_remaining": 86
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:27.788+00:00",
+        "status": 200,
+        "seconds_remaining": 83
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:30.322+00:00",
+        "status": 200,
+        "seconds_remaining": 81
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:32.973+00:00",
+        "status": 200,
+        "seconds_remaining": 78
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:35.559+00:00",
+        "status": 200,
+        "seconds_remaining": 75
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:38.100+00:00",
+        "status": 200,
+        "seconds_remaining": 73
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:40.619+00:00",
+        "status": 530
+      },
+      {
+        "target": "android",
+        "queried_at": "2026-11-20T13:10:43.145+00:00",
+        "status": 530
+      }
+    ],
+    [
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:25.187+00:00",
+        "status": 200,
+        "seconds_remaining": 277
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:27.782+00:00",
+        "status": 200,
+        "seconds_remaining": 275
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:30.440+00:00",
+        "status": 200,
+        "seconds_remaining": 272
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:33.033+00:00",
+        "status": 200,
+        "seconds_remaining": 269
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:35.669+00:00",
+        "status": 200,
+        "seconds_remaining": 267
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:38.242+00:00",
+        "status": 200,
+        "seconds_remaining": 264
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:40.892+00:00",
+        "status": 200,
+        "seconds_remaining": 261
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:43.480+00:00",
+        "status": 200,
+        "seconds_remaining": 258
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:47.087+00:00",
+        "status": 200,
+        "seconds_remaining": 255
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:49.673+00:00",
+        "status": 200,
+        "seconds_remaining": 253
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:52.241+00:00",
+        "status": 200,
+        "seconds_remaining": 250
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:54.805+00:00",
+        "status": 530
+      },
+      {
+        "target": "ios",
+        "queried_at": "2026-11-20T13:10:57.467+00:00",
+        "status": 530
+      }
+    ]
+  ]
+}

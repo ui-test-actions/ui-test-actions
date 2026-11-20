@@ -1,0 +1,5 @@
+{
+  "case": "websocket_connected_without_an_authenticated_inner_TLS_session",
+  "closed_by_relay": true,
+  "websocket_close_code": 1000
+}

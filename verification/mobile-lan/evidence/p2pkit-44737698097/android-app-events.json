@@ -1,0 +1,16 @@
+{
+  "event_counts": {
+    "connection.state.changed": 2,
+    "connection.authentication.succeeded": 1
+  },
+  "observed": [
+    {
+      "event": "connection.state.changed",
+      "state": "Connected"
+    },
+    {
+      "event": "connection.authentication.succeeded",
+      "state": "authenticated"
+    }
+  ]
+}

@@ -3,5 +3,9 @@
     "from iPhone · completed",
     "200 / 200 KiB (100%)",
     "sha256 b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad"
-  ]
+  ],
+  "bytes": 204800,
+  "expected_sha256_from_ios_preset": "b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad",
+  "received_sha256": "b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad",
+  "sha256_matches": true
 }
