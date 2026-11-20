@@ -60,7 +60,7 @@ def run(client, output):
     assert baseline["running"]
     width, height = screenshot("before")
     command("app.deeplink", {"url": "ui-test-fixture://fail-crash"})
-    crash = exit_reason(4, "CRASH")
+    crash = exit_reason(4, "APP CRASH(EXCEPTION)")
     screenshot("after-crash")
     print("Android issued a native Java CRASH reason", flush=True)
     command("app.launch", {"id": APP})

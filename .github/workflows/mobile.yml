@@ -135,7 +135,7 @@ jobs:
           name: ios-environment-permissions
           path: ${{ runner.temp }}/ios-environment
           retention-days: 7
-      - uses: ui-test-actions/ui-test-actions@77fffa0eac959dc008d36f59d194c23cb3b0432b
+      - uses: ui-test-actions/ui-test-actions@f5a44184a88f6c80c31d37d0e24ea7f61cd1c588
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
@@ -173,6 +173,6 @@ jobs:
         shell: bash
         run: |
           crashes=$(adb -s "$PROOF_DEVICE" shell dumpsys activity exit-info dev.uitest.fixture)
-          printf '%s\n' "$crashes" | grep -E 'reason=(4 \(CRASH\)|6 \(ANR\))'
-          grep -qF 'reason=4 (CRASH)' <<< "$crashes"
+          printf '%s\n' "$crashes" | grep -E 'reason=(4 |6 )'
+          grep -qF 'reason=4 (APP CRASH(EXCEPTION))' <<< "$crashes"
           grep -qF 'reason=6 (ANR)' <<< "$crashes"
