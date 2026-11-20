@@ -12,7 +12,7 @@ Start from a [desktop](examples/desktop.yml), [Android](examples/android.yml), o
 | `windows` | `windows-2025` | Build or install your app, then start the GUI executable in the runner's interactive desktop. |
 | `macos` | `macos-15` | Build or install the app, then use `open -a /path/to/App.app` or your own launch script. |
 | `android` | `ubuntu-24.04` | Boot a KVM-enabled emulator and supply the emulator's ADB serial. Install the APK and launch its activity. |
-| `ios` | `macos-26` | Boot an iOS simulator on Apple Silicon with Xcode 26 or later. Install a simulator `.app` and launch its bundle ID. |
+| `ios` | `macos-26` | Boot an iOS simulator on Apple Silicon. Install a simulator `.app` and launch its bundle ID. The controller drives the visible Simulator window. |
 
 Use Python 3.12 in the job. The action runs `launch` and `ready` in Bash, including on Windows. Start long-running desktop processes in the background and have `launch` return. For a process started in a prior step, omit `launch` and point the action at the existing desktop/device. GitHub's job timeout must cover the build, startup, and full session. [GitHub-hosted runner images and labels](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
 
@@ -26,7 +26,7 @@ Use Python 3.12 in the job. The action runs `launch` and `ready` in Bash, includ
 | `launch` | Bash script to start the app. The working directory is the caller's workspace. Omit to attach. |
 | `ready` | Bash command polled until it exits zero. Use a genuine readiness test for asynchronous startup. If omitted, the action considers the app ready when launch returns and capture succeeds. |
 | `startup-timeout-seconds` | Budget for launch and readiness. Default 180, range 1–1800. |
-| `device` | Optional ADB serial or simulator UDID. If omitted, exactly one eligible device must be available. |
+| `device` | Optional ADB serial or simulator UDID. If omitted, exactly one eligible device must be available. Keep only the selected iOS Simulator window in use. |
 
 ## Connect from your machine
 
@@ -43,6 +43,7 @@ printf '%s\n' "$TOKEN_SHA256"
 1. Launch the workflow from GitHub's **Actions → Run workflow** and enter `TOKEN_SHA256` in `token_sha256`. The workflow receives the digest. Keep the original token on the client.
 2. While the job is running, download its `ui-session-…` artifact from the run page and open `connection.json`. It contains the HTTPS address, target, session ID, and expiry. You can also find the URL in the **Open UI session** step. If you have GitHub CLI, the commands below retrieve the same artifact while the job is live.
 3. Open the HTTPS address in your browser. Enter the original token, then use the displayed screenshot to click, tap, or drag. To type, select a field on the runner first and submit text through the controller. Use **Refresh screenshot** after an app animation or other delayed change.
+   On iOS, click inside the visible Simulator window. During verification, macOS showed a local-network permission prompt for Python. Dismissing it with **Don’t Allow** left the session working.
 4. Open the same address and enter the same token to reconnect. The app state is shared between connections. Cancel the job to end the session early.
 
 ```bash
@@ -86,6 +87,6 @@ ui --fail "$URL/v1/screenshot" -o after.png
 
 ## Access and expiry
 
-The managed [Cloudflare Quick Tunnel](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) forwards HTTPS traffic to the session's loopback listener. It requires no Cloudflare account. Cloudflare terminates HTTPS and Quick Tunnels have no availability SLA. The public URL is a locator. Every screen, input, and session API request checks the bearer token, which is held in the browser tab or the local terminal. The workflow publishes only the connection locator and expiry. Use non-production test data and avoid leaving sensitive screens in the test desktop.
+The managed [Cloudflare Quick Tunnel](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/) forwards HTTPS traffic to the session's loopback listener. It requires no Cloudflare account. Cloudflare terminates HTTPS and Quick Tunnels have no availability SLA. The public URL is a locator. Every screen, input, and session API request checks the bearer token, which is held in the browser tab or the local terminal. The connection artifact contains only the HTTPS address, target, session ID, and expiry. Use non-production test data and avoid leaving sensitive screens in the test desktop.
 
 The action stops the listener and tunnel when the timer expires. GitHub job cancellation stops the hold step, which signals the runner-side session to close. A successful reconnect during the live window returns the same session ID. When the job is over, the endpoint is unreachable or returns an error. Remove your local token file after use.
