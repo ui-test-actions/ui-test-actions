@@ -1,0 +1,1 @@
+{"sent": {"arp": 7, "icmp": 6, "mdns": 91, "p2pkit_mdns_query": 9, "p2pkit_mdns_response": 5, "tcp": 1352}, "received": {"arp": 7, "icmp": 6, "mdns": 18, "p2pkit_mdns_query": 6, "p2pkit_mdns_response": 6, "tcp": 1433}}

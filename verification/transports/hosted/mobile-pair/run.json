@@ -1,0 +1,71 @@
+{
+  "conclusion": "success",
+  "jobs": [
+    {
+      "checks": [
+        {
+          "completed_at": "2026-11-20T18:45:13Z",
+          "conclusion": "success",
+          "name": "Verify guest-to-Mac and Mac-to-guest IP delivery"
+        },
+        {
+          "completed_at": "2026-11-20T19:00:34Z",
+          "conclusion": "success",
+          "name": "Expose the live P2pKit app to the same external agent"
+        },
+        {
+          "completed_at": "2026-11-20T19:00:35Z",
+          "conclusion": "success",
+          "name": "Collect sanitized sample event outcomes"
+        },
+        {
+          "completed_at": "2026-11-20T19:00:35Z",
+          "conclusion": "success",
+          "name": "Retire LAN resources"
+        },
+        {
+          "completed_at": "2026-11-20T19:00:36Z",
+          "conclusion": "success",
+          "name": "Retain diagnostics"
+        }
+      ],
+      "conclusion": "success",
+      "name": "pair (android, ubuntu-24.04)",
+      "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44795041557/job/136492275444"
+    },
+    {
+      "checks": [
+        {
+          "completed_at": "2026-11-20T18:45:12Z",
+          "conclusion": "success",
+          "name": "Verify guest-to-Mac and Mac-to-guest IP delivery"
+        },
+        {
+          "completed_at": "2026-11-20T19:02:49Z",
+          "conclusion": "success",
+          "name": "Expose the live P2pKit app to the same external agent"
+        },
+        {
+          "completed_at": "2026-11-20T19:02:52Z",
+          "conclusion": "success",
+          "name": "Collect sanitized sample event outcomes"
+        },
+        {
+          "completed_at": "2026-11-20T19:03:00Z",
+          "conclusion": "success",
+          "name": "Retire LAN resources"
+        },
+        {
+          "completed_at": "2026-11-20T19:03:03Z",
+          "conclusion": "success",
+          "name": "Retain diagnostics"
+        }
+      ],
+      "conclusion": "success",
+      "name": "pair (ios, macos-26)",
+      "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44795041557/job/136492276354"
+    }
+  ],
+  "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44795041557",
+  "workflow_commit": "c7e1f0756646de1d4741a535ef0c0cea8467e13e"
+}

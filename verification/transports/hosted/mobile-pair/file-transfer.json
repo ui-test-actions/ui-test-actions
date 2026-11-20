@@ -1,0 +1,11 @@
+{
+  "observed_at": "2026-11-20T18:57:34.882608+00:00",
+  "sender": "iOS P2pKit Sample fixed 200 KiB preset",
+  "recipient": "Android P2pKit Sample",
+  "consent_observed": true,
+  "received_bytes": 204800,
+  "expected_sha256": "b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad",
+  "received_sha256": "b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad",
+  "verified_match": true,
+  "sender_visible_completion": "Completed · 200 KiB / 200 KiB"
+}

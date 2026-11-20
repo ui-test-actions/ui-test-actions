@@ -115,7 +115,7 @@ When only a process on the runner needs UI access, use `local`. A process elsewh
 
 ## Reconnect and verify
 
-Use the same trusted artifact and private token file to reconnect. Each official client request includes the session ID when the artifact carries it. The runner rejects a request addressed to a different session even if its bearer is accepted. Parallel jobs need different tokens. The action stops the API listener at expiry or cancellation and tracks the GitHub hold step with a watchdog.
+Use the same trusted artifact and private token file to reconnect. Each official client request includes the session ID when the artifact carries it. The runner rejects a request addressed to a different session even if its bearer is accepted. Parallel jobs need different tokens. The action stops the API listener at expiry or cancellation and tracks the GitHub hold step with a watchdog. Use the live `seconds_remaining` countdown for timing-sensitive work. The artifact's `expires_unix` is a wall-clock estimate from the runner.
 
 The Python client retries transient failures on reads and retries a command when the runner explicitly reports `session_busy` before dispatch. If a mutation loses its response, it returns `action_outcome_unknown`. Inspect the live result before retrying. If you resend with the same request ID, the runner can return its cached response within the session's 64-response replay window. Creating a new session does not replay commands. The browser controller uses the same bearer and refuses redirects on API requests.
 

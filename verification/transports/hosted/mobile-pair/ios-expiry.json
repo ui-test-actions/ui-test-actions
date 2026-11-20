@@ -1,0 +1,44 @@
+[
+  {
+    "at": "2026-11-20T18:53:42.316+00:00",
+    "http": 200,
+    "seconds_remaining": 536,
+    "deadline_estimate": 1795201357.9717293
+  },
+  {
+    "at": "2026-11-20T19:02:33.057+00:00",
+    "http": 200,
+    "seconds_remaining": 6,
+    "deadline_estimate": 1795201358.5289598,
+    "relative_to_advertised_seconds": -14.941
+  },
+  {
+    "at": "2026-11-20T19:02:35.156+00:00",
+    "http": 200,
+    "seconds_remaining": 4,
+    "deadline_estimate": 1795201358.7581785,
+    "relative_to_advertised_seconds": -12.841
+  },
+  {
+    "at": "2026-11-20T19:02:37.077+00:00",
+    "http": 200,
+    "seconds_remaining": 2,
+    "deadline_estimate": 1795201358.768295,
+    "relative_to_advertised_seconds": -10.921
+  },
+  {
+    "at": "2026-11-20T19:02:39.007+00:00",
+    "http": 502,
+    "relative_to_advertised_seconds": -8.991
+  },
+  {
+    "at": "2026-11-20T19:02:40.844+00:00",
+    "http": 530,
+    "relative_to_advertised_seconds": -7.154
+  },
+  {
+    "at": "2026-11-20T19:02:42.703+00:00",
+    "http": 530,
+    "relative_to_advertised_seconds": -5.295
+  }
+]
