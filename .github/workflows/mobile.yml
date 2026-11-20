@@ -20,6 +20,11 @@ on:
         description: Minutes after app readiness
         type: string
         default: '15'
+      scenario:
+        description: Enable environment mutation for the approved test fixture
+        type: choice
+        options: [session, environment]
+        default: session
 permissions:
   contents: read
 jobs:
@@ -83,13 +88,14 @@ jobs:
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
           echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+      - uses: ui-test-actions/ui-test-actions@13dc5b59c0561855107eabe1bafc6077849d5755
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
           duration-minutes: ${{ inputs.duration }}
           device: ${{ env.PROOF_DEVICE }}
           app-ids: dev.uitest.fixture
+          app-environment: ${{ inputs.scenario == 'environment' && (inputs.target == 'android' && '{"dev.uitest.fixture":["camera"]}' || '{"dev.uitest.fixture":["photos"]}') || '{}' }}
           deeplink-schemes: ui-test-fixture
           app-installs: >-
             {"dev.uitest.fixture":"${{ inputs.target == 'android' && format('{0}/build/android/fixture.apk', github.workspace) || format('{0}/LiveUIFixture.app', runner.temp) }}"}
@@ -107,3 +113,9 @@ jobs:
             else
               xcrun simctl spawn "$PROOF_DEVICE" launchctl list | grep -q 'UIKitApplication:dev.uitest.fixture'
             fi
+      - name: Check Android app settings were restored
+        if: inputs.scenario == 'environment' && inputs.target == 'android'
+        shell: bash
+        run: |
+          adb -s "$PROOF_DEVICE" shell cmd locale get-app-locales dev.uitest.fixture | grep -F ' are []'
+          adb -s "$PROOF_DEVICE" shell dumpsys package dev.uitest.fixture | grep -F 'android.permission.CAMERA: granted=false'
