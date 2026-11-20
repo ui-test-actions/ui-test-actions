@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 import sys
 import time
-import tkinter as tk
 
 
 WIDTH, HEIGHT = 620, 420
@@ -17,6 +16,8 @@ TEXT = "مَرْحَبًا ١٢٣؟\nNotes 👩🏽‍💻 and العربية"
 
 
 def main(directory):
+    import tkinter as tk
+
     root = tk.Tk()
     root.title("Native interaction fixture")
     root.geometry(f"{WIDTH}x{HEIGHT}+48+65")

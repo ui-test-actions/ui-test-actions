@@ -509,10 +509,13 @@ def main(control):
             binary = download_tunnel(work)
             device = os.environ.get("UI_TEST_DEVICE", "")
             webdriver_url = os.environ.get("UI_TEST_WEBDRIVER_URL")
-            native_ios = target == "ios" and bool(webdriver_url)
+            axe_path = os.environ.get("UI_TEST_IOS_AXE")
+            if axe_path and (target != "ios" or webdriver_url):
+                raise ValueError("ios-axe-path requires an iOS Simulator without Appium.")
+            native_ios = target == "ios" and bool(webdriver_url or axe_path)
             if target != "android" and not native_ios:
                 setup_desktop(target, processes)
-            if target == "ios" and not native_ios:
+            if target == "ios" and not webdriver_url:
                 from mobile import open_simulator
                 open_simulator(device)
             exchange = None
@@ -540,6 +543,9 @@ def main(control):
                     webdriver_url, json.loads(os.environ["UI_TEST_WEBDRIVER_CAPS"]), driver, target,
                 )
                 backend = driver
+            elif axe_path:
+                from ios_axe import AxeSimulator
+                driver = backend = AxeSimulator(axe_path, driver)
             with Session(digest, backend, target, driver, port, exchange) as session:
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)

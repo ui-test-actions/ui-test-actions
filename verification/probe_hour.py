@@ -71,7 +71,9 @@ def run(connection, token_file, evidence):
     before = screenshot(client)
     actions = [
         {"command": "pointer.click", "params": dict(zip(("x", "y"), ENTRY))},
-        {"command": "text.insert", "params": {"text": LATE_TEXT, "replace": True}},
+        {"command": "keyboard.press", "params": {"keys": ["home"]}},
+        {"command": "keyboard.press", "params": {"keys": ["shift", "end"]}},
+        {"command": "text.insert", "params": {"text": LATE_TEXT}},
         {"command": "pointer.click", "params": dict(zip(("x", "y"), APPLY))},
     ]
     result = client.batch(actions)
@@ -83,7 +85,9 @@ def run(connection, token_file, evidence):
     if not result["ok"] or difference is None:
         raise AssertionError("The late fixture status label did not change.")
     client.command("pointer.click", dict(zip(("x", "y"), ENTRY)))
-    client.command("keyboard.press", {"keys": ["ctrl", "a"]})
+    client.command("keyboard.press", {"keys": ["home"]})
+    client.command("keyboard.press", {"keys": ["shift", "end"]})
+    client.command("clipboard.set", {"text": "copy-back sentinel"})
     client.command("keyboard.press", {"keys": ["ctrl", "c"]})
     if client.command("clipboard.get", {})["result"]["text"] != LATE_TEXT:
         raise AssertionError("The late text did not survive an exact clipboard copy-back.")

@@ -46,6 +46,9 @@ inputs:
   webdriver-capabilities:
     description: Trusted W3C Appium capabilities JSON supplied by the workflow
     default: '{}'
+  ios-axe-path:
+    description: Optional absolute path to a workflow-installed AXe executable for iOS Simulator
+    default: ''
   file-exchange:
     description: Enable the private, bounded file exchange on a desktop runner
     default: '0'
@@ -81,6 +84,7 @@ runs:
         UI_TEST_ANDROID_IME: ${{ inputs.android-ime }}
         UI_TEST_WEBDRIVER_URL: ${{ inputs.webdriver-url }}
         UI_TEST_WEBDRIVER_CAPS: ${{ inputs.webdriver-capabilities }}
+        UI_TEST_IOS_AXE: ${{ inputs.ios-axe-path }}
         UI_TEST_FILE_EXCHANGE: ${{ inputs.file-exchange }}
         UI_TEST_TUNNEL_HOSTNAME: ${{ inputs.tunnel-hostname }}
         UI_TEST_TUNNEL_TOKEN: ${{ inputs.tunnel-token }}
