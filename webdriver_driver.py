@@ -109,7 +109,7 @@ class WebDriverMobile:
         self.mobile = mobile
         self.scale = (1, 1)
         self.viewport = (1, 1)
-        result = self.connection.request("POST", "/session", {"capabilities": {"alwaysMatch": options}}, timeout=180)
+        result = self.connection.request("POST", "/session", {"capabilities": {"alwaysMatch": options}}, timeout=300)
         identifier = result.get("sessionId") if isinstance(result, dict) else None
         if not isinstance(identifier, str) or not SESSION.fullmatch(identifier):
             raise RuntimeError("Appium did not return a valid session identifier.")

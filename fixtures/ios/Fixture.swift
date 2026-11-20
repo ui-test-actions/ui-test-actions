@@ -14,6 +14,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = appWindow
         return true
     }
+
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        guard url.scheme == "ui-test-fixture", url.host == "verify" else { return false }
+        (window?.rootViewController as? Fixture)?.showDeepLink()
+        return true
+    }
 }
 
 final class Fixture: UIViewController {
@@ -60,6 +70,7 @@ final class Fixture: UIViewController {
         stack.spacing = 18
         stack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stack)
+        view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:))))
         let safe = view.safeAreaLayoutGuide
         NSLayoutConstraint.activate([
             stack.topAnchor.constraint(equalTo: safe.topAnchor, constant: 24),
@@ -74,6 +85,18 @@ final class Fixture: UIViewController {
             field.heightAnchor.constraint(equalToConstant: 42),
             apply.heightAnchor.constraint(equalToConstant: 45),
         ])
+    }
+
+    func showDeepLink() {
+        status.text = "Deep link opened"
+    }
+
+    @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {
+        if gesture.scale > 1.15 {
+            status.text = "Pinch expanded"
+        } else if gesture.scale < 0.85 {
+            status.text = "Pinch contracted"
+        }
     }
 
     @objc private func applyChange() {

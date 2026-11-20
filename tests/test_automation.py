@@ -2,6 +2,7 @@ import hashlib
 from http.client import HTTPConnection
 import io
 import json
+import socket
 import threading
 import time
 import unittest
@@ -137,6 +138,42 @@ class AutomationTests(unittest.TestCase):
         client.join(3)
         self.assertEqual(self.action("text.insert", {"text": "A"}, "busy"), results[0])
         self.assertEqual(len(self.driver.calls), 1)
+
+    def test_disconnected_client_can_replay_an_applied_mutation(self):
+        request = {"command": "text.insert", "params": {"text": "انقطع الاتصال"}, "request_id": "disconnect"}
+        pending = HTTPConnection("127.0.0.1", self.server.server_port, timeout=3)
+        self.driver.release.clear()
+        pending.request("POST", "/v2/action", json.dumps(request), {
+            "Authorization": "Bearer " + self.token, "Content-Type": "application/json",
+        })
+        self.assertTrue(self.driver.started.wait(2))
+        pending.sock.shutdown(socket.SHUT_RDWR)
+        pending.close()
+        self.driver.release.set()
+        deadline = time.monotonic() + 3
+        while True:
+            status, reply = self.request("/v2/action", request)
+            if status != 429 or time.monotonic() >= deadline:
+                break
+            time.sleep(.05)
+        self.assertEqual(status, 200)
+        self.assertTrue(reply["ok"])
+        self.assertEqual(self.driver.calls, [("text.insert", {"text": "انقطع الاتصال"})])
+
+    def test_visual_recording_contains_observed_frames(self):
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("Pillow is installed on session runners")
+        self.assertEqual(self.action("recording.start", {"duration_seconds": 2})[0], 200)
+        time.sleep(.6)
+        self.assertEqual(self.action("text.insert", {"text": "change"})[0], 200)
+        time.sleep(.65)
+        status, result = self.action("recording.stop", {})
+        self.assertEqual(status, 200)
+        self.assertGreaterEqual(result["result"]["frames"], 2)
+        with Image.open(io.BytesIO(self.server.automation.recording.latest)) as image:
+            self.assertGreaterEqual(image.n_frames, 2)
 
     def test_visual_observation(self):
         try:

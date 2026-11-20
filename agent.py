@@ -20,7 +20,10 @@ class NoRedirect(HTTPRedirectHandler):
 
 
 class ClientError(Exception):
-    pass
+    def __init__(self, message, status=None, payload=None):
+        super().__init__(message)
+        self.status = status
+        self.payload = payload
 
 
 class Client:
@@ -53,11 +56,14 @@ class Client:
                     raise ClientError("The response exceeds the client download limit.")
                 return data
             except HTTPError as error:
-                raw = error.read(4096)
+                raw = error.read(512 * 1024)
                 try:
-                    status = json.loads(raw).get("error", {})
-                except (ValueError, AttributeError):
-                    status = {}
+                    error_payload = json.loads(raw)
+                    if not isinstance(error_payload, dict):
+                        error_payload = {}
+                except ValueError:
+                    error_payload = {}
+                status = error_payload.get("error", {})
                 busy = error.code == 429 and (
                     isinstance(status, dict) and status.get("code") == "session_busy"
                     or body is None and status == "The session is busy"
@@ -72,7 +78,7 @@ class Client:
                     status = status.get("code", "http_error")
                 else:
                     status = "http_error"
-                raise ClientError(f"HTTP {error.code} ({status})") from None
+                raise ClientError(f"HTTP {error.code} ({status})", error.code, error_payload) from None
             except (URLError, TimeoutError, HTTPException, ConnectionError):
                 if attempt >= retries:
                     raise ClientError("The session could not be reached. Confirm the job is still running.") from None
@@ -135,7 +141,9 @@ def main():
             data = client.batch(json.loads(args.steps_file.read_text(encoding="utf-8")), args.request_id)
         print(json.dumps(data, ensure_ascii=False, indent=2))
     except ClientError as error:
-        parser.exit(1, f"{error}\n")
+        result = error.payload or {"error": {"message": str(error)}}
+        print(json.dumps({"http_status": error.status, **result}, ensure_ascii=False), file=sys.stderr)
+        sys.exit(1)
     except (ValueError, OSError, KeyError, TypeError):
         parser.exit(1, "Could not read the input or decode the server response.\n")
 

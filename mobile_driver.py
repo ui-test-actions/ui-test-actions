@@ -15,6 +15,7 @@ from urllib.parse import urlsplit
 import uuid
 from xml.etree import ElementTree
 
+from contract import CommandError
 from mobile import select_device
 
 
@@ -320,7 +321,7 @@ class MobileDriver:
 
         app = NSWorkspace.sharedWorkspace().frontmostApplication()
         if not app or str(app.bundleIdentifier()).lower() != "com.apple.iphonesimulator":
-            raise ValueError("Click inside the iOS Simulator before sending text")
+            raise CommandError("focus_required", "Click inside the iOS Simulator before sending text.", 409)
 
     def _clipboard(self, command, params):
         if self.ime:

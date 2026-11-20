@@ -4,7 +4,7 @@ import re
 from urllib.parse import urlsplit
 
 
-class CommandError(Exception):
+class CommandError(ValueError):
     def __init__(self, code, message, status=400):
         super().__init__(message)
         self.code = code
