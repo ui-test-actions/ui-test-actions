@@ -377,7 +377,7 @@ class Handler(BaseHTTPRequestHandler):
                     self.reply(410, {"error": "Session ended"})
                     return
                 self.server.automation.snapshot = None
-                self.apply_input(data)
+                self.server.automation.trace.legacy(self.apply_input(data))
         except (ValueError, KeyError, TypeError) as error:
             message = str(error) if type(error) is ValueError else "Malformed input"
             self.reply(400, {"error": message})
@@ -422,7 +422,7 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(entry, str) or not re.fullmatch(r"[ -~]{1,256}", entry):
                 raise ValueError("Text must be 1–256 printable ASCII characters")
             self.server.backend.type_text(entry)
-            return
+            return {"action": "type", "text": entry}
         if kind not in ("click", "swipe"):
             raise ValueError("Expected click, swipe, or type")
         coordinates = [("x", "y")] if kind == "click" else [("x", "y"), ("end_x", "end_y")]
@@ -437,6 +437,8 @@ class Handler(BaseHTTPRequestHandler):
         if type(milliseconds) is not int or not 100 <= milliseconds <= 3000:
             raise ValueError("duration_ms must be between 100 and 3000")
         self.server.backend.pointer(kind, points, milliseconds / 1000)
+        return {"action": kind, "duration_ms": milliseconds,
+                **{key: data[key] for pair in coordinates for key in pair}}
 
 
 def launch_app(timeout):

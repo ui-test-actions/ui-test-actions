@@ -40,6 +40,9 @@ class Driver:
         Image.new("RGB", (64, 48), (100 if self.text else 0, 0, 0)).save(buffer, "PNG")
         return buffer.getvalue()
 
+    def pointer(self, kind, points, seconds):
+        self.calls.append((kind, points, seconds))
+
 
 class AutomationTests(unittest.TestCase):
     def setUp(self):
@@ -106,6 +109,31 @@ class AutomationTests(unittest.TestCase):
         ]})
         self.assertEqual((status, result["error"]["code"]), (400, "invalid_arguments"))
         self.assertEqual(self.driver.calls, [])
+
+    def test_interaction_trace_is_authenticated_and_records_each_applied_action_once(self):
+        start = {"command": "trace.start"}
+        self.assertEqual(self.request("/v2/action", start, authenticated=False)[0], 401)
+        self.assertEqual(self.action("trace.start", {})[0], 200)
+        message = "Arabic value العربية"
+        first = self.action("text.insert", {"text": message}, "repeat-in-trace")
+        self.assertEqual(self.action("text.insert", {"text": message}, "repeat-in-trace"), first)
+        snapshot = self.action("tree.snapshot", {})[1]["result"]
+        self.assertEqual(self.action("element.click", {"snapshot_id": snapshot["snapshot_id"], "id": "edit"})[0], 200)
+        self.assertEqual(self.request("/v1/input", {"action": "click", "x": 3, "y": 8})[0], 200)
+        self.assertEqual(self.action("element.assert", {"selector": {"text": message}, "state": "present"})[0], 200)
+        status, reply = self.action("trace.stop", {})
+        self.assertEqual(status, 200)
+        trace = reply["result"]
+        self.assertNotIn(message, json.dumps(trace, ensure_ascii=False))
+        self.assertEqual(trace["inputs"], ["text_1", "text_2"])
+        events = trace["events"]
+        self.assertEqual(len(events), 4)
+        self.assertEqual(events[0]["action"]["params"]["text"], {"input": "text_1"})
+        self.assertEqual(events[1]["action"], {"selector": {"role": "text", "name": "Edit"}})
+        self.assertEqual(events[2]["action"]["legacy"]["x"], 3)
+        self.assertEqual(events[2]["display"], [64, 48])
+        self.assertEqual(events[3]["action"]["params"]["selector"]["text"], {"input": "text_2"})
+        self.assertEqual(self.action("trace.stop", {})[0], 409)
 
     def test_replay_cache_is_bounded_and_refreshes_an_observed_id(self):
         old = {"text": "old"}

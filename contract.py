@@ -81,6 +81,8 @@ COMMANDS = {
                         timeout_ms=integer(100, 10000)),
     "recording.start": obj(duration_seconds=integer(2, 30)),
     "recording.stop": obj(),
+    "trace.start": obj(capture_text=BOOLEAN),
+    "trace.stop": obj(),
     "visual.sample": obj(region=RECT),
     "visual.wait": obj(("baseline",), baseline=IDENTIFIER, condition=choice("changed", "stable"),
                        threshold=integer(1, 255), timeout_ms=integer(100, 10000)),

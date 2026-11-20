@@ -10,6 +10,7 @@ import subprocess
 import time
 
 from recording import Recording
+from interaction_trace import InteractionTrace
 
 from contract import BATCH_REQUEST, COMMANDS, OPERATION_REQUEST, CommandError, validate, validate_operation
 
@@ -30,13 +31,14 @@ class Automation:
         self.driver = driver
         self.exchange = exchange
         self.recording = Recording(session)
+        self.trace = InteractionTrace(session)
         self.replies = OrderedDict()
         self.baselines = OrderedDict()
         self.snapshot = None
 
     def capabilities(self):
         provided = set(self.driver.capabilities()) if self.driver else set()
-        provided.update(("visual.sample", "visual.wait", "recording.start", "recording.stop"))
+        provided.update(("visual.sample", "visual.wait", "recording.start", "recording.stop", "trace.start", "trace.stop"))
         if self.exchange:
             provided.update(("files.list", "files.stage", "files.read"))
         if "tree.snapshot" in provided:
@@ -73,13 +75,16 @@ class Automation:
                 if batch and time.monotonic() >= batch_deadline:
                     raise CommandError("batch_timeout", "The batch time budget has elapsed.", 408)
                 result = self.dispatch(name, params)
+                self.trace.command(name, params, result)
                 output.append({"command": name, "ok": True, "result": result})
             except CommandError as error:
                 status = error.status
+                self.trace.command(name, params, error=error.code)
                 output.append({"command": name, "ok": False, "error": error_result(error)})
                 break
             except LookupError:
                 status = 404
+                self.trace.command(name, params, error="target_not_found")
                 output.append({"command": name, "ok": False, "error": {
                     "code": "target_not_found", "message": "The requested driver target is no longer available.",
                 }})
@@ -92,6 +97,7 @@ class Automation:
                 else:
                     code, message, status = "driver_error", "The platform command failed.", 502
                 LOG.warning("Command %s failed (%s)", name, type(error).__name__)
+                self.trace.command(name, params, error=code)
                 output.append({"command": name, "ok": False, "error": {"code": code, "message": message}})
                 break
         else:
@@ -122,6 +128,10 @@ class Automation:
             return self.recording.start(params.get("duration_seconds", 10))
         if name == "recording.stop":
             return self.recording.finish()
+        if name == "trace.start":
+            return self.trace.start(params.get("capture_text", False))
+        if name == "trace.stop":
+            return self.trace.stop()
         if name.startswith("files."):
             return self.exchange.execute(name, params)
         if name.startswith("pointer."):
@@ -200,7 +210,10 @@ class Automation:
         right, bottom = min(width, bounds["x"] + bounds["width"]), min(height, bounds["y"] + bounds["height"])
         if left >= right or top >= bottom:
             raise CommandError("element_not_actionable", "The element is outside the visible screen.", 422)
-        return self.dispatch("pointer.click", {"x": (left + right) // 2, "y": (top + bottom) // 2})
+        x, y = (left + right) // 2, (top + bottom) // 2
+        result = self.dispatch("pointer.click", {"x": x, "y": y})
+        self.trace.click(node, current["nodes"], x, y)
+        return result
 
     def wait_for(self, observe, timeout_ms):
         deadline = time.monotonic() + timeout_ms / 1000

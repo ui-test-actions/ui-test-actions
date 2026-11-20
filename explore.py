@@ -102,16 +102,9 @@ class CommandPlanner:
             raise ExplorationError("The planner must return one JSON object.") from None
 
 
-class Exploration:
-    def __init__(self, client, planner, output, objective, steps):
+class UI:
+    def __init__(self, client):
         self.client = client
-        self.planner = planner
-        self.output = output
-        self.objective = objective
-        self.steps = steps
-        self.commands = {}
-        self.report = {"version": 1, "objective": objective, "status": "running",
-                       "steps": [], "states": {}, "transitions": []}
 
     def call(self, command, params):
         result = self.client.command(command, params)
@@ -124,35 +117,6 @@ class Exploration:
         if not image.startswith(PNG):
             raise ExplorationError("The runner did not return a PNG screenshot.")
         return image
-
-    def observe(self, label):
-        image = self.screenshot()
-        screenshot = f"{label}.png"
-        (self.output / screenshot).write_bytes(image)
-        tree = self.call("tree.snapshot", {"limit": 400}) if "tree.snapshot" in self.commands else None
-        nodes = []
-        if tree:
-            for node in tree["nodes"]:
-                if not node.get("visible"):
-                    continue
-                safe = {key: node[key] for key in NODE_FIELDS if key in node}
-                properties = safe.get("properties", {})
-                safe["properties"] = {key: properties[key] for key in ELEMENT_FLAGS["properties"] if key in properties}
-                if properties.get("password"):
-                    safe["name"] = safe["text"] = ""
-                nodes.append(safe)
-        semantic = [[node.get(key, "") for key in ("role", "name", "text", "resource_id", "enabled")]
-                    for node in nodes]
-        signature = json.dumps(semantic, ensure_ascii=False, sort_keys=True).encode() if semantic else image
-        state = sha256(signature).hexdigest()[:20]
-        record = self.report["states"].setdefault(state, {"visits": 0, "first": screenshot, "visible_nodes": len(nodes)})
-        record["visits"] += 1
-        observation = {"state": state, "screenshot": str((self.output / screenshot).resolve()),
-                       "tree": nodes if tree is not None else None,
-                       "tree_truncated": tree.get("truncated", False) if tree else False}
-        (self.output / f"{label}.json").write_text(json.dumps(observation, ensure_ascii=False, indent=2) + "\n",
-                                                  encoding="utf-8")
-        return observation
 
     def check(self, expect, *, wait, require_complete=True):
         if "element" in expect:
@@ -191,6 +155,47 @@ class Exploration:
         if seen["matched"] != 1:
             raise ExplorationError(f"The click selector resolved to {seen['matched']} actionable elements.")
         return self.call("element.click", {"id": seen["nodes"][0]["id"], "snapshot_id": seen["snapshot_id"]})
+
+
+class Exploration(UI):
+    def __init__(self, client, planner, output, objective, steps):
+        super().__init__(client)
+        self.planner = planner
+        self.output = output
+        self.objective = objective
+        self.steps = steps
+        self.commands = {}
+        self.report = {"version": 1, "objective": objective, "status": "running",
+                       "steps": [], "states": {}, "transitions": []}
+
+    def observe(self, label):
+        image = self.screenshot()
+        screenshot = f"{label}.png"
+        (self.output / screenshot).write_bytes(image)
+        tree = self.call("tree.snapshot", {"limit": 400}) if "tree.snapshot" in self.commands else None
+        nodes = []
+        if tree:
+            for node in tree["nodes"]:
+                if not node.get("visible"):
+                    continue
+                safe = {key: node[key] for key in NODE_FIELDS if key in node}
+                properties = safe.get("properties", {})
+                safe["properties"] = {key: properties[key] for key in ELEMENT_FLAGS["properties"] if key in properties}
+                if properties.get("password"):
+                    safe["name"] = safe["text"] = ""
+                nodes.append(safe)
+        semantic = [[node.get(key, "") for key in ("role", "name", "text", "resource_id", "enabled")]
+                    for node in nodes]
+        signature = json.dumps(semantic, ensure_ascii=False, sort_keys=True).encode() if semantic else image
+        state = sha256(signature).hexdigest()[:20]
+        record = self.report["states"].setdefault(state, {"visits": 0, "first": screenshot, "visible_nodes": len(nodes)})
+        record["visits"] += 1
+        observation = {"state": state, "screenshot": str((self.output / screenshot).resolve()),
+                       "tree": nodes if tree is not None else None,
+                       "tree_truncated": tree.get("truncated", False) if tree else False}
+        (self.output / f"{label}.json").write_text(json.dumps(observation, ensure_ascii=False, indent=2) + "\n",
+                                                  encoding="utf-8")
+        return observation
 
     def write_report(self):
         temporary = self.output / "report.tmp"
