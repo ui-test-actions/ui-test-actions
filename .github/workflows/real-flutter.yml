@@ -37,7 +37,10 @@ jobs:
           tar -xzf "$app/localsend.tar.gz" -C "$app"
           executable=$(find "$app" -name localsend_app -type f -print -quit)
           test -x "$executable"
+          settings="$(dirname "$executable")/settings.json"
+          printf '%s\n' '{}' > "$settings"
           echo "FLUTTER_APP=$executable" >> "$GITHUB_ENV"
+          echo "FLUTTER_SETTINGS=$settings" >> "$GITHUB_ENV"
           apt=(sudo apt-get -o DPkg::Lock::Timeout=60 -o Acquire::Retries=1 -o Acquire::http::Timeout=20)
           packages=(fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1 libegl1 libegl-mesa0 libgl1 libopengl0
                     libgles2 libgl1-mesa-dri libgbm1)
@@ -49,7 +52,7 @@ jobs:
         with:
           target: linux
           token-sha256: ${{ inputs.token_sha256 }}
-          duration-minutes: '10'
+          duration-minutes: '6'
           launch: |
             XDG_CONFIG_HOME="$RUNNER_TEMP/localsend-settings" LIBGL_ALWAYS_SOFTWARE=1 \
               "$FLUTTER_APP" > flutter-evidence/app.log 2>&1 &
@@ -63,17 +66,14 @@ jobs:
       - name: Assert saved Flutter settings
         shell: bash
         run: |
-          python - "$RUNNER_TEMP/localsend-settings" <<'PY'
+          python - "$FLUTTER_SETTINGS" <<'PY'
           import json, pathlib, sys
-          for candidate in pathlib.Path(sys.argv[1]).rglob("shared_preferences.json"):
-              preferences = json.loads(candidate.read_text())
-              selected = {key.rsplit(".", 1)[-1]: value for key, value in preferences.items()}
-              if selected.get("ls_alias") == "مختبر UI ١٢٣ 🌍" and str(selected.get("ls_locale")).split("-")[0] == "ar":
-                  result = {"app": "LocalSend", "alias": selected["ls_alias"], "locale": selected["ls_locale"], "result": "passed"}
-                  pathlib.Path("flutter-evidence/persistence.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
-                  break
-          else:
+          preferences = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          selected = {key.rsplit(".", 1)[-1]: value for key, value in preferences.items()}
+          if selected.get("ls_alias") != "مختبر UI ١٢٣ 🌍" or str(selected.get("ls_locale")).split("-")[0] != "ar":
               raise SystemExit("LocalSend did not persist the expected alias and Arabic locale")
+          result = {"app": "LocalSend", "alias": selected["ls_alias"], "locale": selected["ls_locale"], "result": "passed"}
+          pathlib.Path("flutter-evidence/persistence.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
           PY
       - name: Retain Flutter evidence
         if: ${{ !cancelled() }}

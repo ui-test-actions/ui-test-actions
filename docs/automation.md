@@ -77,6 +77,8 @@ Start recording with `recording.start`, drive the app, and call `recording.stop`
 
 Pointer coordinates are pixels measured from the top-left of the latest screenshot. The desktop driver provides pointer motion, click counts, hold, mouse buttons, scrolling, dragging, and native window commands. Android's default ADB driver uses single-touch events, with absolute orientation controls through `device.orientation`. The visible iOS Simulator has `device.rotate` for a relative quarter-turn and `pointer.pinch` for the Simulator's mirrored two-finger gesture. Place the cursor on one side of the simulator's gesture center and move out to spread or in to contract. Capture again after rotating. Use app-specific state to verify a gesture took effect.
 
+Positive `pointer.scroll` offsets move through content to the right or down. Each backend converts the offsets into its native wheel or touch movement. Use short increments and check the resulting viewport when the item you need is off screen.
+
 Appium provides `pointer.gesture` for synchronized touch tracks when configured. A touch track starts with a point at zero milliseconds. All tracks share the same sequence of segment durations.
 
 On desktop, configure a fixed command for a process the session should own. This enables `app.status`, `app.launch`, `app.close`, and `app.restart` for that ID. Use an executable that stays associated with the app process. Capture current windows separately with `windows.list`; process exit alone does not establish that the app's UI is ready.
@@ -109,6 +111,12 @@ webdriver-capabilities: >-
 
 The action selects the same device for Appium, screenshots, and native helpers. The Appium adapter uses W3C touch input and the page source, then destroys its session at teardown. Startup depends on the Appium version, Xcode, and the test application. See the verification report for the hosted status of this opt-in path. [WebDriver routes](https://appium.io/docs/en/latest/reference/api/webdriver/) · [XCUITest driver](https://appium.github.io/appium-xcuitest-driver/latest/reference/capabilities/)
 
+## Optional iOS Simulator accessibility
+
+The native AXe mode exposes Simulator application elements and a screenshot in the same device coordinate space. It supports unique element targeting, text assertions, Unicode paste, hardware-key chords, and simulated scroll and drag. Use the visible Simulator mode for host dialogs and the Simulator's mirrored pinch gesture. The AXe view captures the simulated device display.
+
+Install the pinned `AXe` executable and its bundled frameworks on the GitHub runner. Select an explicit device UDID, boot that simulator, open its Simulator window, install and launch the application, and wait for `axe describe-ui --udid "$UI_DEVICE"` to show the application. Attach the action by supplying `target: ios`, `device`, and the absolute `ios-axe-path`. Follow the hosted workflow for the tested action SHA, the release checksum, and the readiness approach. The agent still uses the same token, HTTPS connection artifact, and standard-library client. [Hosted workflow](../.github/workflows/ios-ax.yml) · [AXe release](https://github.com/cameroncooke/AXe/releases/tag/v2.1.1)
+
 ## Connection options
 
 The default Quick Tunnel gives a temporary HTTPS address and uses the action's per-session bearer token. Its connector retries registration during startup. An exited Quick Tunnel creates a new address on a new run. Cloudflare sets no uptime guarantee and applies an in-flight request limit. [Quick Tunnel documentation](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)
@@ -132,6 +140,8 @@ Cloudflare Access is optional in front of a named tunnel. Automated clients can 
 ## Development and releases
 
 The composite action starts the loopback listener and publishes connection metadata, then its hold step renews a short lease while the job is alive. The session owns request authentication, expiry, and driver serialization. The automation layer handles schemas, replay, visual evidence, and selectors. The platform adapters translate typed operations into native events. Keep the action bearer and any Cloudflare credentials in their separate trust boundaries.
+
+The gesture adapter uses WebDriver's synchronized action ticks. The agent workflow adopts explicit wait conditions and re-observation before targeting a control. Accessible bounds can still be obscured by a transient dialog, so pair native element assertions with the screenshot where focus or overlapping UI matters. [WebDriver actions](https://www.w3.org/TR/webdriver2/#actions) · [Playwright actionability checks](https://playwright.dev/docs/actionability)
 
 Run the same portable tests as the hosted regression workflow before changing the action pin.
 

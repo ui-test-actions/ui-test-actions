@@ -43,3 +43,9 @@ Use the coordinates from the current screenshot. On Android, handle any system p
 ```
 
 At session expiry, CI runs the storage assertion and uploads the `real-app-…` artifact. Keep the external screenshots alongside that artifact so a reviewer can compare the UI change with the saved state.
+
+## Additional hosted journeys
+
+- Mousepad runs in an Arabic GTK locale. Replace the seeded document and wait for its exact text through AT-SPI. Open the File menu and invoke the visible Save item. Open a separately staged file through the native chooser and check the text in the editor. [Workflow](../../.github/workflows/real-gtk.yml)
+- LocalSend uses pinned Flutter releases on Windows and Linux. Change the Language setting to Arabic, return to Settings, and scroll down to the network alias. Enter `مختبر UI ١٢٣ 🌍`, confirm it, and restart the app's local receiver from Settings. On Windows, the alias dialog accepted Select All and Paste from its context menu. The workflow publishes the selected alias and locale from the saved settings. [Windows workflow](../../.github/workflows/real-flutter-windows.yml) · [Linux workflow](../../.github/workflows/real-flutter.yml)
+- draw.io opens a seeded diagram in Chrome using the pinned web release. Double-click the rectangle and enter `مسار الاختبار ١٢٣ — Web UI 🌍`, then drag the rectangle away from its original position. Save the editable `.drawio` file under the runner workspace's `drawio-evidence` directory. The verifier checks the label and changed coordinates in the actual saved diagram. [Workflow](../../.github/workflows/real-web.yml) · [draw.io self-hosting documentation](https://github.com/jgraph/drawio/wiki/Self-Hosting)

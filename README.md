@@ -41,6 +41,7 @@ Declare a required string `workflow_dispatch` input named `token_sha256` and set
 | `android-ime` | Enables the test-only Android Unicode input method by default. Set `'0'` to disable it. |
 | `file-exchange` | Set `'1'` to enable bounded desktop file staging and retrieval. |
 | `webdriver-url`, `webdriver-capabilities` | Optional runner-local Appium server and JSON capabilities. See backend verification status before adoption. |
+| `ios-axe-path` | Optional path to a runner-installed AXe executable for native Simulator elements. The setup and tested ref are in the automation guide. |
 | `tunnel-hostname`, `tunnel-token`, `origin-port` | Optional dedicated Cloudflare named tunnel. Use a GitHub secret for its connector token. |
 
 [Automation API, platform limits, and optional inputs](docs/automation.md)

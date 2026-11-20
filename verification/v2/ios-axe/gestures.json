@@ -1,0 +1,53 @@
+{
+  "before": [
+    "Swipe row 1",
+    "Swipe row 2",
+    "Swipe row 3",
+    "Swipe row 4",
+    "Swipe row 5",
+    "Swipe row 6",
+    "Swipe row 7",
+    "Swipe row 8",
+    "Swipe row 9",
+    "Swipe row 10",
+    "Swipe row 11",
+    "Swipe row 12",
+    "Swipe row 13"
+  ],
+  "after_drag": [
+    "Swipe row 3",
+    "Swipe row 4",
+    "Swipe row 5",
+    "Swipe row 6",
+    "Swipe row 7",
+    "Swipe row 8",
+    "Swipe row 9",
+    "Swipe row 10",
+    "Swipe row 11",
+    "Swipe row 12",
+    "Swipe row 13",
+    "Swipe row 14",
+    "Swipe row 15",
+    "Swipe row 16",
+    "Swipe row 17",
+    "Swipe row 18",
+    "Swipe row 19",
+    "Swipe row 20"
+  ],
+  "after_scroll": [
+    "Swipe row 1",
+    "Swipe row 2",
+    "Swipe row 3",
+    "Swipe row 4",
+    "Swipe row 5",
+    "Swipe row 6",
+    "Swipe row 7",
+    "Swipe row 8",
+    "Swipe row 9",
+    "Swipe row 10",
+    "Swipe row 11",
+    "Swipe row 12",
+    "Swipe row 13",
+    "Swipe row 14"
+  ]
+}
