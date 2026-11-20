@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "status": "passed",
+  "devices": {
+    "android": "android",
+    "ios": "ios"
+  },
+  "stages": [
+    {
+      "name": "Observe independent Android and iOS clipboard state",
+      "status": "passed",
+      "devices": {
+        "android": {
+          "status": "passed",
+          "report": "stage-01/android/report.json",
+          "elapsed_ms": 4123
+        },
+        "ios": {
+          "status": "passed",
+          "report": "stage-01/ios/report.json",
+          "elapsed_ms": 25199
+        }
+      },
+      "checks": [
+        {
+          "bindings": [
+            "sender_test_value",
+            "android_source"
+          ],
+          "equal": true
+        },
+        {
+          "bindings": [
+            "other_test_value",
+            "ios_original"
+          ],
+          "equal": true
+        }
+      ],
+      "captured": [
+        "android_source",
+        "ios_original"
+      ]
+    },
+    {
+      "name": "Carry an observed value across the barrier to iOS",
+      "status": "passed",
+      "devices": {
+        "ios": {
+          "status": "passed",
+          "report": "stage-02/ios/report.json",
+          "elapsed_ms": 47745
+        }
+      },
+      "checks": [
+        {
+          "bindings": [
+            "android_source",
+            "ios_copy"
+          ],
+          "equal": true
+        }
+      ],
+      "captured": [
+        "ios_copy"
+      ]
+    },
+    {
+      "name": "Send the actual iOS sample file and observe Android consent",
+      "status": "passed",
+      "devices": {
+        "ios": {
+          "status": "passed",
+          "report": "stage-03/ios/report.json",
+          "elapsed_ms": 10536
+        },
+        "android": {
+          "status": "passed",
+          "report": "stage-03/android/report.json",
+          "elapsed_ms": 11415
+        }
+      },
+      "checks": [],
+      "captured": []
+    },
+    {
+      "name": "Accept the file, confirm transfer completion and verify receipt digest",
+      "status": "passed",
+      "devices": {
+        "android": {
+          "status": "passed",
+          "report": "stage-04/android/report.json",
+          "elapsed_ms": 15704
+        }
+      },
+      "checks": [
+        {
+          "bindings": [
+            "expected_digest_label",
+            "android_digest_label"
+          ],
+          "equal": true
+        }
+      ],
+      "captured": [
+        "android_digest_label"
+      ]
+    }
+  ]
+}

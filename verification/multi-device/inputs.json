@@ -1,0 +1,5 @@
+{
+  "sender_test_value": "Android المصدر 🌍",
+  "other_test_value": "iOS الوجهة",
+  "expected_digest_label": "sha256 b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad"
+}

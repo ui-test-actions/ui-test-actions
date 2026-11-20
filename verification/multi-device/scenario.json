@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "inputs": [
+    "sender_test_value",
+    "other_test_value",
+    "expected_digest_label"
+  ],
+  "stages": [
+    {
+      "name": "Observe independent Android and iOS clipboard state",
+      "devices": {
+        "android": {
+          "workflow": {
+            "version": 1,
+            "inputs": [
+              "sender_test_value"
+            ],
+            "steps": [
+              {
+                "action": {
+                  "command": "clipboard.set",
+                  "params": {
+                    "text": {
+                      "input": "sender_test_value"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "capture": {
+            "android_source": {
+              "kind": "clipboard_text"
+            }
+          }
+        },
+        "ios": {
+          "workflow": {
+            "version": 1,
+            "inputs": [
+              "other_test_value"
+            ],
+            "steps": [
+              {
+                "action": {
+                  "command": "clipboard.set",
+                  "params": {
+                    "text": {
+                      "input": "other_test_value"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "capture": {
+            "ios_original": {
+              "kind": "clipboard_text"
+            }
+          }
+        }
+      },
+      "equal": [
+        [
+          "sender_test_value",
+          "android_source"
+        ],
+        [
+          "other_test_value",
+          "ios_original"
+        ]
+      ]
+    },
+    {
+      "name": "Carry an observed value across the barrier to iOS",
+      "devices": {
+        "ios": {
+          "workflow": {
+            "version": 1,
+            "inputs": [
+              "android_source"
+            ],
+            "steps": [
+              {
+                "action": {
+                  "command": "clipboard.set",
+                  "params": {
+                    "text": {
+                      "input": "android_source"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "capture": {
+            "ios_copy": {
+              "kind": "clipboard_text"
+            }
+          }
+        }
+      },
+      "equal": [
+        [
+          "android_source",
+          "ios_copy"
+        ]
+      ]
+    },
+    {
+      "name": "Send the actual iOS sample file and observe Android consent",
+      "devices": {
+        "ios": {
+          "workflow": {
+            "version": 1,
+            "inputs": [],
+            "steps": [
+              {
+                "action": {
+                  "command": "pointer.click",
+                  "params": {
+                    "x": 458,
+                    "y": 286
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "android": {
+          "workflow": {
+            "version": 1,
+            "inputs": [],
+            "steps": [
+              {
+                "action": {
+                  "command": "pointer.drag",
+                  "params": {
+                    "x": 12,
+                    "y": 550,
+                    "end_x": 12,
+                    "end_y": 150,
+                    "duration_ms": 450
+                  }
+                }
+              },
+              {
+                "action": {
+                  "command": "element.wait",
+                  "params": {
+                    "selector": {
+                      "role": "text",
+                      "text": "Incoming file offers (1)",
+                      "visible": true
+                    },
+                    "state": "present",
+                    "timeout_ms": 10000
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Accept the file, confirm transfer completion and verify receipt digest",
+      "devices": {
+        "android": {
+          "workflow": {
+            "version": 1,
+            "inputs": [],
+            "steps": [
+              {
+                "action": {
+                  "selector": {
+                    "role": "text",
+                    "text": "Accept"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "command": "element.wait",
+                  "params": {
+                    "selector": {
+                      "role": "text",
+                      "text": "from iPhone · completed",
+                      "visible": true
+                    },
+                    "state": "present",
+                    "timeout_ms": 10000
+                  }
+                }
+              },
+              {
+                "action": {
+                  "command": "element.wait",
+                  "params": {
+                    "selector": {
+                      "role": "text",
+                      "text": "200 / 200 KiB (100%)",
+                      "visible": true
+                    },
+                    "state": "present",
+                    "timeout_ms": 10000
+                  }
+                }
+              }
+            ]
+          },
+          "capture": {
+            "android_digest_label": {
+              "kind": "element_text",
+              "selector": {
+                "role": "text",
+                "text": {
+                  "input": "expected_digest_label"
+                }
+              }
+            }
+          }
+        }
+      },
+      "equal": [
+        [
+          "expected_digest_label",
+          "android_digest_label"
+        ]
+      ]
+    }
+  ]
+}

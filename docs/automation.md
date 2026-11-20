@@ -6,6 +6,8 @@ Use [agent-led UI exploration](exploration.md) to give the agent a test objectiv
 
 Use [record and replay](record-replay.md) to turn actions from a live session or a passing exploration report into a parameterized workflow.
 
+Use [multi-device orchestration](multi-device.md) to synchronize workflows and share test context across live sessions.
+
 Download the current job's `connection.json` and keep the private session token in a file on the agent host. Its URL is an HTTPS origin and its session ID identifies the intended runner. The command-line client checks that ID before making a request and refuses HTTP redirects.
 
 ```bash

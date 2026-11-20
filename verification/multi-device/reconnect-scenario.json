@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "inputs": [
+    "expected_digest_label"
+  ],
+  "stages": [
+    {
+      "name": "Reconnect to both live devices and check the receipt and sender progress bar",
+      "devices": {
+        "android": {
+          "workflow": {
+            "version": 1,
+            "inputs": [
+              "expected_digest_label"
+            ],
+            "steps": [
+              {
+                "expect": {
+                  "element": {
+                    "selector": {
+                      "role": "text",
+                      "text": {
+                        "input": "expected_digest_label"
+                      },
+                      "visible": true
+                    },
+                    "state": "present"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "ios": {
+          "workflow": {
+            "version": 1,
+            "steps": [
+              {
+                "expect": {
+                  "pixel": {
+                    "x": 600,
+                    "y": 384,
+                    "rgb": [
+                      0,
+                      134,
+                      251
+                    ],
+                    "tolerance": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

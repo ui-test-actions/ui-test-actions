@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "status": "passed",
+  "steps": [
+    {
+      "step": 1,
+      "stage": "complete",
+      "operation": "element.click"
+    },
+    {
+      "step": 2,
+      "stage": "complete",
+      "operation": "element.wait"
+    },
+    {
+      "step": 3,
+      "stage": "complete",
+      "operation": "element.wait"
+    }
+  ],
+  "target": "android"
+}

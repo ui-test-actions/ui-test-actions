@@ -39,7 +39,7 @@ To finish, return `"finish": true` with a summary and a final expectation. A run
 
 ## Evidence
 
-The private output directory contains PNGs, structured observations, and `report.json`. The report records which state fingerprints were observed, which actions changed them, and which expectations passed. It reports the observed route through the application. A failed postcondition captures the current UI and rechecks the same expectation without repeating the action. An action or planner error and an unmet UI expectation have different statuses. Screenshots and app text should be reviewed before publishing them as artifacts.
+The private output directory contains PNGs, structured observations, and `report.json`. The report records which state fingerprints were observed, which actions changed them, and which expectations passed. A failed postcondition captures the current UI and rechecks the same expectation through read-only observations. An action or planner error and an unmet UI expectation have different statuses. Review screenshots and app text before publishing them as artifacts.
 
 The design follows the same principles as actionability checks and retried assertions in established UI test tools. Deterministic selectors, expected outcomes, and bounded waits remain part of the test even when an agent chooses the next step. [Playwright actionability](https://playwright.dev/docs/actionability) · [Playwright assertions](https://playwright.dev/docs/test-assertions) · [Playwright Test Agents](https://playwright.dev/docs/test-agents)
 

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "status": "passed",
+  "devices": {
+    "android": "android",
+    "ios": "ios"
+  },
+  "stages": [
+    {
+      "name": "Reconnect to both live devices and check the receipt and sender progress bar",
+      "status": "passed",
+      "devices": {
+        "android": {
+          "status": "passed",
+          "report": "stage-01/android/report.json",
+          "elapsed_ms": 5629
+        },
+        "ios": {
+          "status": "passed",
+          "report": "stage-01/ios/report.json",
+          "elapsed_ms": 6800
+        }
+      },
+      "checks": [],
+      "captured": []
+    }
+  ]
+}
