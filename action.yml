@@ -42,7 +42,11 @@ runs:
         UI_TEST_DEVICE: ${{ inputs.device }}
         UI_TEST_IOS_BUNDLE_ID: ${{ inputs.ios-bundle-id }}
         PYTHONUNBUFFERED: '1'
-      run: python "$UI_TEST_ACTION_PATH/lifecycle.py" start
+      run: |
+        UI_TEST_BASH="$BASH"
+        if [[ "$RUNNER_OS" == Windows ]]; then UI_TEST_BASH="$(cygpath -aw "$BASH")"; fi
+        export UI_TEST_BASH
+        python "$UI_TEST_ACTION_PATH/lifecycle.py" start
     - name: Publish live connection
       id: publish
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

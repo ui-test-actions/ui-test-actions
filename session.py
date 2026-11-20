@@ -331,16 +331,17 @@ def start_tunnel(binary, port, log, processes):
 
 def launch_app(timeout):
     deadline = time.monotonic() + timeout
+    bash = os.environ.get("UI_TEST_BASH", "bash")
     launch = os.environ.get("UI_TEST_LAUNCH")
     if launch:
         print("Starting the application")
-        run("bash", "-e", "-c", launch, timeout=timeout)
+        run(bash, "-e", "-c", launch, timeout=timeout)
     ready = os.environ.get("UI_TEST_READY")
     if ready:
         print("Waiting for the application readiness check")
         while (remaining := deadline - time.monotonic()) > 0:
             result = subprocess.run(
-                ["bash", "-c", ready], timeout=remaining, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                [bash, "-c", ready], timeout=remaining, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
             if result.returncode == 0:
                 return
