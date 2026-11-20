@@ -1,11 +1,30 @@
 name: Verify hosted mobile LAN transport
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: IP transport check or live P2pKit sample pair
+        type: choice
+        options: [transport, apps]
+        default: transport
+      android_app_run:
+        description: Android sample artifact build run
+        type: string
+      ios_app_run:
+        description: iOS sample artifact build run
+        type: string
+      android_token_sha256:
+        description: SHA-256 of the external Android UI token
+        type: string
+      ios_token_sha256:
+        description: SHA-256 of the external iOS UI token
+        type: string
 permissions:
   contents: read
   actions: read
 jobs:
   pair:
-    timeout-minutes: 23
+    timeout-minutes: 38
     strategy:
       fail-fast: false
       matrix:
@@ -42,12 +61,30 @@ jobs:
         env:
           LAN_KEEP: '1'
         run: bash "verification/mobile-lan/preflight-$LAN_TARGET.sh"
+      - name: Fetch and validate the pinned P2pKit sample
+        if: inputs.mode == 'apps'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SAMPLE_RUN: ${{ matrix.target == 'android' && inputs.android_app_run || inputs.ios_app_run }}
+          UI_DIGEST: ${{ matrix.target == 'android' && inputs.android_token_sha256 || inputs.ios_token_sha256 }}
+        run: bash verification/mobile-lan/prepare-sample.sh "$LAN_TARGET" "$SAMPLE_RUN" "$UI_DIGEST"
       - name: Connect the two isolated LAN interfaces
         env:
           GH_TOKEN: ${{ github.token }}
         run: bash verification/mobile-lan/trial.sh bridge "$LAN_TARGET"
       - name: Verify guest-to-Mac and Mac-to-guest IP delivery
         run: bash verification/mobile-lan/trial.sh verify "$LAN_TARGET"
+      - name: Expose the live P2pKit app to the same external agent
+        if: inputs.mode == 'apps'
+        uses: ui-test-actions/ui-test-actions@032f3405eb0ee69f59957594a52b4b632d7778e9
+        with:
+          target: ${{ matrix.target }}
+          token-sha256: ${{ matrix.target == 'android' && inputs.android_token_sha256 || inputs.ios_token_sha256 }}
+          duration-minutes: '15'
+          device: ${{ env.LAN_DEVICE }}
+          app-ids: ${{ env.LAN_APP_ID }}
+          ios-axe-path: ${{ env.LAN_AXE }}
+          launch: bash verification/mobile-lan/launch-sample.sh "$LAN_TARGET"
       - name: Retire LAN resources
         if: always()
         run: bash verification/mobile-lan/trial.sh cleanup "$LAN_TARGET"

@@ -2,9 +2,11 @@
 
 import argparse
 import asyncio
+from collections import Counter
 from contextlib import suppress
 from http import HTTPStatus
 from ipaddress import IPv4Address
+import json
 from pathlib import Path
 import re
 import ssl
@@ -20,6 +22,7 @@ STREAM_CHUNK = 16384
 MDNS = IPv4Address("224.0.0.251").packed
 ANDROID = IPv4Address("192.168.137.10").packed
 IOS = IPv4Address("192.168.137.2").packed
+P2PKIT_SERVICE = b"\x08_p2pkit2\x04_tcp"
 
 
 def permitted(frame, source, peer):
@@ -47,7 +50,7 @@ def permitted(frame, source, peer):
     return dst_port == 5353 or destination == peer and src_port == 5353
 
 
-async def records(reader, writer, source, peer):
+async def records(reader, writer, source, peer, counts):
     while True:
         header = await reader.readexactly(2)
         length, = struct.unpack("!H", header)
@@ -55,6 +58,13 @@ async def records(reader, writer, source, peer):
             raise ValueError("Invalid LAN frame length")
         frame = await reader.readexactly(length)
         if permitted(frame, source, peer):
+            if frame[12:14] == b"\x08\x06":
+                counts["arp"] += 1
+            else:
+                counts[{1: "icmp", 6: "tcp", 17: "mdns"}[frame[23]]] += 1
+                if frame[23] == 17 and P2PKIT_SERVICE in frame[42:].lower():
+                    kind = "response" if int.from_bytes(frame[44:46], "big") & 0x8000 else "query"
+                    counts[f"p2pkit_mdns_{kind}"] += 1
             writer.write(header + frame)
             await writer.drain()
 
@@ -71,20 +81,36 @@ async def duplex(left, right):
         await asyncio.gather(*tasks, return_exceptions=True)
 
 
-async def frame_session(reader, writer, port, interface, source, peer, ready):
+async def frame_session(reader, writer, args, source, peer):
     process = await asyncio.create_subprocess_exec(
-        str(port), interface, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
+        str(args.frame_port), args.interface, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
+    sent, received = Counter(), Counter()
+
+    async def evidence():
+        while True:
+            dump_counts()
+            await asyncio.sleep(3)
+
+    def dump_counts():
+        temporary = args.stats.with_suffix(".tmp")
+        temporary.write_text(json.dumps({"sent": sent, "received": received}) + "\n", encoding="utf-8")
+        temporary.replace(args.stats)
+
+    monitor = asyncio.create_task(evidence())
     try:
         if await asyncio.wait_for(process.stdout.readexactly(2), timeout=5) != b"\0\0":
             raise RuntimeError("Native frame port failed its readiness check")
-        ready.touch()
+        args.ready.touch()
         print("Authenticated LAN peer attached", flush=True)
-        await duplex(records(process.stdout, writer, source, peer),
-                     records(reader, process.stdin, peer, source))
+        await duplex(records(process.stdout, writer, source, peer, sent),
+                     records(reader, process.stdin, peer, source, received))
     except (asyncio.IncompleteReadError, ConnectionError):
         pass
     finally:
-        ready.unlink(missing_ok=True)
+        monitor.cancel()
+        await asyncio.gather(monitor, return_exceptions=True)
+        dump_counts()
+        args.ready.unlink(missing_ok=True)
         if process.returncode is None:
             with suppress(ProcessLookupError):
                 process.terminate()
@@ -136,7 +162,7 @@ async def server(args):
             writer.close()
             return
         async with active:
-            await frame_session(reader, writer, args.frame_port, args.interface, ANDROID, IOS, args.ready)
+            await frame_session(reader, writer, args, ANDROID, IOS)
 
     async with await asyncio.start_server(peer, "127.0.0.1", 0, ssl=tls(args, True), ssl_handshake_timeout=6) as inner:
         port = inner.sockets[0].getsockname()[1]
@@ -188,7 +214,7 @@ async def client(args):
                 if asyncio.get_running_loop().time() >= deadline:
                     raise
                 await asyncio.sleep(3)
-        await frame_session(reader, writer, args.frame_port, args.interface, IOS, ANDROID, args.ready)
+        await frame_session(reader, writer, args, IOS, ANDROID)
 
 
 def main():
@@ -200,6 +226,7 @@ def main():
     parser.add_argument("--key", required=True, type=Path)
     parser.add_argument("--peer-cert", required=True, type=Path)
     parser.add_argument("--ready", required=True, type=Path)
+    parser.add_argument("--stats", required=True, type=Path)
     parser.add_argument("--port", type=int, default=8788)
     parser.add_argument("--origin")
     args = parser.parse_args()
