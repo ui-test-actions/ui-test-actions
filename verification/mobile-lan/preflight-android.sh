@@ -40,4 +40,8 @@ adb -s emulator-5554 shell dumpsys connectivity > "$out/connectivity.txt"
 cat "$out/guest-address.txt"
 grep -Eq 'inet 192\.168\.137\.(1[0-9]|20)/24' "$out/guest-address.txt"
 adb -s emulator-5554 shell ping -c 1 -W 3 192.168.137.1
-adb -s emulator-5554 emu kill
+if [[ "${LAN_KEEP:-0}" == 1 ]]; then
+  trap - EXIT
+else
+  adb -s emulator-5554 emu kill
+fi
