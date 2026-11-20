@@ -5,9 +5,11 @@ from base64 import b64decode
 from hashlib import sha256
 import json
 from pathlib import Path
+import socket
 import subprocess
 import sys
 import time
+from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from agent import Client, ClientError
@@ -126,6 +128,26 @@ def remote_controls(client):
     return json.loads(b64decode(contents["result"]["base64"], validate=True))
 
 
+def network_reconnect(config, token_file):
+    client = Client(config, token_file)
+    initial = client.identify()
+    origin = urlsplit(client.origin)
+    rule = ["OUTPUT", "-o", "ui-wg", "-p", "tcp", "--dport", str(origin.port), "-j", "REJECT"]
+    subprocess.run(["iptables", "-I", *rule], check=True)
+    try:
+        try:
+            with socket.create_connection((origin.hostname, origin.port), timeout=2):
+                raise RuntimeError("The interruption did not block the private UI endpoint.")
+        except OSError:
+            pass
+    finally:
+        subprocess.run(["iptables", "-D", *rule], check=True)
+    restored = Client(config, token_file).identify()
+    if restored["id"] != initial["id"]:
+        raise RuntimeError("The restored network reached a different session.")
+    return {"traffic_blocked": True, "same_session_after_recovery": True}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["quick", "private", "local", "fallback", "cross"])
@@ -146,6 +168,8 @@ def main():
         if config["transport"] != expected[args.mode]:
             raise RuntimeError("The consumer action published an unexpected transport.")
     report = observe(config, token_file, controls, output)
+    if args.mode == "cross":
+        report["network_interruption"] = network_reconnect(config, token_file)
     if args.mode != "cross":
         if read(args.work / "app-state.json") != [TEST_TEXT]:
             raise RuntimeError("The app did not receive the exact Unicode text once.")
