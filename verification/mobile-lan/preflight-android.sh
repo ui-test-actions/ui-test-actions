@@ -5,6 +5,8 @@ sdk="${ANDROID_HOME:?}"
 image='system-images;android-35;google_apis;x86_64'
 out="${RUNNER_TEMP:?}/mobile-lan-preflight"
 mkdir -p "$out"
+sudo apt-get -qq update
+sudo apt-get -qq install -y dnsmasq-base libpulse0 libxcb-cursor0
 sudo chmod a+rw /dev/kvm
 "$sdk/cmdline-tools/latest/bin/sdkmanager" "$image"
 echo no | "$sdk/cmdline-tools/latest/bin/avdmanager" create avd --force --name ui-lan --package "$image"
@@ -13,8 +15,6 @@ sudo ip tuntap add dev uilan0 mode tap user "$(id -un)"
 trap 'sudo ip link del uilan0 2>/dev/null || true' EXIT
 sudo ip address add 192.168.137.1/24 dev uilan0
 sudo ip link set uilan0 up
-sudo apt-get -qq update
-sudo apt-get -qq install -y dnsmasq-base
 sudo dnsmasq --conf-file=/dev/null --port=0 --interface=uilan0 --bind-interfaces \
   --dhcp-range=192.168.137.10,192.168.137.20,255.255.255.0,5m --dhcp-leasefile="$out/dhcp.leases" \
   --pid-file="$out/dnsmasq.pid" --log-dhcp --log-facility="$out/dhcp.log"
