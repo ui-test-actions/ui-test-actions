@@ -1,0 +1,99 @@
+[
+  {
+    "summary": {
+      "mode": "workflow",
+      "device": "linux",
+      "status": "passed",
+      "started_at": "2026-11-20T15:34:57+00:00",
+      "finished_at": "2026-11-20T15:35:02+00:00"
+    },
+    "report": {
+      "version": 1,
+      "status": "passed",
+      "steps": [
+        {
+          "step": 1,
+          "stage": "complete",
+          "client_assertion_ms": 697.271
+        }
+      ],
+      "target": "linux"
+    }
+  },
+  {
+    "summary": {
+      "mode": "workflow",
+      "device": "linux",
+      "status": "diverged",
+      "started_at": "2026-11-20T15:35:04+00:00",
+      "finished_at": "2026-11-20T15:35:08+00:00"
+    },
+    "report": {
+      "version": 1,
+      "status": "diverged",
+      "steps": [
+        {
+          "step": 1,
+          "stage": "assertion"
+        }
+      ],
+      "target": "linux",
+      "error": "The replay expectation did not appear."
+    }
+  },
+  {
+    "summary": {
+      "mode": "coordinate",
+      "device": null,
+      "status": "passed",
+      "started_at": "2026-11-20T15:37:09+00:00",
+      "finished_at": "2026-11-20T15:37:16+00:00"
+    },
+    "report": {
+      "version": 1,
+      "status": "passed",
+      "devices": {
+        "linux": "linux",
+        "windows": "windows"
+      },
+      "stages": [
+        {
+          "name": "Set and check two live native clipboards",
+          "status": "passed",
+          "devices": {
+            "linux": {
+              "status": "passed",
+              "report": "stage-01/linux/report.json",
+              "elapsed_ms": 3942
+            },
+            "windows": {
+              "status": "passed",
+              "report": "stage-01/windows/report.json",
+              "elapsed_ms": 4384
+            }
+          },
+          "checks": [
+            {
+              "bindings": [
+                "linux_clipboard",
+                "expected"
+              ],
+              "equal": true
+            },
+            {
+              "bindings": [
+                "windows_clipboard",
+                "expected"
+              ],
+              "equal": true
+            }
+          ],
+          "captured": [
+            "linux_clipboard",
+            "windows_clipboard"
+          ]
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "steps": [
+    {
+      "command": "clipboard.get",
+      "ok": true,
+      "result": {
+        "text": "مرحبًا ١٢٣ — SDK 🌍"
+      }
+    },
+    {
+      "command": "windows.list",
+      "ok": true,
+      "result": {
+        "windows": [
+          {
+            "id": "0x100076",
+            "title": "Live UI test fixture",
+            "process_id": 1060,
+            "bounds": {
+              "x": 60,
+              "y": 60,
+              "width": 576,
+              "height": 389
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "completed": 2
+}

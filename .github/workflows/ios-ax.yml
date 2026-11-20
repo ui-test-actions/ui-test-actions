@@ -5,14 +5,19 @@ on:
       app:
         description: App for the external accessibility journey
         type: choice
-        options: [fixture, thought-meadow]
+        options: [fixture, thought-meadow, p2pkit]
         default: fixture
+      p2pkit_build_run:
+        description: Checked P2pKit iOS Simulator build artifact run
+        type: string
+        default: '44733760941'
       token_sha256:
         description: SHA-256 digest of the external client token
         required: true
         type: string
 permissions:
   contents: read
+  actions: read
 jobs:
   ios:
     runs-on: macos-26
@@ -30,6 +35,11 @@ jobs:
         run: bash verification/real-apps/prepare.sh ios
       - name: Prepare the pinned AXe adapter and app
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTION_APP: ${{ inputs.app }}
+          P2PKIT_BUILD_RUN: ${{ inputs.p2pkit_build_run }}
+          UI_DIGEST: ${{ inputs.token_sha256 }}
         run: |
           work="$RUNNER_TEMP/ios-ax"
           mkdir -p "$work/axe" "$work/proof"
@@ -40,7 +50,7 @@ jobs:
           tar -xzf "$work/$asset" -C "$work/axe"
           axe=$(find "$work/axe" -name axe -type f -print -quit)
           test -x "$axe"
-          if [[ "${{ inputs.app }}" == thought-meadow ]]; then
+          if [[ "$ACTION_APP" == thought-meadow ]]; then
             simulator="$REAL_APP_DEVICE"
             bundle=com.alawyadnan.waraqa
           else
@@ -53,10 +63,19 @@ jobs:
                      for item in devices[key] if item["name"].startswith("iPhone")))
           PY
             )
-            bundle=dev.uitest.fixture
-            bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
             xcrun simctl bootstatus "$simulator" -b
-            xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
+            if [[ "$ACTION_APP" == p2pkit ]]; then
+              mkdir -p "$RUNNER_TEMP/mobile-lan-preflight"
+              printf '%s\n' "$simulator" > "$RUNNER_TEMP/mobile-lan-preflight/device"
+              LAN_IOS_BACKEND=visible bash verification/mobile-lan/prepare-sample.sh ios "$P2PKIT_BUILD_RUN" "$UI_DIGEST"
+              bundle=dev.p2pkit.sample
+              app="$RUNNER_TEMP/mobile-lan-sample/p2pkit-sample.app"
+            else
+              bundle=dev.uitest.fixture
+              app="$work/LiveUIFixture.app"
+              bash fixtures/ios/build.sh "$app"
+            fi
+            xcrun simctl install "$simulator" "$app"
           fi
           open -a Simulator --args -CurrentDeviceUDID "$simulator"
           xcrun simctl launch "$simulator" "$bundle"
@@ -90,7 +109,7 @@ jobs:
           echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
           echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
           echo "AXE_APP=$bundle" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@032f3405eb0ee69f59957594a52b4b632d7778e9
+      - uses: ui-test-actions/ui-test-actions@2ef8755b2707f82c048eb6d53cc0426349e60350
         with:
           target: ios
           duration-minutes: '10'

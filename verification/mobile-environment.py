@@ -112,8 +112,10 @@ def main():
         assert_visible("landscape", "RTL", "LANDSCAPE")
         command("app.locale.set", {"id": APP, "locale": ""})
         if target == "ios":
+            command("device.rotate", {"direction": "right"})
+            time.sleep(1)
             permission_state("reset")
-            assert_visible("restored", "LTR", f"{permission} undetermined")
+            assert_visible("restored", "LTR", "PORTRAIT", f"{permission} undetermined")
         else:
             command("device.orientation", {"orientation": "portrait"})
             time.sleep(1)

@@ -8,6 +8,8 @@ Use [failure investigation](failure-investigation.md) to retain private evidence
 
 Use the [CLI, Python SDK, TypeScript SDK, or local MCP adapter](clients.md) to control one or more named sessions through the same API.
 
+Use the [optional browser inspector](dashboard.md) to monitor sessions, operate the live screen, and review replay history.
+
 Use [record and replay](record-replay.md) to turn actions from a live session or a passing exploration report into a parameterized workflow.
 
 Use [multi-device orchestration](multi-device.md) to synchronize workflows and share test context across live sessions.

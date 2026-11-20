@@ -179,7 +179,7 @@ class Device:
             self.text(marker, scroll=-1 if self.target == "android" else 0)
 
 
-def exercise_link(android, ios, android_name, ios_name, output):
+def exercise_link(android, ios, android_name, ios_name, output, *, known_connected=False):
     evidence = {"profiles": []}
 
     def profile(command, params):
@@ -197,7 +197,8 @@ def exercise_link(android, ios, android_name, ios_name, output):
         return any(field == line or field.endswith(" " + line) for field in android.content(node))
 
     def reopen_pair():
-        if any(node.get("text") == "Broadcast (1)" and node.get("enabled", False)
+        signals = {"Room (1 connected)", f"{ios_name} · connected", "Broadcast (1)"}
+        if any(node["visible"] and node.get("text") in signals and node.get("enabled", True)
                for node in android.snapshot()["nodes"]):
             return
         if ios.ocr:
@@ -205,12 +206,13 @@ def exercise_link(android, ios, android_name, ios_name, output):
         ios.text(android_name)
         ios.button("Connect", scroll=1)
         android.find(lambda node: node.get("text") == "Broadcast (1)" and node.get("enabled", False),
-                     "Android broadcast availability after pairing", scroll=-1)
+                     "Android broadcast availability after pairing", scroll=1)
         ios.text("Sessions (1, 1 connected)" if ios.ocr else android_name)
 
     try:
         profile("get", {})
-        reopen_pair()
+        if not known_connected:
+            reopen_pair()
         if ios.ocr:
             ios.find(lambda node: node.get("text", "").startswith("Peers ("), "iOS peer list", scroll=-1)
         delayed = profile("set", {"delay_ms": 500, "jitter_ms": 25, "rate_kbit": 512, "seconds": 55})
@@ -298,7 +300,7 @@ def run_pair(android, ios, android_name, ios_name, nonce, initiator, output, net
         print(f"Both apps reported Connected after {initiator} selected the discovered peer", flush=True)
 
         if network_faults:
-            exercise_link(android, ios, android_name, ios_name, output)
+            exercise_link(android, ios, android_name, ios_name, output, known_connected=True)
             print("Real sample traffic was delayed, interrupted, and exchanged again after lease expiry", flush=True)
             return
 

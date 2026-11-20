@@ -1,0 +1,80 @@
+{
+  "startup": {},
+  "actions": [
+    {
+      "command": "app.launch",
+      "milliseconds": 0.423,
+      "ok": true
+    },
+    {
+      "command": "pointer.click",
+      "milliseconds": 15.013,
+      "ok": true
+    },
+    {
+      "command": "tree.snapshot",
+      "milliseconds": 97.811,
+      "ok": true
+    },
+    {
+      "command": "app.metrics",
+      "milliseconds": 0.05,
+      "ok": true
+    },
+    {
+      "command": "diagnostics.sources",
+      "milliseconds": 0.011,
+      "ok": true
+    },
+    {
+      "command": "diagnostics.events",
+      "milliseconds": 0.227,
+      "ok": true
+    },
+    {
+      "command": "recording.start",
+      "milliseconds": 0.166,
+      "ok": true
+    },
+    {
+      "command": "recording.stop",
+      "milliseconds": 1.096,
+      "ok": true
+    },
+    {
+      "command": "app.launch",
+      "milliseconds": 0.403,
+      "ok": true
+    },
+    {
+      "command": "pointer.click",
+      "milliseconds": 10.636,
+      "ok": true
+    },
+    {
+      "command": "tree.snapshot",
+      "milliseconds": 58.609,
+      "ok": true
+    },
+    {
+      "command": "app.metrics",
+      "milliseconds": 0.052,
+      "ok": true
+    },
+    {
+      "command": "diagnostics.sources",
+      "milliseconds": 0.01,
+      "ok": true
+    },
+    {
+      "command": "diagnostics.events",
+      "milliseconds": 0.207,
+      "ok": true
+    },
+    {
+      "command": "tree.snapshot",
+      "milliseconds": 56.324,
+      "ok": true
+    }
+  ]
+}

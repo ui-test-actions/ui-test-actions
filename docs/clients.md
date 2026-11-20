@@ -83,3 +83,5 @@ try {
 ```
 
 The TypeScript methods return typed live-device information, binary PNGs, structured command results, and `UiError` details. Configure `timeoutMs` for a longer workflow. A timed-out caller can query the live state and reuse an action request ID before trying again.
+
+The external verification used the official Python MCP SDK 1.30.0 and Node 24.20 against the published action pin `b57a9501805d6b75f94c6fa7ac1df4e37726a959`. It verified the live fixture transition through MCP on Linux and through the TypeScript SDK on Windows. The Python SDK and CLI observed both sessions, and a coordinated scenario read back exact mixed Arabic text from both clipboards. An unknown action returned a structured 404. [Linux run 44762120952](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44762120952) · [Windows run 44762129782](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44762129782) · [Evidence](../verification/sdk/)

@@ -1,0 +1,38 @@
+{
+  "source": "app",
+  "events": [
+    {
+      "event": "ui.ready",
+      "epoch_ms": 1795187437999,
+      "level": "info"
+    },
+    {
+      "event": "ui.applied",
+      "epoch_ms": 1795187440078,
+      "level": "info"
+    },
+    {
+      "event": "process.failed",
+      "epoch_ms": 1795187447000,
+      "code": 17,
+      "level": "error"
+    },
+    {
+      "event": "ui.ready",
+      "epoch_ms": 1795187462493,
+      "level": "info"
+    },
+    {
+      "event": "ui.applied",
+      "epoch_ms": 1795187464243,
+      "level": "info"
+    },
+    {
+      "event": "process.failed",
+      "epoch_ms": 1795187471493,
+      "code": 17,
+      "level": "error"
+    }
+  ],
+  "truncated": false
+}

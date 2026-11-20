@@ -1,0 +1,155 @@
+[
+  {
+    "checkpoint": "before",
+    "labels": [
+      "3:13",
+      "=",
+      "=",
+      "en-US",
+      "LTR",
+      "Photos undetermined",
+      "Add-only undetermined",
+      "Microphone undetermined",
+      "PORTRAIT",
+      "ee",
+      "a",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5",
+      "Swipe row 6",
+      "Swipe row 7",
+      "Swipe row 8",
+      "Swipe row 9"
+    ],
+    "expected": [
+      "LTR",
+      "PORTRAIT"
+    ]
+  },
+  {
+    "checkpoint": "arabic",
+    "labels": [
+      "3:14",
+      "=",
+      "=",
+      "ar-SA",
+      "RTL",
+      "Photos undetermined",
+      "Add-only undetermined",
+      "Microphone undetermined",
+      "PORTRAIT",
+      "ee",
+      "a",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5",
+      "Swipe row 6",
+      "Swipe row 7",
+      "Swipe row 8",
+      "Swipe row 9"
+    ],
+    "expected": [
+      "ar[- ]?SA",
+      "RTL",
+      "PORTRAIT"
+    ]
+  },
+  {
+    "checkpoint": "granted",
+    "labels": [
+      "3:14",
+      "=",
+      "=",
+      "ar-SA",
+      "RTL",
+      "Photos undetermined",
+      "Add-only undetermined",
+      "Microphone granted",
+      "PORTRAIT",
+      "ee",
+      "a",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5",
+      "Swipe row 6",
+      "Swipe row 7",
+      "Swipe row 8",
+      "Swipe row 9"
+    ],
+    "expected": [
+      "RTL",
+      "microphone granted"
+    ]
+  },
+  {
+    "checkpoint": "denied",
+    "labels": [
+      "3:14",
+      "=",
+      "=",
+      "ar-SA",
+      "RTL",
+      "Photos undetermined",
+      "Add-only undetermined",
+      "Microphone denied",
+      "PORTRAIT",
+      "ee",
+      "a",
+      "Swipe row 1",
+      "Swipe row 2",
+      "Swipe row 3",
+      "Swipe row 4",
+      "Swipe row 5",
+      "Swipe row 6",
+      "Swipe row 7",
+      "Swipe row 8",
+      "Swipe row 9"
+    ],
+    "expected": [
+      "RTL",
+      "microphone denied"
+    ]
+  },
+  {
+    "checkpoint": "landscape",
+    "labels": [
+      "ar-SA",
+      "RTL",
+      "Photos undetermined",
+      "Add-only undetermined",
+      "Microphone denied",
+      "LANDSCAPE",
+      "Eien",
+      "Pere",
+      "Swipe row 1"
+    ],
+    "expected": [
+      "RTL",
+      "LANDSCAPE"
+    ]
+  },
+  {
+    "checkpoint": "restored",
+    "labels": [
+      "en-US",
+      "LTR",
+      "Photos undetermined",
+      "Add-only undetermined",
+      "Microphone undetermined",
+      "LANDSCAPE",
+      "erect ee",
+      "Pere",
+      "Swipe row 1"
+    ],
+    "expected": [
+      "LTR",
+      "microphone undetermined"
+    ]
+  }
+]
