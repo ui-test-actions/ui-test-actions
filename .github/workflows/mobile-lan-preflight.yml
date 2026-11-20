@@ -1,0 +1,29 @@
+name: Mobile LAN attachment preflight
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  attachment:
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: android
+            runner: ubuntu-24.04
+          - target: ios
+            runner: macos-26
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Verify emulator or simulator LAN attachment
+        run: bash verification/mobile-lan/preflight-${{ matrix.target }}.sh
+      - name: Retain attachment diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: lan-attachment-${{ matrix.target }}
+          path: ${{ runner.temp }}/mobile-lan-preflight
+          retention-days: 5
