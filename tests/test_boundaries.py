@@ -1,9 +1,13 @@
 import base64
+import io
+import json
 import os
 from pathlib import Path
 import tempfile
+import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
+from urllib.error import HTTPError
 
 from agent import Client, ClientError, NoRedirect
 from contract import CommandError, validate_operation
@@ -56,6 +60,44 @@ class TransportTest(unittest.TestCase):
                 self.assertNotIn("TUNNEL_TOKEN", connector.env)
                 connector.close()
                 self.assertFalse(connector.token_file.exists())
+
+    def test_connector_retries_a_failed_bootstrap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            connector = Tunnel(Path("cloudflared"), 1234, Path(directory))
+
+            def spawn(command, *, env, stdout, stderr):
+                if stdout.tell() == 0 and not getattr(spawn, "failed", False):
+                    spawn.failed = True
+                    return Mock(poll=Mock(return_value=1))
+                stdout.write(b"https://test-session.trycloudflare.com Registered tunnel connection")
+                stdout.flush()
+                return Mock(poll=Mock(return_value=None))
+
+            with patch("tunnel.subprocess.Popen", side_effect=spawn) as process:
+                self.assertEqual(connector.start(time.monotonic() + 3, lambda: False),
+                                 "https://test-session.trycloudflare.com")
+                self.assertEqual(process.call_count, 2)
+            connector.close()
+
+    def test_client_retries_busy_request_with_identical_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            token = Path(directory, "token")
+            token.write_text("a" * 64, encoding="utf-8")
+            origin = "https://test-session.example.com"
+            client = Client({"url": origin}, token)
+            busy = HTTPError(origin, 429, "Busy", None,
+                             io.BytesIO(b'{"error":{"code":"session_busy"}}'))
+            response = Mock()
+            response.__enter__ = Mock(return_value=response)
+            response.__exit__ = Mock(return_value=False)
+            response.read.return_value = b'{"ok":true}'
+            client.opener = Mock()
+            client.opener.open.side_effect = [busy, response]
+            request = {"command": "text.insert", "request_id": "repeat", "params": {"text": "اختبار"}}
+            with patch("agent.time.sleep"):
+                self.assertEqual(json.loads(client.fetch("/v2/action", request)), {"ok": True})
+            first, second = client.opener.open.call_args_list
+            self.assertEqual(first.args[0].data, second.args[0].data)
 
     def test_client_refuses_credentials_in_url_and_redirects(self):
         for url in ("http://app.example.com", "https://user:pw@app.example.com", "https://app.example.com/path"):

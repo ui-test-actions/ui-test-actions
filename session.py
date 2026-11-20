@@ -49,15 +49,21 @@ def duration_setting(name, low, high):
 def setup_desktop(target, processes):
     if target == "linux":
         import select
-        apt = ("sudo", "apt-get", "-o", "Acquire::Retries=1", "-o", "Acquire::http::Timeout=20",
-               "-o", "Acquire::https::Timeout=20")
         packages = ("xvfb", "xauth", "xdotool", "xclip", "openbox", "wmctrl",
                     "python3-pyatspi", "at-spi2-core", "dbus-x11")
-        try:
-            run(*apt, "install", "-y", "--no-install-recommends", *packages, timeout=100)
-        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
-            run(*apt, "update", timeout=105)
-            run(*apt, "install", "-y", "--no-install-recommends", *packages, timeout=125)
+        installed = subprocess.run(
+            ["dpkg-query", "-W", "-f", "${db:Status-Status}\n", *packages],
+            capture_output=True, text=True, timeout=5,
+        )
+        if installed.returncode or installed.stdout.splitlines() != ["installed"] * len(packages):
+            # Run timeout as root so it signals apt and its children. Terminating sudo alone can leave the dpkg lock held.
+            apt = ("sudo", "timeout", "--kill-after=10s", "210s", "apt-get", "-o", "DPkg::Lock::Timeout=60",
+                   "-o", "Acquire::Retries=1", "-o", "Acquire::http::Timeout=20", "-o", "Acquire::https::Timeout=20")
+            try:
+                run(*apt, "install", "-y", "--no-install-recommends", *packages, timeout=225)
+            except subprocess.CalledProcessError:
+                run(*apt, "update", timeout=225)
+                run(*apt, "install", "-y", "--no-install-recommends", *packages, timeout=225)
         os.environ.setdefault("QT_LINUX_ACCESSIBILITY_ALWAYS_ON", "1")
         if not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
             bus = subprocess.Popen(
@@ -254,7 +260,8 @@ class Session(ThreadingHTTPServer):
 
     def handle_error(self, request, address):
         # Request bodies, authorization headers and platform arguments are never logged here.
-        print("An HTTP request ended unexpectedly", flush=True)
+        if not isinstance(sys.exception(), (ConnectionError, TimeoutError)):
+            print("An HTTP request ended unexpectedly", flush=True)
 
     def capture(self):
         from struct import unpack
