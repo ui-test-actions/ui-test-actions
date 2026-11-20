@@ -83,13 +83,14 @@ jobs:
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
           echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@8d73e35a4acc2574c019f38d1e8d9c75813a6c02
+      - uses: ui-test-actions/ui-test-actions@be8e8b048eeb2ba79fd9a7a15dd93a70051914ec
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
           duration-minutes: ${{ inputs.duration }}
           device: ${{ env.PROOF_DEVICE }}
           app-ids: dev.uitest.fixture
+          deeplink-schemes: ui-test-fixture
           app-installs: >-
             {"dev.uitest.fixture":"${{ inputs.target == 'android' && format('{0}/build/android/fixture.apk', github.workspace) || format('{0}/LiveUIFixture.app', runner.temp) }}"}
           launch: |
