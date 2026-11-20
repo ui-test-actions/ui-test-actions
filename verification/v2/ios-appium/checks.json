@@ -1,0 +1,77 @@
+{
+  "target": "ios",
+  "semantic_button_tapped": {
+    "matched": 1,
+    "nodes": [
+      {
+        "parent_id": "0.0.0.0.0.0.0",
+        "role": "XCUIElementTypeStaticText",
+        "name": "AFTER \u00b7 Button tapped",
+        "text": "AFTER \u00b7 Button tapped",
+        "visible": true,
+        "enabled": true,
+        "bounds": {
+          "x": 72,
+          "y": 258,
+          "width": 1062,
+          "height": 81
+        }
+      }
+    ],
+    "satisfied": true
+  },
+  "visible_rows_before": [
+    "Swipe row 1",
+    "Swipe row 2",
+    "Swipe row 3",
+    "Swipe row 4",
+    "Swipe row 5",
+    "Swipe row 6",
+    "Swipe row 7",
+    "Swipe row 8",
+    "Swipe row 9",
+    "Swipe row 10",
+    "Swipe row 11",
+    "Swipe row 12"
+  ],
+  "visible_rows_after": [
+    "Swipe row 10",
+    "Swipe row 11",
+    "Swipe row 12",
+    "Swipe row 13",
+    "Swipe row 14",
+    "Swipe row 15",
+    "Swipe row 16",
+    "Swipe row 17",
+    "Swipe row 18",
+    "Swipe row 19",
+    "Swipe row 20",
+    "Swipe row 21"
+  ],
+  "synchronized_swipe": {
+    "fingers": 1
+  },
+  "synchronized_pinch": {
+    "fingers": 2
+  },
+  "gesture_assertion": {
+    "matched": 1,
+    "nodes": [
+      {
+        "parent_id": "0.0.0.0.0.0.0",
+        "role": "XCUIElementTypeStaticText",
+        "name": "Pinch expanded",
+        "text": "Pinch expanded",
+        "visible": true,
+        "enabled": true,
+        "bounds": {
+          "x": 72,
+          "y": 258,
+          "width": 1062,
+          "height": 81
+        }
+      }
+    ],
+    "satisfied": true
+  }
+}

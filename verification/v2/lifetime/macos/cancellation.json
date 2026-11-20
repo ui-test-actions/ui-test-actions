@@ -1,0 +1,103 @@
+{
+  "requested_at": "2026-11-20T08:03:41.080+00:00",
+  "run_id": 44699297711,
+  "first_terminal": {
+    "at": "2026-11-20T08:04:00.460+00:00",
+    "http": 530,
+    "seconds_from_submission": 19.382
+  },
+  "samples": [
+    {
+      "at": "2026-11-20T08:03:41.767+00:00",
+      "http": 200,
+      "seconds_remaining": 645,
+      "deadline_estimate": 1795162466.4250507,
+      "seconds_from_submission": 0.689
+    },
+    {
+      "at": "2026-11-20T08:03:43.266+00:00",
+      "http": 200,
+      "seconds_remaining": 644,
+      "deadline_estimate": 1795162466.968004,
+      "seconds_from_submission": 2.188
+    },
+    {
+      "at": "2026-11-20T08:03:44.758+00:00",
+      "http": 200,
+      "seconds_remaining": 642,
+      "deadline_estimate": 1795162466.4636288,
+      "seconds_from_submission": 3.68
+    },
+    {
+      "at": "2026-11-20T08:03:46.244+00:00",
+      "http": 200,
+      "seconds_remaining": 641,
+      "deadline_estimate": 1795162466.952684,
+      "seconds_from_submission": 5.166
+    },
+    {
+      "at": "2026-11-20T08:03:47.717+00:00",
+      "http": 200,
+      "seconds_remaining": 639,
+      "deadline_estimate": 1795162466.4317482,
+      "seconds_from_submission": 6.638
+    },
+    {
+      "at": "2026-11-20T08:03:49.209+00:00",
+      "http": 200,
+      "seconds_remaining": 638,
+      "deadline_estimate": 1795162466.9140549,
+      "seconds_from_submission": 8.131
+    },
+    {
+      "at": "2026-11-20T08:03:50.743+00:00",
+      "http": 200,
+      "seconds_remaining": 636,
+      "deadline_estimate": 1795162466.4272947,
+      "seconds_from_submission": 9.664
+    },
+    {
+      "at": "2026-11-20T08:03:52.241+00:00",
+      "http": 200,
+      "seconds_remaining": 635,
+      "deadline_estimate": 1795162466.9431157,
+      "seconds_from_submission": 11.163
+    },
+    {
+      "at": "2026-11-20T08:03:54.754+00:00",
+      "http": 200,
+      "seconds_remaining": 632,
+      "deadline_estimate": 1795162465.948819,
+      "seconds_from_submission": 13.675
+    },
+    {
+      "at": "2026-11-20T08:03:56.250+00:00",
+      "http": 200,
+      "seconds_remaining": 631,
+      "deadline_estimate": 1795162466.953134,
+      "seconds_from_submission": 15.171
+    },
+    {
+      "at": "2026-11-20T08:03:57.721+00:00",
+      "http": 200,
+      "seconds_remaining": 629,
+      "deadline_estimate": 1795162466.4367657,
+      "seconds_from_submission": 16.645
+    },
+    {
+      "at": "2026-11-20T08:04:00.460+00:00",
+      "http": 530,
+      "seconds_from_submission": 19.382
+    },
+    {
+      "at": "2026-11-20T08:04:01.938+00:00",
+      "http": 530,
+      "seconds_from_submission": 20.859
+    }
+  ],
+  "runner_conclusion": "cancelled",
+  "credential_checks": {
+    "bearer_absent_from_full_github_log": true,
+    "bearer_absent_from_connection_artifact": true
+  }
+}

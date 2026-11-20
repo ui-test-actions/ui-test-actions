@@ -1,0 +1,27 @@
+{
+  "observed_at": "2026-11-20T08:03:39+00:00",
+  "target": "windows",
+  "api_version": 2,
+  "anonymous_status": 401,
+  "reconnected": true,
+  "batch_steps": 3,
+  "batch_replay_equal": true,
+  "before_color": [
+    25,
+    43,
+    66
+  ],
+  "after_color": [
+    23,
+    99,
+    59
+  ],
+  "fixture_text": "Hour start",
+  "first_authenticated": {
+    "at": "2026-11-20T08:03:33.279+00:00",
+    "http": 200,
+    "seconds_remaining": 3457,
+    "deadline_estimate": 1795165269.8720443
+  },
+  "advertised_expiry": "2026-11-20T09:01:20.000+00:00"
+}

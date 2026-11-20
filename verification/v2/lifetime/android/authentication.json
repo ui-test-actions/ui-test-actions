@@ -1,0 +1,18 @@
+{
+  "target": "android",
+  "wrong_session_bearer_source": "ios",
+  "valid": {
+    "at": "2026-11-20T08:16:01.543+00:00",
+    "http": 200,
+    "seconds_remaining": 2764,
+    "deadline_estimate": 1795165325.2207541
+  },
+  "anonymous": {
+    "at": "2026-11-20T08:16:03.222+00:00",
+    "http": 401
+  },
+  "other_session_bearer": {
+    "at": "2026-11-20T08:16:03.810+00:00",
+    "http": 401
+  }
+}

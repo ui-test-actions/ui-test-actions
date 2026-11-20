@@ -1,0 +1,19 @@
+{
+  "target": "ios",
+  "wrong_session_bearer_source": "parallel iOS job 44711587913",
+  "wrong_session_bearer_source_live": true,
+  "valid": {
+    "at": "2026-11-20T09:39:29.872+00:00",
+    "http": 200,
+    "seconds_remaining": 1658,
+    "deadline_estimate": 1795169227.5167875
+  },
+  "anonymous": {
+    "at": "2026-11-20T09:39:30.504+00:00",
+    "http": 401
+  },
+  "other_session_bearer": {
+    "at": "2026-11-20T09:39:31.159+00:00",
+    "http": 401
+  }
+}

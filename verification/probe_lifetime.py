@@ -32,7 +32,9 @@ LAYOUTS = {
     "android": Layout((131, 145), (159, 192), (16, 40), (0, 0, 320, 640), (28, 87, 295, 133)),
     "ios": Layout((490, 207), (510, 249), (629, 300), (364, 25, 660, 697), (399, 156, 625, 188), (449, 323)),
 }
+IOS_MACOS_26 = Layout((491, 227), (511, 269), (629, 309), (361, 30, 661, 709), (399, 175, 625, 210), (449, 339))
 TERMINAL = (410, 530)
+RETRYABLE = (None, 502, 503, 504)
 
 
 def utc(when=None):
@@ -69,12 +71,16 @@ def status(client, *, authenticated=True):
 
 
 def checkpoint(client, evidence):
-    check = status(client)
-    if check["http"] != 200:
-        raise AssertionError(f"Authenticated checkpoint failed: {check}")
     with (evidence / "checkpoints.jsonl").open("a", encoding="utf-8") as output:
-        output.write(json.dumps(check) + "\n")
-    return check
+        for attempt in range(3):
+            check = status(client)
+            output.write(json.dumps(check) + "\n")
+            if check["http"] == 200:
+                return check
+            if check["http"] not in RETRYABLE or attempt == 2:
+                break
+            time.sleep(1)
+    raise AssertionError(f"Authenticated checkpoint failed: {check}")
 
 
 def opening(connection, token_file, client, evidence, layout, *, hour):
@@ -191,11 +197,13 @@ if __name__ == "__main__":
     parser.add_argument("--token-file", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--run-id", type=int)
+    parser.add_argument("--ios-runner", choices=("macos-15", "macos-26"), default="macos-15",
+                        help="Select the visible Simulator fixture geometry for the hosted image")
     args = parser.parse_args()
     connection = json.loads(args.connection.read_text(encoding="utf-8"))
     client = Client(connection, args.token_file)
     target = connection["target"]
-    layout = LAYOUTS[target]
+    layout = IOS_MACOS_26 if target == "ios" and args.ios_runner == "macos-26" else LAYOUTS[target]
     args.evidence.mkdir(parents=True, exist_ok=True)
     if args.phase == "open":
         opening(connection, args.token_file, client, args.evidence, layout, hour=True)

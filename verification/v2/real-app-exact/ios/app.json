@@ -1,0 +1,8 @@
+{
+  "app": "Thought Meadow",
+  "framework": "SwiftUI and TextEditor",
+  "license": "MIT",
+  "repository": "alawyadnan/thought-meadow",
+  "commit": "e37b169ac000eb895f7d76f61e6bc234a175de25",
+  "bundle_id": "com.alawyadnan.waraqa"
+}

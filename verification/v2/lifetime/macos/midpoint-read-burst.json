@@ -1,0 +1,14 @@
+{
+  "started_at": "2026-11-20T08:29:49.191+00:00",
+  "ended_at": "2026-11-20T08:29:56.679+00:00",
+  "clients_per_runner": 6,
+  "reads": 48,
+  "http_counts": {
+    "200": 48
+  },
+  "same_session_on_all_authenticated_reads": true,
+  "seconds_remaining_range": [
+    1882,
+    1888
+  ]
+}

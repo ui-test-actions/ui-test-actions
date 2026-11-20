@@ -1,0 +1,533 @@
+{
+  "tested_action_pin": "b57a9501805d6b75f94c6fa7ac1df4e37726a959",
+  "consumer_workflow_commit": "63613313fb573caec4d72cace62884d51809fa39",
+  "first_hour_and_cancellation_workflow_commit": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+  "ios_retry_workflow_commit": "0b50eb7e586a23dc02dced1f3796e14bd5167507",
+  "targets": {
+    "windows": {
+      "consumer_run": {
+        "conclusion": "success",
+        "headSha": "63613313fb573caec4d72cace62884d51809fa39",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002473",
+        "run_id": 44693002473
+      },
+      "real_app_run": {
+        "conclusion": "success",
+        "headSha": "8527c7e105586910cdd1b01a8f2ef5e5cadd1135",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44694463531",
+        "run_id": 44694463531
+      },
+      "real_app": "LocalSend",
+      "real_app_evidence": "verification/v2/flutter-windows/",
+      "hour_run": {
+        "conclusion": "success",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699140340",
+        "run_id": 44699140340
+      },
+      "opening": {
+        "at": "2026-11-20T08:03:33.279+00:00",
+        "http": 200,
+        "seconds_remaining": 3457,
+        "deadline_estimate": 1795165269.8720443
+      },
+      "midpoint_read_burst": {
+        "started_at": "2026-11-20T08:29:49.078+00:00",
+        "ended_at": "2026-11-20T08:29:56.474+00:00",
+        "clients_per_runner": 6,
+        "reads": 48,
+        "http_counts": {
+          "200": 48
+        },
+        "same_session_on_all_authenticated_reads": true,
+        "seconds_remaining_range": [
+          1874,
+          1880
+        ]
+      },
+      "late_change": {
+        "observed_at": "2026-11-20T09:00:19.861+00:00",
+        "seconds_remaining": 50,
+        "expected_app_label": "AFTER · Hour end",
+        "label_region": [
+          85,
+          124,
+          610,
+          168
+        ],
+        "change_bounds": [
+          130,
+          11,
+          394,
+          33
+        ]
+      },
+      "last_success": {
+        "at": "2026-11-20T09:01:08.278+00:00",
+        "http": 200,
+        "seconds_remaining": 2,
+        "deadline_estimate": 1795165269.981454,
+        "offset_seconds": -1.48
+      },
+      "first_terminal": {
+        "at": "2026-11-20T09:01:10.873+00:00",
+        "http": 530,
+        "offset_seconds": 1.11
+      },
+      "last_terminal": {
+        "at": "2026-11-20T09:01:33.944+00:00",
+        "http": 530,
+        "offset_seconds": 24.18
+      },
+      "runner": {
+        "ready": "2026-11-20T08:01:20.2663970Z",
+        "closed": "2026-11-20T09:01:20.6057809Z",
+        "seconds_between_runner_events": 3600.339,
+        "bearer_absent_from_full_github_log": true,
+        "bearer_absent_from_connection_artifact": true
+      },
+      "cancellation_run": {
+        "conclusion": "cancelled",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699297625",
+        "run_id": 44699297625
+      },
+      "cancellation_last_success": {
+        "at": "2026-11-20T08:03:50.655+00:00",
+        "http": 200,
+        "seconds_remaining": 631,
+        "deadline_estimate": 1795162461.3534193,
+        "seconds_from_submission": 9.601
+      },
+      "cancellation_terminal": {
+        "at": "2026-11-20T08:03:52.114+00:00",
+        "http": 530,
+        "seconds_from_submission": 11.06
+      }
+    },
+    "macos": {
+      "consumer_run": {
+        "conclusion": "success",
+        "headSha": "63613313fb573caec4d72cace62884d51809fa39",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002132",
+        "run_id": 44693002132
+      },
+      "real_app_run": {
+        "conclusion": "success",
+        "headSha": "0b50eb7e586a23dc02dced1f3796e14bd5167507",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44700501147",
+        "run_id": 44700501147
+      },
+      "real_app": "CotEditor",
+      "real_app_evidence": "verification/v2/real-app-exact/macos/",
+      "hour_run": {
+        "conclusion": "success",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699140729",
+        "run_id": 44699140729
+      },
+      "opening": {
+        "at": "2026-11-20T08:03:33.149+00:00",
+        "http": 200,
+        "seconds_remaining": 3466,
+        "deadline_estimate": 1795165278.7318208
+      },
+      "midpoint_read_burst": {
+        "started_at": "2026-11-20T08:29:49.191+00:00",
+        "ended_at": "2026-11-20T08:29:56.679+00:00",
+        "clients_per_runner": 6,
+        "reads": 48,
+        "http_counts": {
+          "200": 48
+        },
+        "same_session_on_all_authenticated_reads": true,
+        "seconds_remaining_range": [
+          1882,
+          1888
+        ]
+      },
+      "late_change": {
+        "observed_at": "2026-11-20T09:00:28.236+00:00",
+        "seconds_remaining": 50,
+        "expected_app_label": "AFTER · Hour end",
+        "label_region": [
+          85,
+          120,
+          605,
+          166
+        ],
+        "change_bounds": [
+          155,
+          11,
+          353,
+          30
+        ]
+      },
+      "last_success": {
+        "at": "2026-11-20T09:01:18.426+00:00",
+        "http": 200,
+        "seconds_remaining": 0,
+        "deadline_estimate": 1795165278.1585917,
+        "offset_seconds": -0.37
+      },
+      "first_terminal": {
+        "at": "2026-11-20T09:01:20.959+00:00",
+        "http": 530,
+        "offset_seconds": 2.17
+      },
+      "last_terminal": {
+        "at": "2026-11-20T09:01:42.291+00:00",
+        "http": 530,
+        "offset_seconds": 23.5
+      },
+      "runner": {
+        "ready": "2026-11-20T08:01:28.7292510Z",
+        "closed": "2026-11-20T09:01:29.4523880Z",
+        "seconds_between_runner_events": 3600.723,
+        "bearer_absent_from_full_github_log": true,
+        "bearer_absent_from_connection_artifact": true
+      },
+      "cancellation_run": {
+        "conclusion": "cancelled",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699297711",
+        "run_id": 44699297711
+      },
+      "cancellation_last_success": {
+        "at": "2026-11-20T08:03:57.721+00:00",
+        "http": 200,
+        "seconds_remaining": 629,
+        "deadline_estimate": 1795162466.4367657,
+        "seconds_from_submission": 16.645
+      },
+      "cancellation_terminal": {
+        "at": "2026-11-20T08:04:00.460+00:00",
+        "http": 530,
+        "seconds_from_submission": 19.382
+      }
+    },
+    "linux": {
+      "consumer_run": {
+        "conclusion": "success",
+        "headSha": "63613313fb573caec4d72cace62884d51809fa39",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002136",
+        "run_id": 44693002136
+      },
+      "real_app_run": {
+        "conclusion": "success",
+        "headSha": "fb8fac56ca07b68e17e396feda68c79596b00de5",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44697310688",
+        "run_id": 44697310688
+      },
+      "real_app": "LocalSend",
+      "real_app_evidence": "verification/v2/flutter-linux/",
+      "hour_run": {
+        "conclusion": "success",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699140778",
+        "run_id": 44699140778
+      },
+      "opening": {
+        "at": "2026-11-20T08:03:33.189+00:00",
+        "http": 200,
+        "seconds_remaining": 3440,
+        "deadline_estimate": 1795165252.7590473
+      },
+      "midpoint_read_burst": {
+        "started_at": "2026-11-20T08:29:49.161+00:00",
+        "ended_at": "2026-11-20T08:29:56.919+00:00",
+        "clients_per_runner": 6,
+        "reads": 48,
+        "http_counts": {
+          "200": 48
+        },
+        "same_session_on_all_authenticated_reads": true,
+        "seconds_remaining_range": [
+          1856,
+          1863
+        ]
+      },
+      "late_change": {
+        "observed_at": "2026-11-20T09:00:03.571+00:00",
+        "seconds_remaining": 50,
+        "expected_app_label": "AFTER · Hour end",
+        "label_region": [
+          85,
+          112,
+          605,
+          165
+        ],
+        "change_bounds": [
+          117,
+          11,
+          395,
+          34
+        ]
+      },
+      "last_success": {
+        "at": "2026-11-20T09:00:53.129+00:00",
+        "http": 200,
+        "seconds_remaining": 0,
+        "deadline_estimate": 1795165252.8404589,
+        "offset_seconds": -0.14
+      },
+      "first_terminal": {
+        "at": "2026-11-20T09:00:55.669+00:00",
+        "http": 530,
+        "offset_seconds": 2.4
+      },
+      "last_terminal": {
+        "at": "2026-11-20T09:01:18.290+00:00",
+        "http": 530,
+        "offset_seconds": 25.03
+      },
+      "runner": {
+        "ready": "2026-11-20T08:01:03.4502941Z",
+        "closed": "2026-11-20T09:01:04.2154614Z",
+        "seconds_between_runner_events": 3600.765,
+        "bearer_absent_from_full_github_log": true,
+        "bearer_absent_from_connection_artifact": true
+      },
+      "cancellation_run": {
+        "conclusion": "cancelled",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699297712",
+        "run_id": 44699297712
+      },
+      "cancellation_last_success": {
+        "at": "2026-11-20T08:03:53.491+00:00",
+        "http": 200,
+        "seconds_remaining": 607,
+        "deadline_estimate": 1795162440.2085161,
+        "seconds_from_submission": 13.835
+      },
+      "cancellation_terminal": {
+        "at": "2026-11-20T08:03:54.961+00:00",
+        "http": 530,
+        "seconds_from_submission": 15.309
+      }
+    },
+    "android": {
+      "consumer_run": {
+        "conclusion": "success",
+        "headSha": "63613313fb573caec4d72cace62884d51809fa39",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693001890",
+        "run_id": 44693001890
+      },
+      "real_app_run": {
+        "conclusion": "success",
+        "headSha": "0b50eb7e586a23dc02dced1f3796e14bd5167507",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44700501182",
+        "run_id": 44700501182
+      },
+      "real_app": "Markor",
+      "real_app_evidence": "verification/v2/real-app-exact/android/",
+      "hour_run": {
+        "conclusion": "success",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699140338",
+        "run_id": 44699140338
+      },
+      "opening": {
+        "at": "2026-11-20T08:03:33.142+00:00",
+        "http": 200,
+        "seconds_remaining": 3513,
+        "deadline_estimate": 1795165325.7283304
+      },
+      "midpoint_read_burst": {
+        "started_at": "2026-11-20T08:29:49.160+00:00",
+        "ended_at": "2026-11-20T08:29:56.987+00:00",
+        "clients_per_runner": 6,
+        "reads": 48,
+        "http_counts": {
+          "200": 48
+        },
+        "same_session_on_all_authenticated_reads": true,
+        "seconds_remaining_range": [
+          1929,
+          1935
+        ]
+      },
+      "late_change": {
+        "observed_at": "2026-11-20T09:01:14.528+00:00",
+        "seconds_remaining": 51,
+        "expected_app_label": "AFTER · Hour end",
+        "label_region": [
+          28,
+          87,
+          295,
+          133
+        ],
+        "change_bounds": [
+          134,
+          12,
+          178,
+          29
+        ]
+      },
+      "last_success": {
+        "at": "2026-11-20T09:02:03.195+00:00",
+        "http": 200,
+        "seconds_remaining": 2,
+        "deadline_estimate": 1795165324.9053912,
+        "offset_seconds": -1.67
+      },
+      "first_terminal": {
+        "at": "2026-11-20T09:02:05.806+00:00",
+        "http": 530,
+        "offset_seconds": 0.94
+      },
+      "last_terminal": {
+        "at": "2026-11-20T09:02:28.619+00:00",
+        "http": 530,
+        "offset_seconds": 23.75
+      },
+      "runner": {
+        "ready": "2026-11-20T08:02:15.5715066Z",
+        "closed": "2026-11-20T09:02:16.1270332Z",
+        "seconds_between_runner_events": 3600.556,
+        "bearer_absent_from_full_github_log": true,
+        "bearer_absent_from_connection_artifact": true
+      },
+      "cancellation_run": {
+        "conclusion": "cancelled",
+        "headSha": "4c944299580ab7eb1f515abc7af077a62dba3f3c",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44699297271",
+        "run_id": 44699297271
+      },
+      "cancellation_last_success": {
+        "at": "2026-11-20T08:03:55.869+00:00",
+        "http": 200,
+        "seconds_remaining": 687,
+        "deadline_estimate": 1795162522.559607,
+        "seconds_from_submission": 13.852
+      },
+      "cancellation_terminal": {
+        "at": "2026-11-20T08:04:00.463+00:00",
+        "http": 530,
+        "seconds_from_submission": 18.446
+      }
+    },
+    "ios": {
+      "consumer_run": {
+        "conclusion": "success",
+        "headSha": "63613313fb573caec4d72cace62884d51809fa39",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002066",
+        "run_id": 44693002066
+      },
+      "real_app_run": {
+        "conclusion": "success",
+        "headSha": "0b50eb7e586a23dc02dced1f3796e14bd5167507",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44700501405",
+        "run_id": 44700501405
+      },
+      "real_app": "Thought Meadow",
+      "real_app_evidence": "verification/v2/real-app-exact/ios/",
+      "hour_run": {
+        "conclusion": "success",
+        "headSha": "0b50eb7e586a23dc02dced1f3796e14bd5167507",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44706945964",
+        "run_id": 44706945964
+      },
+      "opening": {
+        "at": "2026-11-20T09:07:18.251+00:00",
+        "http": 200,
+        "seconds_remaining": 3589,
+        "deadline_estimate": 1795169226.861877
+      },
+      "midpoint_read_burst": {
+        "started_at": "2026-11-20T09:35:00.400+00:00",
+        "ended_at": "2026-11-20T09:35:05.209+00:00",
+        "clients_per_runner": 6,
+        "reads": 48,
+        "http_counts": {
+          "200": 48
+        },
+        "same_session_on_all_authenticated_reads": true,
+        "seconds_remaining_range": [
+          1922,
+          1926
+        ]
+      },
+      "late_change": {
+        "observed_at": "2026-11-20T10:06:22.428+00:00",
+        "seconds_remaining": 45,
+        "expected_app_label": "AFTER · Hour end",
+        "label_region": [
+          399,
+          175,
+          625,
+          210
+        ],
+        "change_bounds": [
+          52,
+          13,
+          173,
+          25
+        ]
+      },
+      "last_success": {
+        "at": "2026-11-20T10:07:05.401+00:00",
+        "http": 200,
+        "seconds_remaining": 2,
+        "deadline_estimate": 1795169227.1225348,
+        "offset_seconds": -1.72
+      },
+      "first_terminal": {
+        "at": "2026-11-20T10:07:08.065+00:00",
+        "http": 530,
+        "offset_seconds": 0.94
+      },
+      "last_terminal": {
+        "at": "2026-11-20T10:07:30.951+00:00",
+        "http": 530,
+        "offset_seconds": 23.83
+      },
+      "runner": {
+        "ready": "2026-11-20T09:07:17.0624640Z",
+        "closed": "2026-11-20T10:07:17.7011540Z",
+        "seconds_between_runner_events": 3600.639,
+        "bearer_absent_from_full_github_log": true,
+        "bearer_absent_from_connection_artifact": true
+      },
+      "cancellation_run": {
+        "conclusion": "cancelled",
+        "headSha": "0b50eb7e586a23dc02dced1f3796e14bd5167507",
+        "status": "completed",
+        "url": "https://github.com/ui-test-actions/ui-test-actions/actions/runs/44711587913",
+        "run_id": 44711587913
+      },
+      "cancellation_last_success": {
+        "at": "2026-11-20T09:40:41.531+00:00",
+        "http": 200,
+        "seconds_remaining": 641,
+        "deadline_estimate": 1795168282.1754518,
+        "seconds_from_submission": 23.715
+      },
+      "cancellation_terminal": {
+        "at": "2026-11-20T09:40:44.549+00:00",
+        "http": 530,
+        "seconds_from_submission": 26.733
+      }
+    }
+  }
+}

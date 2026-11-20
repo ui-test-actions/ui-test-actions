@@ -1,0 +1,75 @@
+{
+  "requested_at": "2026-11-20T08:03:41.055+00:00",
+  "run_id": 44699297625,
+  "first_terminal": {
+    "at": "2026-11-20T08:03:52.114+00:00",
+    "http": 530,
+    "seconds_from_submission": 11.06
+  },
+  "samples": [
+    {
+      "at": "2026-11-20T08:03:41.666+00:00",
+      "http": 200,
+      "seconds_remaining": 640,
+      "deadline_estimate": 1795162461.3617582,
+      "seconds_from_submission": 0.612
+    },
+    {
+      "at": "2026-11-20T08:03:43.166+00:00",
+      "http": 200,
+      "seconds_remaining": 638,
+      "deadline_estimate": 1795162460.8670688,
+      "seconds_from_submission": 2.111
+    },
+    {
+      "at": "2026-11-20T08:03:44.653+00:00",
+      "http": 200,
+      "seconds_remaining": 637,
+      "deadline_estimate": 1795162461.360395,
+      "seconds_from_submission": 3.599
+    },
+    {
+      "at": "2026-11-20T08:03:46.146+00:00",
+      "http": 200,
+      "seconds_remaining": 635,
+      "deadline_estimate": 1795162460.8509293,
+      "seconds_from_submission": 5.092
+    },
+    {
+      "at": "2026-11-20T08:03:47.647+00:00",
+      "http": 200,
+      "seconds_remaining": 634,
+      "deadline_estimate": 1795162461.3480258,
+      "seconds_from_submission": 6.593
+    },
+    {
+      "at": "2026-11-20T08:03:49.149+00:00",
+      "http": 200,
+      "seconds_remaining": 632,
+      "deadline_estimate": 1795162460.849172,
+      "seconds_from_submission": 8.095
+    },
+    {
+      "at": "2026-11-20T08:03:50.655+00:00",
+      "http": 200,
+      "seconds_remaining": 631,
+      "deadline_estimate": 1795162461.3534193,
+      "seconds_from_submission": 9.601
+    },
+    {
+      "at": "2026-11-20T08:03:52.114+00:00",
+      "http": 530,
+      "seconds_from_submission": 11.06
+    },
+    {
+      "at": "2026-11-20T08:03:53.561+00:00",
+      "http": 530,
+      "seconds_from_submission": 12.507
+    }
+  ],
+  "runner_conclusion": "cancelled",
+  "credential_checks": {
+    "bearer_absent_from_full_github_log": true,
+    "bearer_absent_from_connection_artifact": true
+  }
+}

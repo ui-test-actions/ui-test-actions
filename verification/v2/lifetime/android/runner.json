@@ -1,0 +1,7 @@
+{
+  "ready": "2026-11-20T08:02:15.5715066Z",
+  "closed": "2026-11-20T09:02:16.1270332Z",
+  "seconds_between_runner_events": 3600.556,
+  "bearer_absent_from_full_github_log": true,
+  "bearer_absent_from_connection_artifact": true
+}

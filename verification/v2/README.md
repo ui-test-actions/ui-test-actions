@@ -18,9 +18,11 @@ The fixture proof is reproducible using [probe_fixture.py](../probe_fixture.py) 
 
 At the earlier heartbeat candidate `803d83d50713f845db414c30c7c826071ede907c`, all five jobs reported normal closure. Each old URL returned HTTP 530 with its valid bearer, and the raw bearer was absent from its GitHub log and connection artifact. Each runner also completed 96 session reads in eight-client bursts. A distinct Windows job returned HTTP 401 for another live session's bearer and for a missing bearer, then stopped accepting its own bearer 8.43 seconds after cancellation was submitted. [Earlier verification records and run IDs](candidate/) · [GitHub cancellation run](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44690408070)
 
-The five updated jobs repeated the normal-closure check. All returned HTTP 530 to their valid bearer after closing, and the bearer was absent from each run's logs and connection file. [Updated closure checks](followup/closure.json)
+The five updated jobs repeated the normal-closure check. All returned HTTP 530 to their valid bearer after closing, and the bearer was absent from each run's logs and connection file. [Updated closure checks](followup/closure.json) · [Five-platform hour and cancellation measurements](lifetime/)
 
 ## Real applications
+
+[Real applications verified at the immutable candidate pin](real-app-exact/)
 
 | Target | App | Checked outcome | GitHub run and evidence |
 | --- | --- | --- | --- |
@@ -81,10 +83,21 @@ App screenshots may be cropped to the display or window containing the test. Con
 
 Coverage includes Win32/Scintilla, AppKit/SwiftUI, GTK, Qt/Scintilla, Flutter, browser JavaScript and SVG, AndroidX and WebView, and SwiftUI/UIKit. Electron, Compose Multiplatform, Wayland, real mobile devices, locale-specific hardware keyboard layouts, browser DOM inspection, PWA installation, system notifications beyond the observed Android shade, and a full DPI matrix have no acceptance evidence here. The Windows Flutter alias control accepted its localized Paste menu. Direct keyboard select-all and paste did not change that field in the tested build.
 
-iOS XCUITest through Appium had repeatable hosted startup failures, including a five-minute new-session timeout. AXe provided an application tree and native targeting in UIKit after a bridge-readiness check. One HTTPS command received a transient 502 and the external client recovered in the same live session. A separate AXe attempt on Thought Meadow timed out during the initial Simulator screenshot. Thought Meadow passed its full SwiftUI journey with the default visible Simulator. Hosted Named Tunnel and Cloudflare Access remain unverified. Their local tests exercise retry and credential handling. [Appium startup failure](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44687956954) · [Hosted AXe fixture](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693947492) · [SwiftUI capture timeout](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44695318721)
+iOS XCUITest through Appium 3.9.1 timed out creating a session on the tested `macos-15` image after five minutes. The hosted `macos-26` workflow with Appium 4.0.0 and pinned prebuilt WebDriverAgent opened successfully and verified semantics, synchronized gestures, and exact Unicode through the iOS Paste menu. The published adapter exposes `text.insert` through the default visible Simulator. Appium image and runtime combinations outside the successful configuration remain unverified. [Earlier timeout](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44687956954) · [Prebuilt Appium setup and evidence](ios-appium/)
+
+AXe provided an application tree and native targeting in UIKit after a bridge-readiness check. One HTTPS command received a transient 502 and the external client recovered in the same live session. The earlier AXe attempt on Thought Meadow timed out during its initial Simulator screenshot. The rerun checked framebuffer readiness and then verified exact Unicode in the real SwiftUI editor and its saved vault. [Hosted AXe fixture](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693947492) · [Earlier SwiftUI capture timeout](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44695318721) · [SwiftUI AXe evidence](ios-axe/thought-meadow/)
 
 The optional AXe workflow is pinned to `032f3405eb0ee69f59957594a52b4b632d7778e9`. Its follow-up repeated semantic selection and exact Unicode entry, then verified that a positive scroll exposed later rows in the live tree. The only action-code change relative to the five-platform pin is the AXe scroll conversion. [Run](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44695525465) · [Before-and-after scroll evidence](ios-axe/corrected-scroll/) · [49-case hosted regressions](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44695517371)
 
 [Command-by-command hosted coverage](commands.md)
 
 The portable regressions cover structured invalid input, replay conflicts and eviction, simultaneous mutation, a disconnected client replay, Unicode edge cases, stale element references, visual timeout, content-type and size limits, file capacity, session expiry, and lease loss. Hosted concurrency evidence is a bounded read burst across independent jobs. Host OOM, sustained edge saturation, controlled WAN faults, and runner process loss across all targets remain outside that proof.
+
+## External inputs for additional acceptance
+
+| Item | Required external input |
+| --- | --- |
+| Hosted Cloudflare Named Tunnel | A dedicated Cloudflare-routed hostname with the service mapped to `http://127.0.0.1:8787` and the matching remotely managed tunnel connector token stored as the repository Actions secret `CLOUDFLARE_TUNNEL_TOKEN`. The verification repository has no configured Cloudflare hostname or connector secret. Local tests cover credential handling and retry. |
+| Cloudflare Access on that hostname | An Access application and service-auth policy for the hostname plus a valid Access service token ID and secret through a private credential file. |
+| Physical Arabic keyboard acceptance | An interactive physical test device or workstation with an Arabic-layout hardware keyboard and the ability to observe composition, bidirectional selection, and caret movement in its apps. Hosted Unicode entry, clipboard, and saving were checked separately. |
+| Other iOS Appium image and runtime combinations | The exact target runner image, Xcode and simulator runtime, and a compatible WebDriverAgent build that can start a loopback Appium session there. For the older hosted setup the observed blocker was the `POST /session` timeout. The pinned prebuilt setup above is verified. |

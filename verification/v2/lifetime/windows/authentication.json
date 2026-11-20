@@ -1,0 +1,18 @@
+{
+  "target": "windows",
+  "wrong_session_bearer_source": "macos",
+  "valid": {
+    "at": "2026-11-20T08:16:01.533+00:00",
+    "http": 200,
+    "seconds_remaining": 2709,
+    "deadline_estimate": 1795165270.172863
+  },
+  "anonymous": {
+    "at": "2026-11-20T08:16:02.112+00:00",
+    "http": 401
+  },
+  "other_session_bearer": {
+    "at": "2026-11-20T08:16:02.648+00:00",
+    "http": 401
+  }
+}

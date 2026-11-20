@@ -1,0 +1,18 @@
+{
+  "target": "linux",
+  "wrong_session_bearer_source": "android",
+  "valid": {
+    "at": "2026-11-20T08:16:01.495+00:00",
+    "http": 200,
+    "seconds_remaining": 2692,
+    "deadline_estimate": 1795165253.1896467
+  },
+  "anonymous": {
+    "at": "2026-11-20T08:16:02.147+00:00",
+    "http": 401
+  },
+  "other_session_bearer": {
+    "at": "2026-11-20T08:16:02.705+00:00",
+    "http": 401
+  }
+}

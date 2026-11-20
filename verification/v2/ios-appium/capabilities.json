@@ -1,0 +1,25 @@
+{
+  "target": "ios",
+  "commands": [
+    "app.close",
+    "app.deeplink",
+    "app.launch",
+    "app.restart",
+    "app.uninstall",
+    "clipboard.get",
+    "clipboard.set",
+    "element.assert",
+    "element.click",
+    "element.find",
+    "element.wait",
+    "pointer.click",
+    "pointer.drag",
+    "pointer.gesture",
+    "pointer.scroll",
+    "recording.start",
+    "recording.stop",
+    "tree.snapshot",
+    "visual.sample",
+    "visual.wait"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "semantic_roles": {
+    "AXTextField": {
+      "name": "",
+      "text": "اختبار ١٢٣ — UI journey 🌍"
+    },
+    "AXTextArea": {
+      "name": "Note content",
+      "text": "مرحبًا بالعالم، هذه تجربة ١٢٣؟\nHello from لوحة المفاتيح 🌍 — café\n- [ ] مراجعة الاختبار!"
+    }
+  },
+  "new_note_activated_by_accessibility": true,
+  "exact_title_and_body": true
+}

@@ -1,0 +1,94 @@
+{
+  "requested_at": "2026-11-20T08:03:42.018+00:00",
+  "run_id": 44699297271,
+  "first_terminal": {
+    "at": "2026-11-20T08:04:00.463+00:00",
+    "http": 530,
+    "seconds_from_submission": 18.446
+  },
+  "samples": [
+    {
+      "at": "2026-11-20T08:03:42.619+00:00",
+      "http": 200,
+      "seconds_remaining": 700,
+      "deadline_estimate": 1795162522.3197665,
+      "seconds_from_submission": 0.602
+    },
+    {
+      "at": "2026-11-20T08:03:44.125+00:00",
+      "http": 200,
+      "seconds_remaining": 699,
+      "deadline_estimate": 1795162522.8228173,
+      "seconds_from_submission": 2.108
+    },
+    {
+      "at": "2026-11-20T08:03:45.678+00:00",
+      "http": 200,
+      "seconds_remaining": 697,
+      "deadline_estimate": 1795162522.3528407,
+      "seconds_from_submission": 3.662
+    },
+    {
+      "at": "2026-11-20T08:03:48.171+00:00",
+      "http": 200,
+      "seconds_remaining": 695,
+      "deadline_estimate": 1795162522.3757713,
+      "seconds_from_submission": 6.154
+    },
+    {
+      "at": "2026-11-20T08:03:49.669+00:00",
+      "http": 200,
+      "seconds_remaining": 693,
+      "deadline_estimate": 1795162522.3711133,
+      "seconds_from_submission": 7.653
+    },
+    {
+      "at": "2026-11-20T08:03:51.274+00:00",
+      "http": 200,
+      "seconds_remaining": 691,
+      "deadline_estimate": 1795162521.922656,
+      "seconds_from_submission": 9.257
+    },
+    {
+      "at": "2026-11-20T08:03:52.805+00:00",
+      "http": 200,
+      "seconds_remaining": 690,
+      "deadline_estimate": 1795162522.4903927,
+      "seconds_from_submission": 10.788
+    },
+    {
+      "at": "2026-11-20T08:03:54.348+00:00",
+      "http": 200,
+      "seconds_remaining": 688,
+      "deadline_estimate": 1795162522.0272202,
+      "seconds_from_submission": 12.331
+    },
+    {
+      "at": "2026-11-20T08:03:55.869+00:00",
+      "http": 200,
+      "seconds_remaining": 687,
+      "deadline_estimate": 1795162522.559607,
+      "seconds_from_submission": 13.852
+    },
+    {
+      "at": "2026-11-20T08:03:57.487+00:00",
+      "http": 502,
+      "seconds_from_submission": 15.47
+    },
+    {
+      "at": "2026-11-20T08:04:00.463+00:00",
+      "http": 530,
+      "seconds_from_submission": 18.446
+    },
+    {
+      "at": "2026-11-20T08:04:01.952+00:00",
+      "http": 530,
+      "seconds_from_submission": 19.935
+    }
+  ],
+  "runner_conclusion": "cancelled",
+  "credential_checks": {
+    "bearer_absent_from_full_github_log": true,
+    "bearer_absent_from_connection_artifact": true
+  }
+}

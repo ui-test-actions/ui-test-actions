@@ -109,7 +109,7 @@ webdriver-capabilities: >-
   {"platformName":"Android","appium:automationName":"UiAutomator2","appium:appPackage":"dev.example.TestApp"}
 ```
 
-The action selects the same device for Appium, screenshots, and native helpers. The Appium adapter uses W3C touch input and the page source, then destroys its session at teardown. Startup depends on the Appium version, Xcode, and the test application. See the verification report for the hosted status of this opt-in path. [WebDriver routes](https://appium.io/docs/en/latest/reference/api/webdriver/) · [XCUITest driver](https://appium.github.io/appium-xcuitest-driver/latest/reference/capabilities/)
+The action selects the same device for Appium, screenshots, and native helpers. The Appium adapter uses W3C touch input and the page source, then destroys its session at teardown. Startup depends on the Appium version, Xcode, and the test application. The hosted iOS setup uses a pinned prebuilt WebDriverAgent. It has verified semantic targeting, W3C gestures, and Unicode through the native Paste menu. Discover commands with `GET /v2/capabilities`. The default visible-Simulator backend exposes `text.insert` for direct entry. [Hosted iOS Appium setup and evidence](../verification/v2/ios-appium/) · [WebDriver routes](https://appium.io/docs/en/latest/reference/api/webdriver/) · [XCUITest driver](https://appium.github.io/appium-xcuitest-driver/latest/reference/capabilities/)
 
 ## Optional iOS Simulator accessibility
 
