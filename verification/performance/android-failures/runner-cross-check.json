@@ -1,0 +1,9 @@
+{
+  "run_id": 44770308174,
+  "conclusion": "success",
+  "source": "dumpsys activity exit-info",
+  "observed": [
+    "reason=6 (ANR) subreason=0 (UNKNOWN) status=0",
+    "reason=4 (APP CRASH(EXCEPTION)) subreason=0 (UNKNOWN) status=0"
+  ]
+}
