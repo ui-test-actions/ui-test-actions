@@ -78,8 +78,18 @@ case "$stage" in
     # Give the other job time to perform its check.
     sleep 30
     ;;
+  probe)
+    (
+      while [[ -f "$dir/ready" ]]; do
+        date -u '+%s'
+        adb -s emulator-5554 shell ping -I wlan0 -c 1 -W 3 192.168.137.2 || true
+        sleep 2
+      done
+    ) > "$evidence/delivery.txt" 2>&1 &
+    echo "$!" > "$dir/probe.pid"
+    ;;
   cleanup)
-    for name in bridge tunnel; do
+    for name in probe bridge tunnel; do
       if [[ -s "$dir/$name.pid" ]]; then sudo kill "$(cat "$dir/$name.pid")" 2>/dev/null || true; fi
     done
     if [[ "$target" == android ]]; then
