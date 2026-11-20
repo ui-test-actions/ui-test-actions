@@ -75,10 +75,13 @@ def setup_desktop(target, processes):
             finally:
                 bus.stdout.close()
     if target == "linux" and not os.environ.get("DISPLAY"):
+        size = os.environ.get("UI_TEST_DISPLAY_SIZE", "1280x800")
+        if not re.fullmatch(r"\d{3,4}x\d{3,4}", size) or any(not 480 <= int(x) <= 3840 for x in size.split("x")):
+            raise ValueError("display-size must be WIDTHxHEIGHT with dimensions from 480 to 3840.")
         read_fd, write_fd = os.pipe()
         try:
             processes.append(subprocess.Popen(
-                ["Xvfb", "-displayfd", str(write_fd), "-screen", "0", "1280x800x24", "-nolisten", "tcp"],
+                ["Xvfb", "-displayfd", str(write_fd), "-screen", "0", f"{size}x24", "-nolisten", "tcp"],
                 pass_fds=(write_fd,),
             ))
         finally:
@@ -474,8 +477,9 @@ def load_driver(backend, target):
         from mobile_driver import MobileDriver
         mobile = MobileDriver(backend, target)
         return SimulatorDriver(mobile, DesktopDriver(backend, target)) if target == "ios" else mobile
+    from app_processes import DesktopApps
     from desktop_driver import DesktopDriver
-    return DesktopDriver(backend, target)
+    return DesktopApps(DesktopDriver(backend, target), os.environ.get("UI_TEST_DESKTOP_APPS", "{}"))
 
 
 def main(control):

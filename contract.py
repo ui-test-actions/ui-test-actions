@@ -80,6 +80,7 @@ COMMANDS = {
     "visual.sample": obj(region=RECT),
     "visual.wait": obj(("baseline",), baseline=IDENTIFIER, condition=choice("changed", "stable"),
                        threshold=integer(1, 255), timeout_ms=integer(100, 10000)),
+    "app.status": obj(("id",), id=APP_ID),
     "app.launch": obj(("id",), id=APP_ID),
     "app.close": obj(("id",), id=APP_ID),
     "app.restart": obj(("id",), id=APP_ID),

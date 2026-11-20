@@ -22,6 +22,12 @@ inputs:
   device:
     description: ADB serial or iOS simulator UDID, or empty to use the only attached/booted device
     default: ''
+  display-size:
+    description: Linux virtual display width and height in WIDTHxHEIGHT format
+    default: '1280x800'
+  desktop-apps:
+    description: JSON mapping approved desktop app IDs to fixed argv arrays and optional cwd
+    default: '{}'
   app-ids:
     description: Comma-separated application identifiers approved for lifecycle operations
     default: ''
@@ -67,6 +73,8 @@ runs:
         UI_TEST_READY: ${{ inputs.ready }}
         UI_TEST_STARTUP_TIMEOUT: ${{ inputs.startup-timeout-seconds }}
         UI_TEST_DEVICE: ${{ inputs.device }}
+        UI_TEST_DISPLAY_SIZE: ${{ inputs.display-size }}
+        UI_TEST_DESKTOP_APPS: ${{ inputs.desktop-apps }}
         UI_TEST_APP_IDS: ${{ inputs.app-ids }}
         UI_TEST_APP_INSTALLS: ${{ inputs.app-installs }}
         UI_TEST_DEEPLINK_SCHEMES: ${{ inputs.deeplink-schemes }}

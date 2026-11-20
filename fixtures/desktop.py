@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from pathlib import Path
 import sys
@@ -23,4 +24,6 @@ root.attributes("-topmost", True)
 root.update()
 entry.focus_force()
 Path(sys.argv[1]).touch()
+if len(sys.argv) == 3:
+    root.after(int(sys.argv[2]) * 1000, lambda: os._exit(17))
 root.mainloop()
