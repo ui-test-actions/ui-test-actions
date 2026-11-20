@@ -9,15 +9,20 @@ sudo apt-get -qq update
 sudo apt-get -qq install -y dnsmasq-base libpulse0 libxcb-cursor0
 sudo chmod a+rw /dev/kvm
 "$sdk/cmdline-tools/latest/bin/sdkmanager" "$image"
-echo no | "$sdk/cmdline-tools/latest/bin/avdmanager" create avd --force --name ui-lan --package "$image"
+export ANDROID_USER_HOME="$HOME/.android"
+export ANDROID_AVD_HOME="$RUNNER_TEMP/ui-lan-avds"
+mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
+echo no | "$sdk/cmdline-tools/latest/bin/avdmanager" create avd --force --name ui-lan --package "$image" --path "$ANDROID_AVD_HOME/ui-lan.avd"
+"$sdk/emulator/emulator" -list-avds | grep -Fx ui-lan
 "$sdk/emulator/emulator" -version
 sudo ip tuntap add dev uilan0 mode tap user "$(id -un)"
 trap 'sudo ip link del uilan0 2>/dev/null || true' EXIT
 sudo ip address add 192.168.137.1/24 dev uilan0
 sudo ip link set uilan0 up
 sudo dnsmasq --conf-file=/dev/null --port=0 --interface=uilan0 --bind-interfaces \
-  --dhcp-range=192.168.137.10,192.168.137.20,255.255.255.0,5m --dhcp-leasefile="$out/dhcp.leases" \
+  --dhcp-range=192.168.137.10,192.168.137.10,255.255.255.0,5m --leasefile-ro \
   --pid-file="$out/dnsmasq.pid" --log-dhcp --log-facility="$out/dhcp.log"
+sudo chmod a+r "$out/dhcp.log"
 trap 'sudo kill "$(cat "$out/dnsmasq.pid")" 2>/dev/null || true; sudo ip link del uilan0 2>/dev/null || true' EXIT
 "$sdk/emulator/emulator" -avd ui-lan -port 5554 -no-window -no-audio -no-snapshot -no-boot-anim \
   -gpu swiftshader_indirect -feature -WiFiPacketStream -net-tap uilan0 > "$out/emulator.log" 2>&1 &
