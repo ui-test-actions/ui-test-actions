@@ -1,0 +1,59 @@
+name: Verify native iOS Appium integration
+on:
+  workflow_dispatch:
+    inputs:
+      token_sha256:
+        description: SHA-256 digest of the agent's private token
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  ios:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare app and loopback Appium
+        shell: bash
+        run: |
+          export APPIUM_HOME="$RUNNER_TEMP/appium-home"
+          npm install --prefix "$RUNNER_TEMP/appium" --no-audit --no-fund appium@3.9.1
+          appium="$RUNNER_TEMP/appium/node_modules/.bin/appium"
+          "$appium" driver install --source=npm appium-xcuitest-driver@12.18.0
+          "$appium" --address 127.0.0.1 --port 4723 --log-level warn > appium.log 2>&1 &
+          simulator=$(xcrun simctl list devices available -j | python -c '
+          import json, sys
+          runtimes = json.load(sys.stdin)["devices"]
+          print(next(device["udid"]
+                     for runtime in reversed(sorted(runtimes)) if ".iOS-" in runtime
+                     for device in runtimes[runtime] if device["name"].startswith("iPhone")))
+          ')
+          bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
+          xcrun simctl bootstatus "$simulator" -b
+          echo "NATIVE_IOS_DEVICE=$simulator" >> "$GITHUB_ENV"
+          curl --fail --silent --show-error --retry 5 --retry-connrefused http://127.0.0.1:4723/status
+      - uses: ui-test-actions/ui-test-actions@e5343edd0407bc32a3fe85767aa69838a1300639
+        with:
+          target: ios
+          token-sha256: ${{ inputs.token_sha256 }}
+          duration-minutes: '8'
+          device: ${{ env.NATIVE_IOS_DEVICE }}
+          webdriver-url: http://127.0.0.1:4723
+          webdriver-capabilities: >-
+            {"platformName":"iOS","appium:automationName":"XCUITest","appium:bundleId":"dev.uitest.fixture","appium:waitForIdleTimeout":2}
+          launch: |
+            xcrun simctl install "$NATIVE_IOS_DEVICE" "$RUNNER_TEMP/LiveUIFixture.app"
+            xcrun simctl launch "$NATIVE_IOS_DEVICE" dev.uitest.fixture
+      - name: Retain backend diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: appium-diagnostics
+          path: appium.log
+          retention-days: 3
