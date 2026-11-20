@@ -67,14 +67,16 @@ class CloudflareTransport:
             except (OSError, KeyError, RuntimeError) as error:
                 raise ConnectorUnavailable("The pinned Cloudflare connector could not be prepared.") from error
             self.probe = RouteProbe(session.probe_path, session.id, self.access)
-            origin = self.connector.start(time.monotonic() + 110, cancelled, self.probe)
-        except ConnectorUnavailable:
+            origin = self.connector.start(time.monotonic() + 145, cancelled, self.probe)
+        except ConnectorUnavailable as error:
+            if self.probe and self.probe.observation:
+                print(f"Cloudflare route check: {self.probe.observation}", flush=True)
             if not self.fallback or cancelled():
                 raise
             self.close()
             self.kind = "local"
             session.expected_host = f"{LOOPBACK}:{session.server_port}"
-            print("Quick Tunnel startup failed. Using the opted-in loopback listener.", flush=True)
+            print(f"{error} Using the opted-in loopback listener.", flush=True)
             origin = f"http://{session.expected_host}"
         finally:
             self.token = None
@@ -112,6 +114,7 @@ class RouteProbe:
         self.identity = identity.encode("ascii")
         self.access = access
         self.opener = build_opener(NoRedirect(), ProxyHandler({}))
+        self.observation = None
 
     def request(self, origin, timeout, headers):
         try:
@@ -126,11 +129,23 @@ class RouteProbe:
 
     def __call__(self, origin, timeout):
         headers = {"Cache-Control": "no-store"}
-        if not self.access:
-            return self.request(origin, timeout, headers) == (200, self.identity)
-        if self.request(origin, timeout / 2, headers)[0] not in ACCESS_DENIAL:
-            return False
-        return self.request(origin, timeout / 2, {**headers, **self.access}) == (200, self.identity)
+        if self.access:
+            timeout /= 2
+            denied = self.request(origin, timeout, headers)[0]
+            if denied not in ACCESS_DENIAL:
+                self.observation = f"Access denial expected, observed {self.describe(denied)}."
+                return False
+            headers = {**headers, **self.access}
+        status, data = self.request(origin, timeout, headers)
+        if status == 200 and data == self.identity:
+            self.observation = None
+            return True
+        self.observation = "Different origin answered." if status == 200 else self.describe(status)
+        return False
+
+    @staticmethod
+    def describe(status):
+        return f"HTTP {status}" if status else "No response from the route."
 
 
 def private_tls(work, address):

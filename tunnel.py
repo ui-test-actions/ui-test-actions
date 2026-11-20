@@ -92,6 +92,7 @@ class Tunnel:
 
     def start(self, deadline, cancelled, probe=None):
         attempt = 0
+        reported_routes = 0
         while time.monotonic() < deadline and not cancelled():
             attempt += 1
             try:
@@ -99,11 +100,15 @@ class Tunnel:
                     self.process = subprocess.Popen(self.command, env=self.env, stdout=output, stderr=subprocess.STDOUT)
             except OSError:
                 raise ConnectorUnavailable("The Cloudflare connector process could not start.") from None
-            attempt_deadline = min(deadline, time.monotonic() + 37)
+            attempt_deadline = min(deadline, time.monotonic() + (48 if probe else 37))
+            registered = False
             while time.monotonic() < attempt_deadline and not cancelled() and self.process.poll() is None:
                 tail = self.read_tail()
                 match = QUICK_URL.search(tail)
                 if (self.hostname or match) and "Registered tunnel connection" in tail:
+                    if not registered:
+                        reported_routes += 1
+                        registered = True
                     address = "https://" + self.hostname if self.hostname else match.group()
                     if probe is None or probe(address, max(0.1, min(4, attempt_deadline - time.monotonic()))):
                         return address
@@ -114,7 +119,8 @@ class Tunnel:
         if cancelled():
             raise ConnectorCancelled("Session startup was cancelled.")
         raise ConnectorUnavailable(
-            f"Cloudflare connector did not prove the route after {attempt} attempt(s). "
+            f"Cloudflare connector did not prove the route after {attempt} attempt(s) "
+            f"with {reported_routes} successful edge registration(s). "
             "Check runner egress, route configuration, and Access credentials."
         )
 
