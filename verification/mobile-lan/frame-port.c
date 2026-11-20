@@ -19,6 +19,9 @@
 #endif
 
 #define FRAME_MAX 1514
+#ifdef __APPLE__
+static unsigned int bpf_buffer_length;
+#endif
 
 static void die(const char *what) {
     perror(what);
@@ -67,6 +70,7 @@ static int open_port(const char *name) {
         ioctl(fd, BIOCSSEESENT, &zero) == -1 || ioctl(fd, BIOCPROMISC, NULL) == -1)
         die("configure BPF");
     if (ioctl(fd, BIOCGBLEN, &size) == -1 || size > 65536) die("get BPF buffer length");
+    bpf_buffer_length = size;
 #else
     int fd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (fd == -1) die("open AF_PACKET");
@@ -88,7 +92,8 @@ static int open_port(const char *name) {
 static void capture(int fd) {
 #ifdef __APPLE__
     unsigned char bytes[65536];
-    ssize_t count = read(fd, bytes, sizeof(bytes));
+    /* Darwin requires the read size to equal BIOCGBLEN, including immediate mode. */
+    ssize_t count = read(fd, bytes, bpf_buffer_length);
     if (count < 0) die("read BPF");
     for (size_t i = 0; i + sizeof(struct bpf_hdr) <= (size_t)count;) {
         struct bpf_hdr header;
