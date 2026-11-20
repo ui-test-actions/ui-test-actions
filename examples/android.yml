@@ -28,10 +28,18 @@ jobs:
           image='system-images;android-35;google_apis;x86_64'
           tools="$ANDROID_HOME/cmdline-tools/latest/bin"
           "$tools/sdkmanager" emulator "$image"
-          echo no | "$tools/avdmanager" create avd --force --name interactive --package "$image"
+          export ANDROID_USER_HOME="$RUNNER_TEMP/android-user"
+          export ANDROID_AVD_HOME="$ANDROID_USER_HOME/avd"
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo no | "$tools/avdmanager" create avd --force --name interactive --package "$image" --path "$ANDROID_AVD_HOME/interactive.avd"
+          if ! "$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fxq interactive; then
+            "$tools/avdmanager" list avd
+            exit 1
+          fi
           "$ANDROID_HOME/emulator/emulator" -avd interactive -port 5554 -no-window -no-audio \
             -no-snapshot -no-boot-anim -gpu swiftshader_indirect > emulator.log 2>&1 &
-          if ! timeout 360 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do sleep 2; done'; then
+          emulator_pid=$!
+          if ! timeout 360 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do kill -0 "$1" || exit 1; sleep 2; done' bash "$emulator_pid"; then
             cat emulator.log
             exit 1
           fi
