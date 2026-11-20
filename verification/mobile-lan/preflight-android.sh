@@ -24,12 +24,13 @@ sudo dnsmasq --conf-file=/dev/null --port=0 --interface=uilan0 --bind-interfaces
   --pid-file="$out/dnsmasq.pid" --log-dhcp --log-facility="$out/dhcp.log"
 sudo chmod a+r "$out/dhcp.log"
 trap 'sudo kill "$(cat "$out/dnsmasq.pid")" 2>/dev/null || true; sudo ip link del uilan0 2>/dev/null || true' EXIT
+adb start-server
 "$sdk/emulator/emulator" -avd ui-lan -port 5554 -no-window -no-audio -no-snapshot -no-boot-anim \
-  -gpu swiftshader_indirect -feature -WiFiPacketStream -net-tap uilan0 > "$out/emulator.log" 2>&1 &
+  -gpu swiftshader_indirect -feature -WiFiPacketStream -wifi-tap uilan0 > "$out/emulator.log" 2>&1 &
 emulator_pid=$!
 timeout 300 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do kill -0 "$1" || exit 1; sleep 2; done' bash "$emulator_pid" ||
   { tail -100 "$out/emulator.log"; exit 1; }
-adb -s emulator-5554 shell svc wifi disable
+adb -s emulator-5554 shell svc wifi enable
 adb -s emulator-5554 shell svc data disable
 for _ in {1..20}; do
   adb -s emulator-5554 shell ip -4 address > "$out/guest-address.txt"
