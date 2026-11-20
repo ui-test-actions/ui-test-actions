@@ -54,7 +54,8 @@ class FailureEvidenceTest(TestCase):
         self.assertIn("pointer.click", draft)
 
     def test_tree_omits_label_values(self):
-        tree = {"nodes": [{"role": "textbox", "name": "secret", "text": "unicode", "visible": True}], "truncated": True}
+        tree = {"nodes": [{"role": "textbox", "name": "secret", "text": "unicode", "visible": True,
+                           "properties": {"password": "secret", "value": "sensitive"}}], "truncated": True}
         shape = shape_tree(tree)
         self.assertEqual(shape, {"truncated": True, "nodes": [{"role": "textbox", "visible": True}]})
         self.assertNotIn("secret", json.dumps(shape))

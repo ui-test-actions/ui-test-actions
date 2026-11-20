@@ -10,7 +10,7 @@ import sys
 import time
 
 from agent import Client, ClientError
-from contract import APP_ID, COMMANDS, validate
+from contract import APP_ID, COMMANDS, ELEMENT_FLAGS, validate
 
 
 ERROR_CODE = re.compile(r"[a-z][a-z0-9_]{0,63}")
@@ -42,10 +42,15 @@ def failure_summary(report):
 
 
 def shape_tree(tree):
-    return {"truncated": tree.get("truncated", False), "nodes": [
-        {key: node[key] for key in ("role", "bounds", "visible", "enabled", "properties") if key in node}
-        for node in tree["nodes"]
-    ]}
+    nodes = []
+    for node in tree["nodes"]:
+        shape = {key: node[key] for key in ("role", "bounds", "visible", "enabled") if key in node}
+        flags = {key: value for key, value in node.get("properties", {}).items()
+                 if key in ELEMENT_FLAGS["properties"] and type(value) is bool}
+        if flags:
+            shape["properties"] = flags
+        nodes.append(shape)
+    return {"truncated": tree.get("truncated", False), "nodes": nodes}
 
 
 def collect(client, destination, *, report=None, app_id=None, include_content=False, recording_seconds=0):
@@ -86,11 +91,16 @@ def collect(client, destination, *, report=None, app_id=None, include_content=Fa
         session = client.identify()
         return {"target": session["target"], "seconds_remaining": session["seconds_remaining"]}
 
+    def capability_schema():
+        data = json.loads(client.fetch("/v2/capabilities", retries=0))
+        return {key: value for key, value in data.items() if key in
+                {"api_version", "target", "commands", "screen", "limits"}}
+
     session = store("session.json", identity)
     if session:
         manifest["target"] = session["target"]
         store("failure.png", lambda: client.fetch("/v1/screenshot", retries=0), b"\x89PNG\r\n\x1a\n")
-        capabilities = store("capabilities.json", lambda: json.loads(client.fetch("/v2/capabilities", retries=0)))
+        capabilities = store("capabilities.json", capability_schema)
         commands = capabilities.get("commands", {}) if capabilities else {}
         if "tree.snapshot" in commands:
             store("tree.json", lambda: command("tree.snapshot", {"limit": 1200}) if include_content else
