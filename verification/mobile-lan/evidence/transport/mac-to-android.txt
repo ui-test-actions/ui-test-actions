@@ -1,0 +1,8 @@
+PING 192.168.137.10 (192.168.137.10): 56 data bytes
+64 bytes from 192.168.137.10: icmp_seq=0 ttl=64 time=35.571 ms
+64 bytes from 192.168.137.10: icmp_seq=1 ttl=64 time=33.483 ms
+64 bytes from 192.168.137.10: icmp_seq=2 ttl=64 time=34.103 ms
+
+--- 192.168.137.10 ping statistics ---
+3 packets transmitted, 3 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 33.483/34.386/35.571/0.876 ms

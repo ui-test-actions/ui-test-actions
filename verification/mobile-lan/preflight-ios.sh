@@ -2,10 +2,11 @@
 set -euo pipefail
 
 test "$(uname -m)" = arm64
-xcodebuild -version
-sysctl -n kern.hv_support || true
 out="${RUNNER_TEMP:?}/mobile-lan-preflight"
 mkdir -p "$out"
+uname -m > "$out/architecture.txt"
+xcodebuild -version | tee "$out/xcode.txt"
+sysctl -n kern.hv_support || true
 xcrun simctl list devices available -j > "$out/simulators.json"
 device=$(python3 -c 'import json,sys
 devices = json.load(open(sys.argv[1]))["devices"]
