@@ -10,7 +10,7 @@ evidence="$PWD/real-app-evidence"
 case "$target" in
   linux)
     openbox > "$evidence/window-manager.log" 2>&1 &
-    "$app_dir/squashfs-root/AppRun" "$evidence/document.txt" > "$evidence/app.log" 2>&1 &
+    XDG_CONFIG_HOME="$app_dir/config" "$app_dir/squashfs-root/AppRun" "$evidence/document.txt" > "$evidence/app.log" 2>&1 &
     ;;
   windows)
     "$app_dir/editor/notepad++.exe" -nosession -noPlugin -multiInst "$evidence/document.txt" > "$evidence/app.log" 2>&1 &

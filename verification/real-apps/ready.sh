@@ -3,7 +3,7 @@ set -euo pipefail
 
 case "${1:?choose a target}" in
   linux)
-    xdotool search --onlyvisible --name 'document\.txt' >/dev/null
+    xdotool search --onlyvisible --name '^Notepad Next$' >/dev/null
     ;;
   windows)
     tasklist.exe | grep -Fi 'notepad++.exe' >/dev/null
