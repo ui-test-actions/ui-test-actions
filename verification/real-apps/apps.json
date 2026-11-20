@@ -56,5 +56,15 @@
     "commit": "af0416be50770a97760f7070684bc667b759a15c",
     "asset": "LocalSend-1.18.2-linux-x86-64.tar.gz",
     "sha256": "287690a9a8eb6da9c83cc97b3e3030ac67daf32a7331fcf307d0939300658d16"
+  },
+  "linux-web": {
+    "app": "draw.io",
+    "framework": "Browser JavaScript and SVG",
+    "license": "Apache-2.0",
+    "repository": "jgraph/drawio",
+    "ref": "v32.7.4",
+    "commit": "f411a11f4f6b8994d869bdbc45f4d4d9e2284f34",
+    "asset": "draw.war",
+    "sha256": "caf784637155f444e0b6fb7c154cae5dbad27cfc31cb16286054d43f996be42f"
   }
 }

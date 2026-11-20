@@ -1,0 +1,51 @@
+name: Verify a browser diagram editing journey
+on:
+  workflow_dispatch:
+    inputs:
+      token_sha256:
+        description: SHA-256 digest of the external client token
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare verified draw.io and an isolated browser profile
+        run: |
+          google-chrome --version
+          python verification/real-apps/drawio.py prepare "$RUNNER_TEMP/drawio" drawio-evidence
+      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+        with:
+          target: linux
+          duration-minutes: '16'
+          token-sha256: ${{ inputs.token_sha256 }}
+          launch: |
+            work="$RUNNER_TEMP/drawio"
+            python -m http.server 8765 --bind 127.0.0.1 --directory "$work/web" > drawio-evidence/web.log 2>&1 &
+            google-chrome --no-first-run --no-default-browser-check --user-data-dir="$work/chrome" \
+              --start-maximized --app="$(cat "$work/url")" > drawio-evidence/chrome.log 2>&1 &
+            browser_pid=$!
+            sleep 2
+            kill -0 "$browser_pid" || { cat drawio-evidence/chrome.log >&2; exit 1; }
+          ready: |
+            curl -fsS http://127.0.0.1:8765/index.html >/dev/null
+            wmctrl -l | grep -Ei 'draw.io|diagrams.net|untitled'
+      - name: Independently assert the browser's output
+        run: python verification/real-apps/drawio.py verify "$RUNNER_TEMP/drawio" drawio-evidence
+      - name: Retain browser proof
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: web-real-app
+          path: drawio-evidence/
+          if-no-files-found: ignore
+          retention-days: 7

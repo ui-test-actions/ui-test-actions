@@ -64,7 +64,7 @@ App screenshots may be cropped to the display or window containing the test. Con
 | Click/tap, shortcuts, scrolling, dragging, and context actions | Partial across all gesture options | Partial across all gesture options | Partial across all gesture options | Partial with native single-touch and selected shortcuts | Partial with Simulator gestures and selected shortcuts |
 | Native semantics, unique element selection, and assertions | Verified on the tested Win32 app. Other providers vary | Verified on the tested AppKit app. Other providers vary | Verified on GTK. Unavailable in the tested Qt build | Verified in Markor | Visual assertions on the default backend |
 | Multi-finger input | Unavailable | Unavailable | Unavailable | Verified with optional Appium UiAutomator2 | Verified for visible Simulator pinch. Arbitrary touch tracks remain unverified |
-| Window list, focus, move/resize, and close | Verified with the hosted detail window | Verified with the hosted detail window | Verified with the hosted detail window | Unavailable as desktop window operations | Simulator host window only |
+| Window list, focus, move/resize, and close | Verified with the hosted detail window | Verified with the hosted detail window | Verified with the hosted detail window | Unavailable | Unavailable |
 | Managed app lifecycle and restart | Verified owned process | Verified owned process | Verified owned process | Verified allowlisted package | Verified allowlisted simulator bundle |
 | Rotating display/device | Desktop resize only | Desktop resize only | Desktop resize and configurable virtual display | Verified portrait and landscape | Verified relative rotation |
 | Native file dialogs and file exchange | Verified desktop exchange. Native UI coverage is partial | Verified desktop exchange and native dialog | Verified desktop exchange and native open dialog | Native app file and permission UI. Generalized transfer is unavailable | App-driven file UI. Generalized transfer is unavailable |
@@ -72,5 +72,7 @@ App screenshots may be cropped to the display or window containing the test. Con
 | Batch replay, fresh-client reconnect, anonymous rejection | Verified | Verified | Verified | Verified | Verified |
 
 Coverage includes Win32/Scintilla, AppKit/SwiftUI, GTK, Qt/Scintilla, AndroidX and WebView, and SwiftUI/UIKit. Electron, Flutter, Compose Multiplatform, Wayland, real mobile devices, locale-specific hardware keyboard layouts, browser DOM inspection, system notifications beyond the observed Android shade, and a full DPI or display compatibility matrix have no acceptance evidence here.
+
+[Command-by-command hosted coverage](commands.md)
 
 The portable regressions cover structured invalid input, replay conflicts and eviction, simultaneous mutation, a disconnected client replay, Unicode edge cases, stale element references, visual timeout, content-type and size limits, file capacity, session expiry, and lease loss. Hosted concurrency evidence is a bounded read burst across independent jobs. Host OOM, sustained edge saturation, controlled WAN faults, and runner process loss across all targets remain outside that proof.
