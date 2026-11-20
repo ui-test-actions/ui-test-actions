@@ -32,8 +32,15 @@ adb start-server
 emulator_pid=$!
 timeout 300 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do kill -0 "$1" || exit 1; sleep 2; done' bash "$emulator_pid" ||
   { tail -100 "$out/emulator.log"; exit 1; }
-adb -s emulator-5554 shell svc wifi enable
-adb -s emulator-5554 shell svc data disable
+# A freshly booted guest can report boot completion before the phone service exists.
+if ! timeout 45 bash -c '
+  until adb -s emulator-5554 shell svc wifi enable && adb -s emulator-5554 shell svc data disable; do
+    sleep 2
+  done
+' > "$out/guest-services.txt" 2>&1; then
+  cat "$out/guest-services.txt" >&2
+  exit 1
+fi
 for _ in {1..20}; do
   adb -s emulator-5554 shell ip -4 address > "$out/guest-address.txt"
   if grep -Eq 'inet 192\.168\.137\.(1[0-9]|20)/24' "$out/guest-address.txt"; then break; fi
