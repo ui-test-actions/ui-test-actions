@@ -42,7 +42,7 @@ jobs:
           xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
           echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
           echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@bb6e52724ff3a8b1aaf45f585880795db03ed669
+      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
         with:
           target: ios
           duration-minutes: '10'
