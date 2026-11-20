@@ -310,7 +310,11 @@ class DesktopDriver:
             output = os_command("pbpaste", env={**os.environ, "LC_ALL": "en_US.UTF-8"})
         if len(output) > MAX_CLIPBOARD_BYTES:
             raise RuntimeError("Clipboard text exceeds the session size limit")
-        return output.decode("utf-8", errors="strict")
+        if self.target == "linux":
+            # Tk 8.6 can export paired UTF-16 surrogates in X11 UTF8_STRING.
+            # Combine adjacent valid pairs and reject other malformed text.
+            return output.decode("utf-8", "surrogatepass").encode("utf-16-le", "surrogatepass").decode("utf-16-le")
+        return output.decode("utf-8")
 
     def clipboard_write(self, text):
         if "\x00" in text:

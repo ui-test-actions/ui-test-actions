@@ -5,6 +5,7 @@ from io import BytesIO
 import json
 from math import isfinite
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from contract import CommandError
 from mobile_driver import _run
@@ -102,21 +103,23 @@ class AxeSimulator:
     def capture(self):
         from PIL import Image
 
-        raw = _run("xcrun", "simctl", "io", self.mobile.device, "screenshot", "--type=png", "-", timeout=25)
-        with Image.open(BytesIO(raw)) as image:
-            if image.size != self.capture_size:
-                root_size = frame(self.observe()[0])
-                if root_size is None or root_size[:2] != (0, 0):
-                    raise RuntimeError("AXe did not report the geometry of the app viewport.")
-                width, height = root_size[2:]
-                if abs(image.width / width - image.height / height) > .04:
-                    raise RuntimeError("The iOS screen and AXe viewport are out of alignment.")
-                self.viewport = (width, height)
-                self.capture_size = image.size
-            scaled = image.resize(self.viewport, Image.Resampling.LANCZOS)
-            output = BytesIO()
-            scaled.save(output, "PNG")
-            return output.getvalue()
+        with TemporaryDirectory(prefix="ios-ui-capture-") as directory:
+            capture = Path(directory) / "screen.png"
+            _run("xcrun", "simctl", "io", self.mobile.device, "screenshot", "--type=png", str(capture), timeout=25)
+            with Image.open(capture) as image:
+                if image.size != self.capture_size:
+                    root_size = frame(self.observe()[0])
+                    if root_size is None or root_size[:2] != (0, 0):
+                        raise RuntimeError("AXe did not report the geometry of the app viewport.")
+                    width, height = root_size[2:]
+                    if abs(image.width / width - image.height / height) > .04:
+                        raise RuntimeError("The iOS screen and AXe viewport are out of alignment.")
+                    self.viewport = (width, height)
+                    self.capture_size = image.size
+                scaled = image.resize(self.viewport, Image.Resampling.LANCZOS)
+                output = BytesIO()
+                scaled.save(output, "PNG")
+                return output.getvalue()
 
     def key(self, keys):
         names = [key.lower() for key in keys]

@@ -50,17 +50,27 @@ def authenticate_at_expiry(client, expires_at, evidence):
             raise AssertionError(f"The session still responds after expiry with HTTP {status}.")
 
 
-def run(connection, token_file, evidence):
+def run(connection, token_file, evidence, resume):
     client = Client(connection, token_file)
     first = client.identify()
-    if first["target"] != "linux" or not 3400 <= first["seconds_remaining"] <= 3600:
-        raise ValueError("Use a fresh 60-minute Linux fixture session.")
     expires_at = connection["expires_unix"]
-    record(evidence, seconds_remaining=first["seconds_remaining"], same_session=True,
-           expires_at=datetime.fromtimestamp(expires_at, timezone.utc).isoformat())
-    exercise(connection, token_file, evidence, ENTRY, APPLY, (100, 120), WINDOW, None)
-    print("Early fixture transition verified.", flush=True)
+    expiration = datetime.fromtimestamp(expires_at, timezone.utc).isoformat()
+    trace = evidence / "observations.jsonl"
+    if first["target"] != "linux":
+        raise ValueError("Use the hosted Linux fixture.")
+    if resume:
+        previous = json.loads(trace.read_text(encoding="utf-8").splitlines()[0])
+        if previous["expires_at"] != expiration or not (evidence / "result.json").is_file():
+            raise ValueError("Resume using the same connection and its existing early evidence.")
+    else:
+        if trace.exists() or not 3400 <= first["seconds_remaining"] <= 3600:
+            raise ValueError("Use a new evidence directory and a fresh 60-minute Linux session.")
+        record(evidence, seconds_remaining=first["seconds_remaining"], same_session=True, expires_at=expiration)
+        exercise(connection, token_file, evidence, ENTRY, APPLY, (100, 120), WINDOW, None)
+        print("Early fixture transition verified.", flush=True)
     for remaining in (3000, 2400, 1800, 1200, 600, 300, 120, 60):
+        if time.time() >= expires_at - remaining:
+            continue
         wait_until(expires_at - remaining)
         observed = Client(connection, token_file).identify()
         if observed["id"] != first["id"]:
@@ -73,6 +83,7 @@ def run(connection, token_file, evidence):
         {"command": "pointer.click", "params": dict(zip(("x", "y"), ENTRY))},
         {"command": "keyboard.press", "params": {"keys": ["home"]}},
         {"command": "keyboard.press", "params": {"keys": ["shift", "end"]}},
+        {"command": "keyboard.press", "params": {"keys": ["backspace"]}},
         {"command": "text.insert", "params": {"text": LATE_TEXT}},
         {"command": "pointer.click", "params": dict(zip(("x", "y"), APPLY))},
     ]
@@ -103,8 +114,8 @@ if __name__ == "__main__":
     parser.add_argument("connection", type=Path)
     parser.add_argument("--token-file", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
+    parser.add_argument("--resume", action="store_true")
     arguments = parser.parse_args()
     arguments.evidence.mkdir(parents=True, exist_ok=True)
-    if (arguments.evidence / "observations.jsonl").exists():
-        parser.exit(1, "Use a new directory for each run's evidence.\n")
-    run(json.loads(arguments.connection.read_text(encoding="utf-8")), arguments.token_file, arguments.evidence)
+    run(json.loads(arguments.connection.read_text(encoding="utf-8")), arguments.token_file,
+        arguments.evidence, arguments.resume)

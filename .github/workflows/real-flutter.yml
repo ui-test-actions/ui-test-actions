@@ -39,7 +39,7 @@ jobs:
           test -x "$executable"
           echo "FLUTTER_APP=$executable" >> "$GITHUB_ENV"
           sudo apt-get -o DPkg::Lock::Timeout=60 install -y --no-install-recommends \
-            fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1
+            fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1 libegl1 libegl-mesa0 libgl1 libopengl0
       - uses: ui-test-actions/ui-test-actions@803d83d50713f845db414c30c7c826071ede907c
         with:
           target: linux
@@ -48,7 +48,10 @@ jobs:
           launch: |
             XDG_CONFIG_HOME="$RUNNER_TEMP/localsend-settings" LIBGL_ALWAYS_SOFTWARE=1 \
               "$FLUTTER_APP" > flutter-evidence/app.log 2>&1 &
-            printf '%s\n' "$!" > flutter-evidence/app.pid
+            app_pid=$!
+            printf '%s\n' "$app_pid" > flutter-evidence/app.pid
+            sleep 2
+            kill -0 "$app_pid" || { cat flutter-evidence/app.log >&2; exit 1; }
           ready: |
             kill -0 "$(cat flutter-evidence/app.pid)"
             wmctrl -l | grep -qi localsend

@@ -46,6 +46,8 @@ Send the bearer token in the authorization header. Use JSON request bodies encod
 
 Focus the editable control before inserting text. On desktop, the driver writes native Unicode clipboard data and uses the host paste shortcut. On Android, a temporary test input method commits Unicode to the focused application and uses the device clipboard. On the visible iOS Simulator, the driver writes that simulator's pasteboard and pastes into the focused control. The app determines shaping, bidirectional layout, selection semantics, normalization, and what a field accepts. A single-line field may remove line breaks. The existing `/v1/input` text contract remains ASCII for compatibility.
 
+On desktop and the visible iOS Simulator, `replace: true` sends the platform select-all shortcut before pasting. Some controls bind that chord differently. The hosted X11 Tk Entry moved the insertion point instead of selecting the string. For that single-line control, `home`, `shift+end`, and `backspace` cleared the old text before insertion. Verify the actual result with a semantic assertion or copy-back after first setting the clipboard to a distinct test value.
+
 ### Elements and assertions
 
 Use `tree.snapshot` for semantic state where exposed. A node may include a name, role, text, enabled and visible flags, parent ID, and bounding rectangle. Source availability depends on accessibility trust and on the app exposing the control. Password values are filtered when the native source identifies secure fields.

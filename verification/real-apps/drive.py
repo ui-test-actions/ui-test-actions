@@ -1,78 +1,42 @@
 """External client for the pinned real-application verification workflows."""
 
 import argparse
-import http.client
 import json
 from pathlib import Path
-import re
 import sys
 import time
-from urllib.parse import urlsplit
-from uuid import uuid4
 
 from verify import EXPECTED, TITLE
 
-MAX_RESPONSE_BYTES = 16 * 1024 * 1024
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from agent import Client as SessionClient, ClientError
+
 PNG_HEADER = b"\x89PNG\r\n\x1a\n"
 
 
-class Client:
+class Client(SessionClient):
     def __init__(self, connection: Path, token_file: Path):
         config = json.loads(connection.read_text(encoding="utf-8"))
-        url = urlsplit(config["url"])
-        if (url.scheme != "https" or url.username or url.password or not url.hostname or url.query
-                or url.fragment or url.path not in ("", "/") or url.port not in (443, None)):
-            raise ValueError("The connection artifact must contain a plain HTTPS origin on port 443")
-        token = token_file.read_text(encoding="ascii").strip()
-        if not re.fullmatch(r"[0-9a-f]{64}", token):
-            raise ValueError("The token file must contain the 64-digit session token")
-        self.hostname = url.hostname
-        self.token = token
+        super().__init__(config, token_file)
         self.target = config["target"]
-        self.session_id = config["session_id"]
-
-    def request(self, method: str, path: str, data=None):
-        connection = http.client.HTTPSConnection(self.hostname, timeout=35)
-        headers = {"Authorization": f"Bearer {self.token}"}
-        body = None
-        if data is not None:
-            body = json.dumps(data, ensure_ascii=False).encode("utf-8")
-            headers["Content-Type"] = "application/json; charset=utf-8"
-        try:
-            connection.request(method, path, body=body, headers=headers)
-            response = connection.getresponse()
-            payload = response.read(MAX_RESPONSE_BYTES + 1)
-            if len(payload) > MAX_RESPONSE_BYTES:
-                raise RuntimeError("The response exceeded 16 MiB")
-            if response.status != 200:
-                error_code = None
-                if response.headers.get_content_type() == "application/json":
-                    err = json.loads(payload)
-                    if isinstance(err.get("error"), dict):
-                        error_code = err["error"].get("code")
-                raise RuntimeError(f"HTTP {response.status}" + (f" ({error_code})" if error_code else ""))
-            return payload
-        finally:
-            connection.close()
 
     def verify_session(self):
-        response = json.loads(self.request("GET", "/v1/session"))
-        if response["id"] != self.session_id or response["target"] != self.target:
+        response = self.identify()
+        if response["target"] != self.target:
             raise RuntimeError("The live session does not match the connection artifact")
         return response
 
     def capabilities(self):
-        return json.loads(self.request("GET", "/v2/capabilities"))
+        return json.loads(self.fetch("/v2/capabilities"))
 
     def action(self, command: str, params: dict):
-        envelope = {"command": command, "params": params, "request_id": uuid4().hex}
-        response = json.loads(self.request("POST", "/v2/action", envelope))
+        response = self.command(command, params)
         if response.get("ok") is not True:
             raise RuntimeError(f"{command} did not report success")
         return response["result"]
 
     def screenshot(self, output: Path):
-        payload = self.request("GET", "/v1/screenshot")
+        payload = self.fetch("/v1/screenshot")
         if not payload.startswith(PNG_HEADER):
             raise RuntimeError("The screenshot response was not a PNG")
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -166,5 +130,5 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except (OSError, ValueError, RuntimeError, KeyError, http.client.HTTPException) as error:
+    except (OSError, ValueError, RuntimeError, KeyError, ClientError) as error:
         sys.exit(str(error))

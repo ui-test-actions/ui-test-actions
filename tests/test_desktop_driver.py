@@ -49,6 +49,15 @@ class DesktopDriverTests(unittest.TestCase):
                 self.linux.clipboard_write("text\x00tail")
             command.assert_not_called()
 
+    def test_x11_clipboard_recovers_paired_tk_surrogates(self):
+        source = "مرحبًا ١٢٣ 🌍\n".encode()
+        tk_emoji = "\ud83c\udf0d".encode("utf-8", "surrogatepass")
+        with patch("desktop_driver.os_command", return_value=source.replace("🌍".encode(), tk_emoji)):
+            self.assertEqual(self.linux.clipboard_read(), source.decode())
+        with patch("desktop_driver.os_command", return_value=tk_emoji[:3]):
+            with self.assertRaises(UnicodeDecodeError):
+                self.linux.clipboard_read()
+
     def test_window_list_keeps_whitespace_and_multilingual_titles(self):
         output = b"0x0010012a 0 100 20 30 400 500 host " + "Editor عنوان 🌍".encode() + b"\n"
         with patch("desktop_driver.os_command", return_value=output):
