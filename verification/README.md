@@ -15,3 +15,5 @@ The fixture was blue at the start and turned green after Apply, with the externa
 For every target, missing and incorrect bearer tokens returned HTTP 401. A new HTTP connection authenticated with the original token and returned the same session ID. On Windows, the valid token's screenshot request returned Cloudflare HTTP 530 about 10 seconds after cancellation was requested. The completed run still returned 530.
 
 The Linux browser screenshot shows a separate client authenticated to the same session after the terminal actions. The browser performed a second click, type, and click sequence and refreshed the screenshot.
+
+The iOS fixture also passed on the `macos-15` image with iOS 26.2. Typing and Apply changed the status, and a swipe advanced the list to row 10. [Run 44677363881](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44677363881) · [Before](ios/macos-15/before.png) · [After](ios/macos-15/after.png) · [Checks](ios/macos-15/checks.txt)
