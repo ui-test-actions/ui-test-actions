@@ -73,7 +73,7 @@ jobs:
           echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
           echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
           echo "AXE_APP=$bundle" >> "$GITHUB_ENV"
-      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+      - uses: ui-test-actions/ui-test-actions@032f3405eb0ee69f59957594a52b4b632d7778e9
         with:
           target: ios
           duration-minutes: '10'
