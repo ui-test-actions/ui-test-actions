@@ -96,7 +96,8 @@ class MobileEnvironment:
         else:
             self.driver.simctl("privacy", {"granted": "grant", "denied": "revoke", "reset": "reset"}[state], name, app)
             self.previous_permissions[(app, name)] = None
-        return {"permission": name, "state": state}
+        return {"permission": name, "state": state, "verified_by_driver": self.android,
+                "source": "android:package-manager" if self.android else "simulator:privacy"}
 
     def execute(self, command, params):
         if command == "app.environment.capabilities":

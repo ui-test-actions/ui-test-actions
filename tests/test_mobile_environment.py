@@ -29,7 +29,9 @@ class MobileEnvironmentTest(TestCase):
         driver._launch_simulator.assert_called_once_with(APP, "ar-SA")
         with self.assertRaises(CommandError):
             environment.execute("app.permission.set", {"id": APP, "permission": "contacts", "state": "denied"})
-        environment.execute("app.permission.set", {"id": APP, "permission": "photos", "state": "denied"})
+        response = environment.execute("app.permission.set", {"id": APP, "permission": "photos", "state": "denied"})
+        self.assertEqual(response["source"], "simulator:privacy")
+        self.assertFalse(response["verified_by_driver"])
         environment.close()
         self.assertEqual(driver.simctl.call_count, 2)
         driver.simctl.assert_any_call("privacy", "revoke", "photos", APP)
