@@ -22,9 +22,6 @@ inputs:
   device:
     description: ADB serial or iOS simulator UDID, or empty to use the only attached/booted device
     default: ''
-  ios-bundle-id:
-    description: iOS application bundle ID
-    default: ''
 runs:
   using: composite
   steps:
@@ -40,7 +37,6 @@ runs:
         UI_TEST_READY: ${{ inputs.ready }}
         UI_TEST_STARTUP_TIMEOUT: ${{ inputs.startup-timeout-seconds }}
         UI_TEST_DEVICE: ${{ inputs.device }}
-        UI_TEST_IOS_BUNDLE_ID: ${{ inputs.ios-bundle-id }}
         PYTHONUNBUFFERED: '1'
       run: |
         UI_TEST_BASH="$BASH"

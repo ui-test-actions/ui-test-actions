@@ -364,13 +364,23 @@ def main(control):
     duration = duration_setting("UI_TEST_DURATION", 1, 180)
     startup = duration_setting("UI_TEST_STARTUP_TIMEOUT", 1, 1800)
     processes = []
-    with tempfile.TemporaryDirectory(prefix="live-ui-") as directory:
+    with tempfile.TemporaryDirectory(prefix="live-ui-", dir="/tmp" if target == "ios" else None) as directory:
         work = Path(directory)
         try:
             binary = download_tunnel(work)
-            setup_desktop(target, processes)
+            if target in ("linux", "windows", "macos"):
+                setup_desktop(target, processes)
             launch_app(startup)
-            with Session(digest, Desktop(target), target) as session:
+            device = os.environ.get("UI_TEST_DEVICE", "")
+            if target == "android":
+                from mobile import Android
+                backend = Android(device)
+            elif target == "ios":
+                from mobile import IOS
+                backend = IOS(device, work, processes)
+            else:
+                backend = Desktop(target)
+            with Session(digest, backend, target) as session:
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)
                 serving.start()
