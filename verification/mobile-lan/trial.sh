@@ -65,7 +65,7 @@ case "$stage" in
     ;;
   verify)
     if [[ "$target" == android ]]; then
-      adb -s emulator-5554 shell ping -c 3 -W 4 192.168.137.2 | tee "$evidence/android-to-mac.txt"
+      adb -s emulator-5554 shell ping -I wlan0 -c 3 -W 4 192.168.137.2 | tee "$evidence/android-to-mac.txt"
     else
       ping -c 3 -W 4000 192.168.137.10 | tee "$evidence/mac-to-android.txt"
     fi

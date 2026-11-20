@@ -42,7 +42,15 @@ done
 adb -s emulator-5554 shell dumpsys connectivity > "$out/connectivity.txt"
 cat "$out/guest-address.txt"
 grep -Eq 'inet 192\.168\.137\.(1[0-9]|20)/24' "$out/guest-address.txt"
-adb -s emulator-5554 shell ping -c 1 -W 3 192.168.137.1
+for _ in {1..15}; do
+  if adb -s emulator-5554 shell ping -I wlan0 -c 1 -W 2 192.168.137.1 > "$out/local-ping.txt" 2>&1; then
+    break
+  fi
+  sleep 2
+done
+cat "$out/local-ping.txt"
+grep -Eq '1 (packets )?received' "$out/local-ping.txt"
+adb -s emulator-5554 shell dumpsys connectivity > "$out/connectivity.txt"
 if [[ "${LAN_KEEP:-0}" == 1 ]]; then
   trap - EXIT
 else
