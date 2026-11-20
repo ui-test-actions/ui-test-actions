@@ -29,10 +29,10 @@ jobs:
           export APPIUM_HOME="$RUNNER_TEMP/appium-home"
           npm install --prefix "$RUNNER_TEMP/appium" --no-audit --no-fund appium@3.9.1
           appium="$RUNNER_TEMP/appium/node_modules/.bin/appium"
-          "$appium" driver install --source=npm appium-uiautomator2-driver@9.2.2
+          "$appium" driver install --source=npm appium-uiautomator2-driver@8.7.3
           "$appium" --address 127.0.0.1 --port 4723 --log-level warn > appium.log 2>&1 &
           curl --fail --silent --show-error --retry 5 --retry-connrefused http://127.0.0.1:4723/status
-      - uses: ui-test-actions/ui-test-actions@a041c2189effd579e66d6fac6ceecab531252c09
+      - uses: ui-test-actions/ui-test-actions@525052dd0d304bd975dd5a03a35f915f75490d1d
         with:
           target: android
           token-sha256: ${{ inputs.token_sha256 }}

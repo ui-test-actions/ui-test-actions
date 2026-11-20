@@ -22,13 +22,15 @@ jobs:
       - name: Install pinned Mousepad and enable Arabic locale
         shell: bash
         run: |
-          sudo apt-get install -y --no-install-recommends mousepad=0.6.1-1build2 fonts-noto-core
+          sudo apt-get -o DPkg::Lock::Timeout=60 install -y --no-install-recommends \
+            mousepad=0.6.1-1build2 fonts-noto-core xvfb xauth xdotool xclip openbox wmctrl \
+            python3-pyatspi at-spi2-core dbus-x11
           sudo locale-gen ar_EG.UTF-8
           mkdir -p gtk-evidence
           printf 'Original GTK test document.\n' > gtk-evidence/document.txt
           dpkg-query --show mousepad > gtk-evidence/version.txt
           printf '%s\n' 'source c4b2fcbba98a853cac1998269c55b3b954e3faf0' >> gtk-evidence/version.txt
-      - uses: ui-test-actions/ui-test-actions@a041c2189effd579e66d6fac6ceecab531252c09
+      - uses: ui-test-actions/ui-test-actions@525052dd0d304bd975dd5a03a35f915f75490d1d
         with:
           target: linux
           token-sha256: ${{ inputs.token_sha256 }}
