@@ -1,0 +1,23 @@
+2026-11-20T04:32:55Z
+controller_http=200
+no_token=401
+wrong_token=401
+session={"id": "5dba949659768b31f5adccdb", "target": "linux", "seconds_remaining": 3529}
+2026-11-20T04:33:31Z
+{"ok": true}
+{"ok": true}
+{"ok": true}
+reconnect={"id": "5dba949659768b31f5adccdb", "target": "linux", "seconds_remaining": 3493}
+2026-11-20T04:57:35Z
+unauthorized_input=401
+wrong_token_input=401
+late_interaction=2026-11-20T05:30:46Z
+{"id": "5dba949659768b31f5adccdb", "target": "linux", "seconds_remaining": 61}
+{"ok": true}
+{"ok": true}
+{"ok": true}
+2026-11-20T05:32:13Z
+{"conclusion":"success","status":"completed"}
+after_expiry_screenshot=530
+after_expiry_input=530
+Bearer token absent from job logs and connection artifact

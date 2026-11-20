@@ -17,3 +17,11 @@ For every target, missing and incorrect bearer tokens returned HTTP 401. A new H
 The Linux browser screenshot shows a separate client authenticated to the same session after the terminal actions. The browser performed a second click, type, and click sequence and refreshed the screenshot.
 
 The iOS fixture also passed on the `macos-15` image with iOS 26.2. Typing and Apply changed the status, and a swipe advanced the list to row 10. [Run 44677363881](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44677363881) · [Before](ios/macos-15/before.png) · [After](ios/macos-15/after.png) · [Checks](ios/macos-15/checks.txt)
+
+## Full 60-minute session
+
+[Linux run 44674882848](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44674882848) used `duration-minutes: '60'` and the earlier action pin `228efdc86405cdbb170cc3993138b91566696163`. The runner logged readiness at 04:31:57.375 UTC and successful closure at 05:31:57.904 UTC. The action pin in the platform table was verified separately on all five targets.
+
+The external client sampled the same session ID throughout the run. With 61 seconds shown by the API, it selected the existing input using a drag, typed `Late-hour proof`, and clicked Apply. The screenshot displayed the new label. The last successful external probe reported 0 seconds remaining. The next probe and later screenshot and input requests returned HTTP 530, including after GitHub reported the job completed successfully.
+
+[Before the late interaction](linux/hour/before.png) · [After](linux/hour/after.png) · [External checks](linux/hour/checks.txt) · [External timing](linux/hour/trace.txt) · [Runner timing](linux/hour/runner-timing.txt)
