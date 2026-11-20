@@ -33,6 +33,13 @@ class LiveUI:
             raise ClientError("The session returned an invalid PNG.")
         return image
 
+    def recording(self):
+        self.identify()
+        image = self.client.fetch("/v2/recording")
+        if not image.startswith(b"GIF8") or len(image) > 24 * 1024 * 1024:
+            raise ClientError("The session returned an invalid GIF.")
+        return image
+
     def action(self, command, params=None, *, request_id=None):
         self.identify()
         return self.client.command(command, params if params is not None else {}, request_id=request_id)

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live UI Inspector</title>
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+  <header class="masthead">
+    <h1>Live UI Inspector</h1>
+    <p id="notice" role="status">Loading sessions</p>
+  </header>
+  <main>
+    <aside>
+      <section class="panel">
+        <div class="heading"><h2>Devices</h2><button id="refresh-devices" type="button">Refresh</button></div>
+        <div id="devices" class="stack"></div>
+      </section>
+      <section class="panel">
+        <div class="heading"><h2>Run history</h2><button id="refresh-history" type="button">Refresh</button></div>
+        <div id="history" class="stack"></div>
+      </section>
+    </aside>
+    <div class="workspace">
+      <section class="panel screen-panel">
+        <div class="heading screen-toolbar">
+          <div><h2 id="screen-title">Live screen</h2><span id="dimensions"></span></div>
+          <div class="controls">
+            <button id="refresh-screen" type="button" disabled>Capture</button>
+            <button id="live" type="button" aria-pressed="false" disabled>Live preview</button>
+            <label><input id="touch" type="checkbox" disabled> Interact</label>
+          </div>
+        </div>
+        <div id="viewport">
+          <p id="screen-empty">Select an available device.</p>
+          <img id="screen" alt="Current application screen" hidden>
+        </div>
+      </section>
+      <div class="details">
+        <section class="panel">
+          <div class="heading"><h2>Accessibility</h2><button id="inspect" type="button" disabled>Inspect tree</button></div>
+          <input id="search" type="search" placeholder="Filter elements" aria-label="Filter elements" disabled>
+          <div id="tree" class="stack scroll"></div>
+        </section>
+        <section class="panel">
+          <div class="heading"><h2>Commands</h2><button id="diagnostics" type="button" disabled>Diagnostics</button></div>
+          <label for="command">Command</label>
+          <select id="command" disabled></select>
+          <p id="shape" class="muted"></p>
+          <label for="params">Arguments (JSON)</label>
+          <textarea id="params" rows="3" spellcheck="false">{}</textarea>
+          <button id="execute" type="button" disabled>Run command</button>
+        </section>
+      </div>
+      <div class="details">
+        <section class="panel">
+          <div class="heading"><h2>Replay workflow</h2><button id="run" type="button" disabled>Run</button></div>
+          <label for="mode">Target</label>
+          <select id="mode"><option value="workflow">Selected device</option><option value="coordinate">Coordinated devices</option></select>
+          <label for="definition">Workflow or scenario (JSON)</label>
+          <textarea id="definition" rows="6" spellcheck="false"></textarea>
+          <label for="inputs">Inputs (JSON)</label>
+          <textarea id="inputs" rows="2" spellcheck="false">{}</textarea>
+        </section>
+        <section class="panel">
+          <div class="heading"><h2 id="result-title">Results</h2></div>
+          <div id="artifacts" class="controls"></div>
+          <img id="evidence" alt="Selected run screenshot" hidden>
+          <pre id="result" aria-live="polite"></pre>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script src="/dashboard.js" type="module"></script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 name: Fast automation regressions
 on:
   push:
-    paths: ['*.py', 'tests/**', 'mobile_ime/**', 'verification/mobile-lan/*.py', 'verification/mobile-lan/*.c', '.github/workflows/tests.yml', 'action.yml']
+    paths: ['*.py', 'tests/**', 'mobile_ime/**', 'dashboard_assets/**', 'sdk/**', 'verification/mobile-lan/*.py', 'verification/mobile-lan/*.c', '.github/workflows/tests.yml', 'action.yml']
   pull_request:
-    paths: ['*.py', 'tests/**', 'mobile_ime/**', 'verification/mobile-lan/*.py', 'verification/mobile-lan/*.c', '.github/workflows/tests.yml', 'action.yml']
+    paths: ['*.py', 'tests/**', 'mobile_ime/**', 'dashboard_assets/**', 'sdk/**', 'verification/mobile-lan/*.py', 'verification/mobile-lan/*.c', '.github/workflows/tests.yml', 'action.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -24,6 +24,15 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install Pillow==12.2.0
       - run: python -m unittest discover -s tests -v
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        if: matrix.runner == 'ubuntu-24.04'
+        with:
+          node-version: 24.15.0
+      - name: Check browser and TypeScript client syntax
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          node --check dashboard_assets/dashboard.js
+          node --check sdk/typescript/index.ts
       - name: Test mobile LAN relay and packet filtering
         if: matrix.runner == 'ubuntu-24.04'
         run: |
