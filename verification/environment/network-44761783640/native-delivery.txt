@@ -1,0 +1,2285 @@
+1795188344
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.071/57.071/57.071/0.000 ms
+1795188346
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=139 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 139.644/139.644/139.644/0.000 ms
+1795188348
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=439 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 439.776/439.776/439.776/0.000 ms
+1795188351
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.057/53.057/53.057/0.000 ms
+1795188353
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1532 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1532.289/1532.289/1532.289/0.000 ms
+1795188356
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=87.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 87.961/87.961/87.961/0.000 ms
+1795188358
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=461 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 461.729/461.729/461.729/0.000 ms
+1795188361
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=65.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 65.143/65.143/65.143/0.000 ms
+1795188363
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=115 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 115.934/115.934/115.934/0.000 ms
+1795188365
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=122 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 122.516/122.516/122.516/0.000 ms
+1795188367
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=430 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 430.354/430.354/430.354/0.000 ms
+1795188370
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=478 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 478.267/478.267/478.267/0.000 ms
+1795188372
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1304 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1304.812/1304.812/1304.812/0.000 ms
+1795188375
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=985 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 985.666/985.666/985.666/0.000 ms
+1795188378
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=160 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 160.173/160.173/160.173/0.000 ms
+1795188381
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=72.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 72.680/72.680/72.680/0.000 ms
+1795188383
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=311 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 311.283/311.283/311.283/0.000 ms
+1795188385
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=338 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 338.136/338.136/338.136/0.000 ms
+1795188387
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=214 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 214.837/214.837/214.837/0.000 ms
+1795188390
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=70.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 70.730/70.730/70.730/0.000 ms
+1795188392
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=81.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 81.525/81.525/81.525/0.000 ms
+1795188394
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=277 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 277.836/277.836/277.836/0.000 ms
+1795188396
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=70.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 70.851/70.851/70.851/0.000 ms
+1795188398
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=64.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 64.218/64.218/64.218/0.000 ms
+1795188400
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.967/50.967/50.967/0.000 ms
+1795188402
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=66.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 66.940/66.940/66.940/0.000 ms
+1795188404
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=63.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 63.880/63.880/63.880/0.000 ms
+1795188406
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.940/55.940/55.940/0.000 ms
+1795188408
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.687/55.687/55.687/0.000 ms
+1795188411
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.189/51.189/51.189/0.000 ms
+1795188413
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.466/51.466/51.466/0.000 ms
+1795188415
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=69.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 69.992/69.992/69.992/0.000 ms
+1795188417
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=64.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 64.581/64.581/64.581/0.000 ms
+1795188419
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=67.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 67.067/67.067/67.067/0.000 ms
+1795188421
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=62.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 62.628/62.628/62.628/0.000 ms
+1795188423
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.566/52.566/52.566/0.000 ms
+1795188425
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=60.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 60.715/60.715/60.715/0.000 ms
+1795188427
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.624/53.624/53.624/0.000 ms
+1795188429
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.691/52.691/52.691/0.000 ms
+1795188431
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.956/50.956/50.956/0.000 ms
+1795188433
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.451/52.451/52.451/0.000 ms
+1795188435
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=58.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 58.880/58.880/58.880/0.000 ms
+1795188437
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=91.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 91.357/91.357/91.357/0.000 ms
+1795188440
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.708/52.708/52.708/0.000 ms
+1795188442
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.562/52.562/52.562/0.000 ms
+1795188444
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=72.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 72.198/72.198/72.198/0.000 ms
+1795188446
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.094/53.094/53.094/0.000 ms
+1795188448
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.852/53.852/53.852/0.000 ms
+1795188450
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.047/51.047/51.047/0.000 ms
+1795188452
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.084/51.084/51.084/0.000 ms
+1795188454
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.555/53.555/53.555/0.000 ms
+1795188456
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.483/52.483/52.483/0.000 ms
+1795188458
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.867/52.867/52.867/0.000 ms
+1795188460
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.798/52.798/52.798/0.000 ms
+1795188462
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.290/51.290/51.290/0.000 ms
+1795188464
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.093/52.093/52.093/0.000 ms
+1795188466
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=60.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 60.714/60.714/60.714/0.000 ms
+1795188468
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.680/55.680/55.680/0.000 ms
+1795188471
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.941/52.941/52.941/0.000 ms
+1795188473
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.799/51.799/51.799/0.000 ms
+1795188475
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=106 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 106.890/106.890/106.890/0.000 ms
+1795188477
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=342 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 342.175/342.175/342.175/0.000 ms
+1795188479
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=291 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 291.270/291.270/291.270/0.000 ms
+1795188481
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=96.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 96.373/96.373/96.373/0.000 ms
+1795188484
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=58.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 58.727/58.727/58.727/0.000 ms
+1795188486
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.705/52.705/52.705/0.000 ms
+1795188488
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=479 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 479.725/479.725/479.725/0.000 ms
+1795188490
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.183/51.183/51.183/0.000 ms
+1795188492
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.636/51.636/51.636/0.000 ms
+1795188494
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.412/51.412/51.412/0.000 ms
+1795188496
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.469/52.469/52.469/0.000 ms
+1795188498
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188503
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.143/52.143/52.143/0.000 ms
+1795188505
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=102 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 102.217/102.217/102.217/0.000 ms
+1795188508
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.892/53.892/53.892/0.000 ms
+1795188510
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.745/51.745/51.745/0.000 ms
+1795188512
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.841/51.841/51.841/0.000 ms
+1795188514
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.529/56.529/56.529/0.000 ms
+1795188516
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.907/53.907/53.907/0.000 ms
+1795188518
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.757/55.757/55.757/0.000 ms
+1795188520
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.832/50.832/50.832/0.000 ms
+1795188522
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.190/54.190/54.190/0.000 ms
+1795188524
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.791/51.791/51.791/0.000 ms
+1795188526
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=59.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 59.404/59.404/59.404/0.000 ms
+1795188528
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.426/51.426/51.426/0.000 ms
+1795188530
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=58.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 58.930/58.930/58.930/0.000 ms
+1795188532
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=67.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 67.298/67.298/67.298/0.000 ms
+1795188534
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.467/51.467/51.467/0.000 ms
+1795188537
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.182/51.182/51.182/0.000 ms
+1795188539
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.192/52.192/52.192/0.000 ms
+1795188541
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=181 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 181.022/181.022/181.022/0.000 ms
+1795188543
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.894/50.894/50.894/0.000 ms
+1795188545
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.775/52.775/52.775/0.000 ms
+1795188547
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=92.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 92.915/92.915/92.915/0.000 ms
+1795188549
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.548/53.548/53.548/0.000 ms
+1795188551
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.292/52.292/52.292/0.000 ms
+1795188553
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.361/51.361/51.361/0.000 ms
+1795188555
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.918/54.918/54.918/0.000 ms
+1795188557
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.714/51.714/51.714/0.000 ms
+1795188559
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.784/56.784/56.784/0.000 ms
+1795188562
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=62.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 62.181/62.181/62.181/0.000 ms
+1795188564
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=162 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 162.849/162.849/162.849/0.000 ms
+1795188566
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.077/52.077/52.077/0.000 ms
+1795188568
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=66.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 66.374/66.374/66.374/0.000 ms
+1795188570
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=223 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 223.616/223.616/223.616/0.000 ms
+1795188572
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.416/53.416/53.416/0.000 ms
+1795188574
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.132/56.132/56.132/0.000 ms
+1795188576
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.070/51.070/51.070/0.000 ms
+1795188578
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.306/51.306/51.306/0.000 ms
+1795188580
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.661/52.661/52.661/0.000 ms
+1795188582
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.413/51.413/51.413/0.000 ms
+1795188585
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.346/51.346/51.346/0.000 ms
+1795188587
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.253/56.253/56.253/0.000 ms
+1795188589
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.950/55.950/55.950/0.000 ms
+1795188591
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.903/50.903/50.903/0.000 ms
+1795188593
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.216/52.216/52.216/0.000 ms
+1795188595
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.202/53.202/53.202/0.000 ms
+1795188597
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.891/50.891/50.891/0.000 ms
+1795188599
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.276/52.276/52.276/0.000 ms
+1795188601
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=95.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 95.794/95.794/95.794/0.000 ms
+1795188603
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.999/53.999/53.999/0.000 ms
+1795188605
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=66.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 66.313/66.313/66.313/0.000 ms
+1795188607
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.854/50.854/50.854/0.000 ms
+1795188609
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.331/52.331/52.331/0.000 ms
+1795188611
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.787/50.787/50.787/0.000 ms
+1795188614
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.946/52.946/52.946/0.000 ms
+1795188616
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=110 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 110.040/110.040/110.040/0.000 ms
+1795188618
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.463/51.463/51.463/0.000 ms
+1795188620
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.182/52.182/52.182/0.000 ms
+1795188622
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=61.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 61.251/61.251/61.251/0.000 ms
+1795188624
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.296/54.296/54.296/0.000 ms
+1795188626
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.479/57.479/57.479/0.000 ms
+1795188628
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.319/53.319/53.319/0.000 ms
+1795188630
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.612/52.612/52.612/0.000 ms
+1795188632
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.811/50.811/50.811/0.000 ms
+1795188634
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.166/51.166/51.166/0.000 ms
+1795188636
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.541/51.541/51.541/0.000 ms
+1795188638
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.385/50.385/50.385/0.000 ms
+1795188640
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.870/57.870/57.870/0.000 ms
+1795188642
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.224/52.224/52.224/0.000 ms
+1795188645
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.474/50.474/50.474/0.000 ms
+1795188647
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.019/53.019/53.019/0.000 ms
+1795188649
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.227/51.227/51.227/0.000 ms
+1795188651
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.657/54.657/54.657/0.000 ms
+1795188653
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.240/51.240/51.240/0.000 ms
+1795188655
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.873/50.873/50.873/0.000 ms
+1795188657
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.690/51.690/51.690/0.000 ms
+1795188659
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.187/51.187/51.187/0.000 ms
+1795188661
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.013/52.013/52.013/0.000 ms
+1795188663
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.153/51.153/51.153/0.000 ms
+1795188665
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.831/50.831/50.831/0.000 ms
+1795188667
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.999/55.999/55.999/0.000 ms
+1795188669
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.125/52.125/52.125/0.000 ms
+1795188671
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.476/51.476/51.476/0.000 ms
+1795188673
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.084/53.084/53.084/0.000 ms
+1795188676
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.244/51.244/51.244/0.000 ms
+1795188678
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.358/55.358/55.358/0.000 ms
+1795188680
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.375/56.375/56.375/0.000 ms
+1795188682
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=60.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 60.143/60.143/60.143/0.000 ms
+1795188684
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.252/51.252/51.252/0.000 ms
+1795188686
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.240/52.240/52.240/0.000 ms
+1795188688
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.986/50.986/50.986/0.000 ms
+1795188690
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.964/54.964/54.964/0.000 ms
+1795188692
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.195/55.195/55.195/0.000 ms
+1795188694
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.310/55.310/55.310/0.000 ms
+1795188696
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=66.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 66.177/66.177/66.177/0.000 ms
+1795188698
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.081/51.081/51.081/0.000 ms
+1795188700
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.670/50.670/50.670/0.000 ms
+1795188711
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.494/51.494/51.494/0.000 ms
+1795188713
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.665/51.665/51.665/0.000 ms
+1795188715
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.693/50.693/50.693/0.000 ms
+1795188717
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.444/54.444/54.444/0.000 ms
+1795188719
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=62.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 62.000/62.000/62.000/0.000 ms
+1795188721
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.058/56.058/56.058/0.000 ms
+1795188723
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.816/51.816/51.816/0.000 ms
+1795188725
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.694/50.694/50.694/0.000 ms
+1795188727
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.089/52.089/52.089/0.000 ms
+1795188730
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.035/51.035/51.035/0.000 ms
+1795188732
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.041/54.041/54.041/0.000 ms
+1795188734
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.104/53.104/53.104/0.000 ms
+1795188736
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.169/51.169/51.169/0.000 ms
+1795188738
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.765/51.765/51.765/0.000 ms
+1795188740
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.404/51.404/51.404/0.000 ms
+1795188742
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.645/52.645/52.645/0.000 ms
+1795188744
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.197/51.197/51.197/0.000 ms
+1795188746
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.743/50.743/50.743/0.000 ms
+1795188748
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.120/51.120/51.120/0.000 ms
+1795188750
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.388/57.388/57.388/0.000 ms
+1795188752
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.246/53.246/53.246/0.000 ms
+1795188754
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.821/53.821/53.821/0.000 ms
+1795188756
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=59.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 59.602/59.602/59.602/0.000 ms
+1795188758
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.904/51.904/51.904/0.000 ms
+1795188761
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.649/56.649/56.649/0.000 ms
+1795188763
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.663/52.663/52.663/0.000 ms
+1795188765
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.495/53.495/53.495/0.000 ms
+1795188767
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.163/52.163/52.163/0.000 ms
+1795188769
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.062/53.062/53.062/0.000 ms
+1795188771
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.585/50.585/50.585/0.000 ms
+1795188773
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.276/51.276/51.276/0.000 ms
+1795188775
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.060/51.060/51.060/0.000 ms
+1795188777
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.856/50.856/50.856/0.000 ms
+1795188779
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.314/51.314/51.314/0.000 ms
+1795188781
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.482/57.482/57.482/0.000 ms
+1795188783
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.798/51.798/51.798/0.000 ms
+1795188785
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.443/57.443/57.443/0.000 ms
+1795188787
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1073 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1073.426/1073.426/1073.426/0.000 ms
+1795188790
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1046 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1046.429/1046.429/1046.429/0.000 ms
+1795188793
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1040 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1040.164/1040.164/1040.164/0.000 ms
+1795188797
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1116 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1116.970/1116.970/1116.970/0.000 ms
+1795188800
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1048 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1048.308/1048.308/1048.308/0.000 ms
+1795188803
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1098 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1098.808/1098.808/1098.808/0.000 ms
+1795188806
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1081 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1081.245/1081.245/1081.245/0.000 ms
+1795188809
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1055 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1055.592/1055.592/1055.592/0.000 ms
+1795188812
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1027 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1027.276/1027.276/1027.276/0.000 ms
+1795188815
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1027 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1027.601/1027.601/1027.601/0.000 ms
+1795188818
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=1070 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1070.182/1070.182/1070.182/0.000 ms
+1795188821
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188826
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188831
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188836
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=159 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 159.579/159.579/159.579/0.000 ms
+1795188838
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.510/52.510/52.510/0.000 ms
+1795188840
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188845
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188850
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188855
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188861
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188866
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188871
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+1795188876
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=102 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 102.015/102.015/102.015/0.000 ms
+1795188878
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.976/50.976/50.976/0.000 ms
+1795188880
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.680/50.680/50.680/0.000 ms
+1795188882
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.139/56.139/56.139/0.000 ms
+1795188884
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.323/55.323/55.323/0.000 ms
+1795188886
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.760/52.760/52.760/0.000 ms
+1795188888
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.949/53.949/53.949/0.000 ms
+1795188890
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.100/52.100/52.100/0.000 ms
+1795188892
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.130/51.130/51.130/0.000 ms
+1795188894
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.175/52.175/52.175/0.000 ms
+1795188896
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.646/51.646/51.646/0.000 ms
+1795188898
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.616/50.616/50.616/0.000 ms
+1795188900
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.751/51.751/51.751/0.000 ms
+1795188902
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.953/51.953/51.953/0.000 ms
+1795188904
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.111/51.111/51.111/0.000 ms
+1795188907
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.161/51.161/51.161/0.000 ms
+1795188909
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.109/52.109/52.109/0.000 ms
+1795188911
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.434/52.434/52.434/0.000 ms
+1795188913
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.139/54.139/54.139/0.000 ms
+1795188915
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=60.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 60.494/60.494/60.494/0.000 ms
+1795188917
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.161/57.161/57.161/0.000 ms
+1795188919
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.001/51.001/51.001/0.000 ms
+1795188921
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.880/53.880/53.880/0.000 ms
+1795188923
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.600/51.600/51.600/0.000 ms
+1795188925
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.300/53.300/53.300/0.000 ms
+1795188927
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.957/52.957/52.957/0.000 ms
+1795188929
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.032/54.032/54.032/0.000 ms
+1795188931
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.039/53.039/53.039/0.000 ms
+1795188933
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.235/51.235/51.235/0.000 ms
+1795188935
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.103/52.103/52.103/0.000 ms
+1795188938
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.610/52.610/52.610/0.000 ms
+1795188940
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.585/50.585/50.585/0.000 ms
+1795188942
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=61.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 61.882/61.882/61.882/0.000 ms
+1795188944
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.058/52.058/52.058/0.000 ms
+1795188946
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=64.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 64.172/64.172/64.172/0.000 ms
+1795188948
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.202/57.202/57.202/0.000 ms
+1795188950
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=49.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 49.931/49.931/49.931/0.000 ms
+1795188952
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.572/53.572/53.572/0.000 ms
+1795188954
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.707/50.707/50.707/0.000 ms
+1795188956
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.037/51.037/51.037/0.000 ms
+1795188958
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.944/52.944/52.944/0.000 ms
+1795188960
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.623/55.623/55.623/0.000 ms
+1795188962
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.020/51.020/51.020/0.000 ms
+1795188964
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.864/50.864/50.864/0.000 ms
+1795188966
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=56.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 56.006/56.006/56.006/0.000 ms
+1795188969
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.384/51.384/51.384/0.000 ms
+1795188971
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.564/51.564/51.564/0.000 ms
+1795188973
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.487/51.487/51.487/0.000 ms
+1795188975
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.821/50.821/50.821/0.000 ms
+1795188977
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.447/52.447/52.447/0.000 ms
+1795188979
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.470/55.470/55.470/0.000 ms
+1795188981
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.619/51.619/51.619/0.000 ms
+1795188983
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.836/57.836/57.836/0.000 ms
+1795188985
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.904/51.904/51.904/0.000 ms
+1795188987
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.856/50.856/50.856/0.000 ms
+1795188989
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=62.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 62.369/62.369/62.369/0.000 ms
+1795188991
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=62.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 62.167/62.167/62.167/0.000 ms
+1795188993
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.135/52.135/52.135/0.000 ms
+1795188995
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.484/53.484/53.484/0.000 ms
+1795188997
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.418/57.418/57.418/0.000 ms
+1795189000
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.143/52.143/52.143/0.000 ms
+1795189002
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.820/51.820/51.820/0.000 ms
+1795189004
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.969/50.969/50.969/0.000 ms
+1795189006
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.809/51.809/51.809/0.000 ms
+1795189008
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.081/51.081/51.081/0.000 ms
+1795189010
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.138/52.138/52.138/0.000 ms
+1795189012
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.867/53.867/53.867/0.000 ms
+1795189014
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.986/51.986/51.986/0.000 ms
+1795189016
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.731/50.731/50.731/0.000 ms
+1795189018
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=76.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 76.514/76.514/76.514/0.000 ms
+1795189020
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.665/51.665/51.665/0.000 ms
+1795189022
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.029/51.029/51.029/0.000 ms
+1795189024
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.6 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.661/51.661/51.661/0.000 ms
+1795189026
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.863/51.863/51.863/0.000 ms
+1795189028
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.727/50.727/50.727/0.000 ms
+1795189031
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.065/51.065/51.065/0.000 ms
+1795189033
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.721/51.721/51.721/0.000 ms
+1795189035
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.177/52.177/52.177/0.000 ms
+1795189037
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=54.0 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 54.052/54.052/54.052/0.000 ms
+1795189039
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=75.7 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 75.755/75.755/75.755/0.000 ms
+1795189041
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.311/51.311/51.311/0.000 ms
+1795189043
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.438/53.438/53.438/0.000 ms
+1795189045
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.971/50.971/50.971/0.000 ms
+1795189047
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.868/50.868/50.868/0.000 ms
+1795189049
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.910/51.910/51.910/0.000 ms
+1795189051
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.334/51.334/51.334/0.000 ms
+1795189053
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.5 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.581/51.581/51.581/0.000 ms
+1795189055
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=76.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 76.289/76.289/76.289/0.000 ms
+1795189057
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.819/50.819/50.819/0.000 ms
+1795189059
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=52.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 52.490/52.490/52.490/0.000 ms
+1795189062
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=55.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 55.441/55.441/55.441/0.000 ms
+1795189064
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=53.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 53.860/53.860/53.860/0.000 ms
+1795189066
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.2 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.269/51.269/51.269/0.000 ms
+1795189068
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.1 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.122/51.122/51.122/0.000 ms
+1795189070
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=57.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 57.900/57.900/57.900/0.000 ms
+1795189072
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.8 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.875/51.875/51.875/0.000 ms
+1795189074
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.3 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.308/51.308/51.308/0.000 ms
+1795189076
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=51.4 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 51.467/51.467/51.467/0.000 ms
+1795189078
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=112 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 112.413/112.413/112.413/0.000 ms
+1795189080
+PING 192.168.137.2 (192.168.137.2) from 192.168.137.10 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.137.2: icmp_seq=1 ttl=64 time=50.9 ms
+
+--- 192.168.137.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 50.984/50.984/50.984/0.000 ms

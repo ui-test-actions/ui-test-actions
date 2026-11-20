@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         switch url.host {
         case "verify": fixture.showDeepLink()
         case "environment": fixture.showEnvironment()
+        case "request-photos": fixture.requestPhotos()
         default: return false
         }
         return true
@@ -119,6 +120,12 @@ final class Fixture: UIViewController {
         status.numberOfLines = 0
         status.text = [locale, direction, "Photos \(photos(.readWrite))", "Add-only \(photos(.addOnly))",
                        "Microphone \(microphone)", orientation].joined(separator: "\n")
+    }
+
+    func requestPhotos() {
+        PHPhotoLibrary.requestAuthorization(for: .readWrite) { _ in
+            DispatchQueue.main.async { self.showEnvironment() }
+        }
     }
 
     @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {

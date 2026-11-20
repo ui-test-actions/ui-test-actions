@@ -48,6 +48,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--ocr", type=Path)
     parser.add_argument("--permission", choices=("camera", "photos", "microphone"))
+    parser.add_argument("--request-photos", action="store_true",
+                        help="Ask the fixture's Photos API to resolve authorization before app-level grant and denial checks")
     args = parser.parse_args()
     client = Client(json.loads(args.connection.read_text(encoding="utf-8")), args.token_file)
     target = client.identify()["target"]
@@ -62,7 +64,8 @@ def main():
         return response["result"]
 
     def assert_visible(label, *expected):
-        command("app.deeplink", {"url": "ui-test-fixture://environment"})
+        route = "request-photos" if args.request_photos and permission == "photos" and label in {"granted", "denied"} else "environment"
+        command("app.deeplink", {"url": f"ui-test-fixture://{route}"})
         deadline = time.monotonic() + 15
         while True:
             labels = visible_labels(client, args.ocr)

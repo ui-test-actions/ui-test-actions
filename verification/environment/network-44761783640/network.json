@@ -1,0 +1,111 @@
+{
+  "profiles": [
+    {
+      "epoch": 1795188736.1878674,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 30,
+        "seed": 0
+      },
+      "generation": 1,
+      "remaining_ms": 0,
+      "controller_epoch_ms": 1795188746255
+    },
+    {
+      "epoch": 1795188776.5257347,
+      "profile": {
+        "delay_ms": 500,
+        "jitter_ms": 25,
+        "loss_percent": 0,
+        "rate_kbit": 512,
+        "offline": false,
+        "seconds": 55,
+        "seed": 0
+      },
+      "generation": 2,
+      "remaining_ms": 55000,
+      "controller_epoch_ms": 1795188786581
+    },
+    {
+      "epoch": 1795188811.5706222,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 25,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 25,
+        "seed": 123
+      },
+      "generation": 3,
+      "remaining_ms": 25000,
+      "controller_epoch_ms": 1795188821621
+    },
+    {
+      "epoch": 1795188826.0916612,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 30,
+        "seed": 0
+      },
+      "generation": 4,
+      "remaining_ms": 0,
+      "controller_epoch_ms": 1795188836153
+    },
+    {
+      "epoch": 1795188829.2863486,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": true,
+        "seconds": 36,
+        "seed": 0
+      },
+      "generation": 5,
+      "remaining_ms": 36000,
+      "controller_epoch_ms": 1795188839343
+    },
+    {
+      "epoch": 1795188867.2755384,
+      "profile": {
+        "delay_ms": 0,
+        "jitter_ms": 0,
+        "loss_percent": 0,
+        "rate_kbit": 0,
+        "offline": false,
+        "seconds": 30,
+        "seed": 0
+      },
+      "generation": 6,
+      "remaining_ms": 0,
+      "controller_epoch_ms": 1795188877341
+    }
+  ],
+  "slow_receiver_line": "iPhone → SLOW",
+  "reachable_during_outage": [
+    "android",
+    "ios"
+  ],
+  "outage_observation": {
+    "epoch": 1795188836.994383,
+    "android": "No peers connected"
+  },
+  "restored_pair": {
+    "android": "Broadcast (1)",
+    "ios": "Sessions (1, 1 connected)"
+  },
+  "recovered_receiver_lines": {
+    "ios": "Android-4487 -> REOPEN"
+  },
+  "reset_confirmed": true
+}
