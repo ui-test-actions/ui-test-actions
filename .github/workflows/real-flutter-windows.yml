@@ -1,0 +1,90 @@
+name: Verify Flutter settings on Windows
+on:
+  workflow_dispatch:
+    inputs:
+      token_sha256:
+        description: SHA-256 digest of the external client token
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2025
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Prepare the pinned portable Flutter release
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          from urllib.request import urlopen
+          from zipfile import ZipFile
+          pins = json.loads(Path("verification/real-apps/apps.json").read_text())["windows-flutter"]
+          app = Path(os.environ["RUNNER_TEMP"]) / "localsend"
+          app.mkdir()
+          package = app / "localsend.zip"
+          url = f'https://github.com/{pins["repository"]}/releases/download/{pins["ref"]}/{pins["asset"]}'
+          with urlopen(url, timeout=30) as response, package.open("wb") as output:
+              while chunk := response.read(1024 * 1024):
+                  output.write(chunk)
+          with package.open("rb") as stream:
+              if hashlib.file_digest(stream, "sha256").hexdigest() != pins["sha256"]:
+                  raise SystemExit("LocalSend package checksum mismatch")
+          with ZipFile(package) as release:
+              release.extractall(app)
+          binary = next(app.rglob("localsend_app.exe"))
+          preferences = binary.with_name("settings.json")
+          preferences.write_text("{}")
+          with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as output:
+              output.write(f"LOCALSEND_EXECUTABLE={binary}\nLOCALSEND_SETTINGS={preferences}\n")
+          Path("flutter-evidence").mkdir()
+          PY
+      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+        with:
+          target: windows
+          token-sha256: ${{ inputs.token_sha256 }}
+          duration-minutes: '15'
+          launch: |
+            app=$(cygpath -u "$LOCALSEND_EXECUTABLE")
+            "$app" > flutter-evidence/app.log 2>&1 &
+          ready: >-
+            powershell.exe -NoProfile -Command
+            '$app = Get-Process -Name localsend_app -ErrorAction SilentlyContinue; if (!$app -or !$app.MainWindowHandle) { exit 1 }'
+      - name: Assert saved Flutter settings
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          locations = [
+              Path(os.environ["LOCALSEND_SETTINGS"]),
+              Path(os.environ["APPDATA"]) / "LocalSend" / "settings.json",
+          ]
+          for candidate in locations:
+              if not candidate.is_file():
+                  continue
+              preferences = json.loads(candidate.read_text(encoding="utf-8"))
+              selected = {key.rsplit(".", 1)[-1]: value for key, value in preferences.items()}
+              if selected.get("ls_alias") == "مختبر UI ١٢٣ 🌍" and str(selected.get("ls_locale")).split("-")[0] == "ar":
+                  result = {"app": "LocalSend", "alias": selected["ls_alias"], "locale": selected["ls_locale"], "result": "passed"}
+                  Path("flutter-evidence/persistence.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                  break
+          else:
+              raise SystemExit("LocalSend did not persist the expected alias and Arabic locale")
+          PY
+      - name: Retain Flutter evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: flutter-windows-evidence
+          path: flutter-evidence/
+          if-no-files-found: ignore
+          retention-days: 7

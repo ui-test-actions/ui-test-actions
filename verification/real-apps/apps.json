@@ -57,6 +57,16 @@
     "asset": "LocalSend-1.18.2-linux-x86-64.tar.gz",
     "sha256": "287690a9a8eb6da9c83cc97b3e3030ac67daf32a7331fcf307d0939300658d16"
   },
+  "windows-flutter": {
+    "app": "LocalSend",
+    "framework": "Flutter",
+    "license": "Apache-2.0",
+    "repository": "localsend/localsend",
+    "ref": "v1.18.2",
+    "commit": "af0416be50770a97760f7070684bc667b759a15c",
+    "asset": "LocalSend-1.18.2-windows-x86-64.zip",
+    "sha256": "737aab1829d901e1d798cddd1e5fdc06ba9dfcc9ea50cfe3805e047005d5e71a"
+  },
   "linux-web": {
     "app": "draw.io",
     "framework": "Browser JavaScript and SVG",
