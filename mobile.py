@@ -21,8 +21,8 @@ IDB_DIGESTS = {
 }
 
 
-def output(*args, timeout=20):
-    return subprocess.check_output(args, timeout=timeout)
+def output(*args, timeout=20, stderr=None):
+    return subprocess.check_output(args, timeout=timeout, stderr=stderr)
 
 
 def select_device(requested, available, kind):
@@ -53,7 +53,7 @@ class Android:
         # Android input interprets %s as a space. Send literal percent signs separately.
         escaped = quote(text.replace(" ", "%s"))
         if "%s" not in text:
-            output(*self.adb, "shell", f"input text {escaped}")
+            output(*self.adb, "shell", f"input text {escaped}", stderr=subprocess.DEVNULL)
             return
         parts = text.split("%s")
         commands = []
@@ -62,7 +62,7 @@ class Android:
                 commands.extend(("input text '%'", "input text 's'"))
             if part:
                 commands.append("input text " + quote(part.replace(" ", "%s")))
-        output(*self.adb, "shell", " && ".join(commands))
+        output(*self.adb, "shell", " && ".join(commands), stderr=subprocess.DEVNULL)
 
 
 class IOS:
@@ -75,7 +75,6 @@ class IOS:
             if ".iOS-" in runtime for item in items if item["state"] == "Booted"
         ]
         self.udid = select_device(device, devices, "booted iOS simulator")
-        self.work = work
         self.screen = (0, 0)
         for name, digest in IDB_DIGESTS.items():
             with urlopen(IDB_RELEASE + name, timeout=45) as source, (work / name).open("wb") as dest:
@@ -111,9 +110,7 @@ class IOS:
             raise RuntimeError("Simulator did not report logical screen dimensions")
 
     def capture(self):
-        path = self.work / "screen.png"
-        output("xcrun", "simctl", "io", self.udid, "screenshot", "--type=png", str(path))
-        png = path.read_bytes()
+        png = output(*self.idb, "screenshot", "-", "--format", "png", timeout=25)
         self.screen = unpack(">II", png[16:24])
         return png
 
@@ -133,4 +130,4 @@ class IOS:
             output(*self.idb, "ui", "swipe", *coordinates, "--duration", str(duration))
 
     def type_text(self, text):
-        output(*self.idb, "ui", "text", "--", text)
+        output(*self.idb, "ui", "text", "--", text, stderr=subprocess.DEVNULL)
