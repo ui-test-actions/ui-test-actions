@@ -31,7 +31,7 @@ jobs:
       - name: Install Linux fixture dependency
         if: inputs.target == 'linux'
         run: sudo apt-get update && sudo apt-get install -y python3-tk
-      - uses: ui-test-actions/ui-test-actions@c0159b03218b304731bc8806831a3bccde3d8fe8
+      - uses: ui-test-actions/ui-test-actions@803d83d50713f845db414c30c7c826071ede907c
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
