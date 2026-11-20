@@ -176,7 +176,79 @@ class Device:
             self.text(marker, scroll=-1 if self.target == "android" else 0)
 
 
-def run_pair(android, ios, android_name, ios_name, nonce, initiator, output):
+def exercise_link(android, ios, android_name, ios_name, output):
+    evidence = {"profiles": []}
+
+    def profile(command, params):
+        result = android.command(f"network.profile.{command}", params)
+        evidence["profiles"].append({"epoch": time.time(), **result})
+        return result
+
+    def readiness():
+        return [device.client.identify()["target"] for device in (android, ios)]
+
+    def from_ios(message):
+        return f"{ios_name} → {message}"
+
+    def has_line(node, line):
+        return any(line == field for field in android.content(node))
+
+    try:
+        profile("get", {})
+        profile("set", {"delay_ms": 500, "jitter_ms": 25, "rate_kbit": 512, "seconds": 40})
+        ios.message("SLOW")
+        android.find(lambda node: has_line(node, from_ios("SLOW")), "message over the slow link", scroll=-1)
+        android.screenshot("slow-message")
+        evidence["slow_receiver_line"] = from_ios("SLOW")
+        # Independent native pings sample the active profile throughout the job.
+        time.sleep(9)
+        profile("set", {"loss_percent": 25, "seed": 123, "seconds": 25})
+        time.sleep(14)
+        offline = profile("set", {"offline": True, "seconds": 36})
+        evidence["reachable_during_outage"] = readiness()
+        ios.message("DROPOUT")
+        evidence["outage_samples"] = []
+        for _ in range(4):
+            status = android.command("network.profile.get", {})
+            if status["generation"] != offline["generation"] or not status["profile"]["offline"]:
+                raise RuntimeError("The simulated outage expired before the receiver could be checked")
+            nodes = android.snapshot()["nodes"]
+            if not any(has_line(node, from_ios("SLOW")) for node in nodes):
+                raise RuntimeError("The receiver observation does not include the previously verified timeline")
+            if any(has_line(node, from_ios("DROPOUT")) for node in nodes):
+                raise RuntimeError("The receiver displayed the new message during the simulated outage")
+            evidence["outage_samples"].append(time.time())
+            time.sleep(1)
+        android.screenshot("offline-receiver")
+        ios.screenshot("offline-sender")
+
+        deadline = time.monotonic() + 42
+        while time.monotonic() < deadline:
+            state = android.command("network.profile.get", {})
+            if not state["profile"]["offline"] and state["generation"] > offline["generation"]:
+                profile("get", {})
+                break
+            time.sleep(1)
+        else:
+            raise RuntimeError("The traffic profile did not expire on schedule")
+
+        ios.message("LINK UP")
+        android.find(lambda node: has_line(node, from_ios("LINK UP")), "fresh iOS message after recovery", scroll=-1)
+        android.screenshot("recovered-ios-message")
+        android.message("REOPEN")
+        _, message = ios.find(lambda node: any(ios_received_message(
+            field, android_name, "REOPEN", visual=bool(ios.ocr)) for field in ios.content(node)),
+            "fresh Android message after recovery", scroll=1)
+        ios.screenshot("recovered-android-message")
+        evidence["recovered_receiver_lines"] = {"android": from_ios("LINK UP"),
+            "ios": next(field for field in ios.content(message)
+                        if ios_received_message(field, android_name, "REOPEN", visual=bool(ios.ocr)))}
+    finally:
+        (output / "network.json").write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        android.command("network.profile.reset", {})
+
+
+def run_pair(android, ios, android_name, ios_name, nonce, initiator, output, network_faults=False):
     with ThreadPoolExecutor(max_workers=2) as pool:
         first = pool.submit(android.screenshot, "before")
         second = pool.submit(ios.screenshot, "before")
@@ -231,6 +303,9 @@ def run_pair(android, ios, android_name, ios_name, nonce, initiator, output):
                   "ios": next(field for field in ios.content(ios_message) if received_on_ios(field)),
               }}
     (output / "journey.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if network_faults:
+        exercise_link(android, ios, android_name, ios_name, output)
+        print("Real sample traffic was delayed, interrupted, and exchanged again after lease expiry", flush=True)
 
 
 def main():
@@ -244,6 +319,7 @@ def main():
     parser.add_argument("--ios-ocr", type=Path)
     parser.add_argument("--ios-crop", type=int, nargs=4)
     parser.add_argument("--ios-start", type=int, nargs=2)
+    parser.add_argument("--network-faults", action="store_true")
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -254,7 +330,7 @@ def main():
             parser.error("--ios-ocr requires --ios-crop and --ios-start measured from the current Simulator screenshot")
         ios.ocr, ios.crop = args.ios_ocr, args.ios_crop
     ios.start_point = args.ios_start
-    run_pair(android, ios, args.android_name, args.ios_name, args.nonce, args.initiator, args.output)
+    run_pair(android, ios, args.android_name, args.ios_name, args.nonce, args.initiator, args.output, args.network_faults)
 
 
 if __name__ == "__main__":
