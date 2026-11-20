@@ -1,6 +1,7 @@
 """Prove transport authentication, UI change and lifecycle through the regular client."""
 
 import argparse
+from base64 import b64decode
 from hashlib import sha256
 import json
 import os
@@ -123,31 +124,36 @@ def read_live(client):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=["quick", "private", "local", "fallback", "external"])
+    parser.add_argument("mode", choices=["quick", "private", "local", "fallback", "cross"])
     parser.add_argument("work", type=Path)
     parser.add_argument("--connection", type=Path)
-    parser.add_argument("--controls", type=Path)
     args = parser.parse_args()
     output = args.work / "public"
     output.mkdir(exist_ok=True)
     token_file = args.work / "token"
-    if args.mode == "external":
-        config, controls = read(args.connection), read(args.controls)
+    if args.mode == "cross":
+        config = read(args.connection)
+        if config["transport"] != "private":
+            raise RuntimeError("Expected a private endpoint on the other hosted runner.")
+        client = Client(config, token_file)
+        contents = client.command("files.read", {"name": "controls.json"})
+        controls = json.loads(b64decode(contents["result"]["base64"], validate=True))
     else:
         config, controls = connection(args.work, Path(os.environ["RUNNER_TEMP"]))
         expected = {"quick": "cloudflare-quick", "private": "private", "local": "local", "fallback": "local"}
         if config["transport"] != expected[args.mode]:
             raise RuntimeError("The consumer action published an unexpected transport.")
     report = observe(config, token_file, controls, output)
-    if args.mode != "external":
+    if args.mode != "cross":
         if read(args.work / "app-state.json") != [TEST_TEXT]:
             raise RuntimeError("The app did not receive the exact Unicode text once.")
         report["app_verified_exact_unicode_once"] = True
-    if args.mode == "private":
+    if args.mode in {"private", "cross"}:
         transfer = subprocess.check_output(["wg", "show", "ui-wg", "transfer"], text=True).split()
         report["wireguard_bytes_received"], report["wireguard_bytes_sent"] = map(int, transfer[1:3])
         if min(report["wireguard_bytes_received"], report["wireguard_bytes_sent"]) == 0:
             raise RuntimeError("The isolated WireGuard peer did not exchange traffic.")
+    report["separate_hosted_peer"] = args.mode == "cross"
     report.update(expiry(config, token_file))
     (output / "result.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 

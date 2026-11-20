@@ -1,6 +1,7 @@
-"""Live GTK/Tk-window transport fixture with a separate on-runner application observation."""
+"""Live Tk-window transport fixture with a separate on-runner application observation."""
 
 import json
+import os
 from pathlib import Path
 import sys
 import tkinter as tk
@@ -45,4 +46,6 @@ controls.write_text(json.dumps({
     "crop": [root.winfo_rootx(), root.winfo_rooty(), root.winfo_rootx() + 560, root.winfo_rooty() + 350],
 }), encoding="utf-8")
 controls.replace(directory / "controls.json")
+if exchange := os.environ.get("UI_TEST_EXCHANGE_DIR"):
+    (Path(exchange) / "controls.json").write_bytes((directory / "controls.json").read_bytes())
 root.mainloop()
