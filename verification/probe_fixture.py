@@ -44,7 +44,7 @@ def require_authentication(client):
         return error.code
 
 
-def exercise(connection, token_file, evidence, entry, apply, sample, crop, dismiss):
+def exercise(connection, token_file, evidence, entry, apply, sample, crop, dismiss, *, fixture_text=TEST_TEXT):
     client = Client(connection, token_file)
     session = client.identify()
     capabilities = json.loads(client.fetch("/v2/capabilities"))
@@ -57,7 +57,7 @@ def exercise(connection, token_file, evidence, entry, apply, sample, crop, dismi
     before_color = require_color(before, sample, BEFORE_COLOR)
     steps = [
         {"command": "pointer.click", "params": dict(zip(("x", "y"), entry))},
-        {"command": "text.insert", "params": {"text": TEST_TEXT, "replace": True}},
+        {"command": "text.insert", "params": {"text": fixture_text, "replace": True}},
         {"command": "pointer.click", "params": dict(zip(("x", "y"), apply))},
     ]
     request_id = uuid4().hex
@@ -88,7 +88,7 @@ def exercise(connection, token_file, evidence, entry, apply, sample, crop, dismi
         "batch_replay_equal": True,
         "before_color": before_color,
         "after_color": after_color,
-        "fixture_text": TEST_TEXT,
+        "fixture_text": fixture_text,
     }
     (evidence / "result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     return result

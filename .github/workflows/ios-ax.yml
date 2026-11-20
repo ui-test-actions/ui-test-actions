@@ -70,6 +70,23 @@ jobs:
             sleep 3
           done
           test -n "$observed" || { cat "$work/proof/preflight.log" >&2; exit 1; }
+          python - "$simulator" "$work/proof/preflight.png" <<'PY'
+          from pathlib import Path
+          import subprocess, sys, time
+
+          device, destination = sys.argv[1:]
+          for _ in range(3):
+              try:
+                  subprocess.run(["xcrun", "simctl", "io", device, "screenshot", "--type=png", destination],
+                                 check=True, timeout=25)
+                  if Path(destination).read_bytes().startswith(b"\x89PNG\r\n\x1a\n"):
+                      break
+              except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
+                  print(f"Simulator framebuffer warm-up failed: {error}", flush=True)
+              time.sleep(3)
+          else:
+              sys.exit("No valid simulator screenshot after three attempts")
+          PY
           echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
           echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
           echo "AXE_APP=$bundle" >> "$GITHUB_ENV"
