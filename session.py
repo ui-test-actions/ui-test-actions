@@ -495,6 +495,14 @@ def main(control):
             else:
                 backend = Desktop(target)
             driver = load_driver(backend, target)
+            webdriver_url = os.environ.get("UI_TEST_WEBDRIVER_URL")
+            if webdriver_url:
+                if target not in ("android", "ios"):
+                    raise ValueError("The loopback Appium adapter requires an Android or iOS target.")
+                from webdriver_driver import WebDriverMobile
+                mobile = driver.mobile if target == "ios" else driver
+                driver = WebDriverMobile(webdriver_url, json.loads(os.environ["UI_TEST_WEBDRIVER_CAPS"]), mobile, target)
+                backend = driver
             with Session(digest, backend, target, driver, port, exchange) as session:
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)

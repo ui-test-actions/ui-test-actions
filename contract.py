@@ -47,7 +47,11 @@ APP_ID = string(255, 1, r"^[a-zA-Z0-9_.-]+$")
 
 FILE_NAME = string(100, 1, r"[a-zA-Z0-9][a-zA-Z0-9_.-]*")
 
+TOUCH_POINT = obj(("x", "y", "duration_ms"), **XY, duration_ms=TIME)
+TRACK = {"type": "array", "minItems": 2, "maxItems": 12, "items": TOUCH_POINT}
+
 COMMANDS = {
+    "pointer.gesture": obj(("tracks",), tracks={"type": "array", "minItems": 1, "maxItems": 5, "items": TRACK}),
     "files.list": obj(),
     "files.stage": obj(("name", "base64"), name=FILE_NAME, base64=string(44000, 0)),
     "files.read": obj(("name",), name=FILE_NAME),
