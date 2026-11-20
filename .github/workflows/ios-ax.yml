@@ -2,6 +2,11 @@ name: Verify iOS Simulator accessibility bridge
 on:
   workflow_dispatch:
     inputs:
+      app:
+        description: App for the external accessibility journey
+        type: choice
+        options: [fixture, thought-meadow]
+        default: fixture
       token_sha256:
         description: SHA-256 digest of the external client token
         required: true
@@ -19,6 +24,10 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
+      - name: Build the pinned Thought Meadow app
+        if: inputs.app == 'thought-meadow'
+        shell: bash
+        run: bash verification/real-apps/prepare.sh ios
       - name: Prepare the pinned AXe adapter and app
         shell: bash
         run: |
@@ -31,21 +40,30 @@ jobs:
           tar -xzf "$work/$asset" -C "$work/axe"
           axe=$(find "$work/axe" -name axe -type f -print -quit)
           test -x "$axe"
-          simulator=$(xcrun simctl list devices available -j | python -c '
+          if [[ "${{ inputs.app }}" == thought-meadow ]]; then
+            simulator="$REAL_APP_DEVICE"
+            bundle=com.alawyadnan.waraqa
+          else
+            xcrun simctl list devices available -j > "$work/devices.json"
+            simulator=$(python - "$work/devices.json" <<'PY'
           import json, sys
-          devices = json.load(sys.stdin)["devices"]
+          from pathlib import Path
+          devices = json.loads(Path(sys.argv[1]).read_text())["devices"]
           print(next(item["udid"] for key in reversed(sorted(devices)) if ".iOS-" in key
                      for item in devices[key] if item["name"].startswith("iPhone")))
-          ')
-          bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
-          xcrun simctl bootstatus "$simulator" -b
+          PY
+            )
+            bundle=dev.uitest.fixture
+            bash fixtures/ios/build.sh "$work/LiveUIFixture.app"
+            xcrun simctl bootstatus "$simulator" -b
+            xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
+          fi
           open -a Simulator --args -CurrentDeviceUDID "$simulator"
-          xcrun simctl install "$simulator" "$work/LiveUIFixture.app"
-          xcrun simctl launch "$simulator" dev.uitest.fixture
+          xcrun simctl launch "$simulator" "$bundle"
           observed=
           for attempt in 1 2 3 4 5; do
             if "$axe" describe-ui --udid "$simulator" > "$work/proof/preflight.json" 2> "$work/proof/preflight.log" &&
-                grep -q 'BEFORE' "$work/proof/preflight.json"; then
+                python -c 'import json, sys; assert len(json.load(open(sys.argv[1]))[0]["children"]) > 0' "$work/proof/preflight.json"; then
               observed=1
               break
             fi
@@ -54,6 +72,7 @@ jobs:
           test -n "$observed" || { cat "$work/proof/preflight.log" >&2; exit 1; }
           echo "AXE_BINARY=$axe" >> "$GITHUB_ENV"
           echo "AXE_DEVICE=$simulator" >> "$GITHUB_ENV"
+          echo "AXE_APP=$bundle" >> "$GITHUB_ENV"
       - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
         with:
           target: ios
@@ -61,9 +80,10 @@ jobs:
           token-sha256: ${{ inputs.token_sha256 }}
           device: ${{ env.AXE_DEVICE }}
           ios-axe-path: ${{ env.AXE_BINARY }}
-          app-ids: dev.uitest.fixture
-          ready: xcrun simctl spawn "$AXE_DEVICE" launchctl list | grep -q 'UIKitApplication:dev.uitest.fixture'
+          app-ids: ${{ env.AXE_APP }}
+          ready: xcrun simctl spawn "$AXE_DEVICE" launchctl list | grep -Fq "UIKitApplication:$AXE_APP"
       - name: Assert the final app state independently of the external client
+        if: inputs.app == 'fixture'
         shell: bash
         run: |
           "$AXE_BINARY" describe-ui --udid "$AXE_DEVICE" > "$RUNNER_TEMP/ios-ax/proof/final.json"
@@ -75,6 +95,12 @@ jobs:
               raise SystemExit("The fixture did not apply the exact Unicode input")
           print("Exact UIKit label confirmed independently after session teardown")
           PY
+      - name: Assert the real note vault independently of the external client
+        if: inputs.app == 'thought-meadow'
+        shell: bash
+        run: |
+          data=$(xcrun simctl get_app_container "$AXE_DEVICE" "$AXE_APP" data)
+          python verification/real-apps/verify.py assert ios "$data/Library/Application Support/Waraqa/vault.json" "$RUNNER_TEMP/ios-ax/proof"
       - name: Retain bridge observations
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
