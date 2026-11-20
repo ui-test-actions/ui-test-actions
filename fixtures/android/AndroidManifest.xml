@@ -13,6 +13,8 @@
         <category android:name="android.intent.category.BROWSABLE" />
         <data android:scheme="ui-test-fixture" android:host="verify" />
         <data android:scheme="ui-test-fixture" android:host="environment" />
+        <data android:scheme="ui-test-fixture" android:host="fail-crash" />
+        <data android:scheme="ui-test-fixture" android:host="fail-anr" />
       </intent-filter>
     </activity>
   </application>

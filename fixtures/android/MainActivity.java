@@ -7,6 +7,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -99,12 +102,12 @@ public class MainActivity extends Activity {
     }
 
     private void handleLink(Intent intent) {
-        if (intent.getData() != null && "ui-test-fixture".equals(intent.getData().getScheme())
-                && "verify".equals(intent.getData().getHost())) {
+        if (intent.getData() == null || !"ui-test-fixture".equals(intent.getData().getScheme())) return;
+        String host = intent.getData().getHost();
+        if ("verify".equals(host)) {
             status.setText("Deep link opened");
         }
-        if (intent.getData() != null && "ui-test-fixture".equals(intent.getData().getScheme())
-                && "environment".equals(intent.getData().getHost())) {
+        if ("environment".equals(host)) {
             Configuration config = getResources().getConfiguration();
             String language = config.getLocales().get(0).toLanguageTag();
             String direction = config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL ? "RTL" : "LTR";
@@ -112,6 +115,16 @@ public class MainActivity extends Activity {
                     ? "granted" : "denied";
             String orientation = config.orientation == Configuration.ORIENTATION_LANDSCAPE ? "LANDSCAPE" : "PORTRAIT";
             status.setText(String.join("\n", language, direction, "Camera " + camera, orientation));
+        }
+        if ("fail-crash".equals(host)) {
+            status.setText("Controlled crash scheduled");
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                throw new IllegalStateException("Controlled UI fixture crash");
+            }, 1600);
+        }
+        if ("fail-anr".equals(host)) {
+            status.setText("Controlled input stall scheduled");
+            new Handler(Looper.getMainLooper()).postDelayed(() -> SystemClock.sleep(60000), 2400);
         }
     }
 }

@@ -21,9 +21,9 @@ on:
         type: string
         default: '15'
       scenario:
-        description: Enable environment mutation for the approved test fixture
+        description: Select the Android or iOS fixture verification
         type: choice
-        options: [session, environment]
+        options: [session, environment, failure]
         default: session
 permissions:
   contents: read
@@ -168,3 +168,11 @@ jobs:
           state=$(adb -s "$PROOF_DEVICE" shell dumpsys package dev.uitest.fixture)
           printf '%s\n' "$state" | grep -E '^[[:space:]]+android\.permission\.CAMERA([[:space:]]*$|:)'
           if [[ "$state" == *'android.permission.CAMERA: granted=true'* ]]; then exit 1; fi
+      - name: Cross-check Android process failures with the OS
+        if: inputs.scenario == 'failure' && inputs.target == 'android'
+        shell: bash
+        run: |
+          crashes=$(adb -s "$PROOF_DEVICE" shell dumpsys activity exit-info dev.uitest.fixture)
+          printf '%s\n' "$crashes" | grep -E 'reason=(4 \(CRASH\)|6 \(ANR\))'
+          grep -qF 'reason=4 (CRASH)' <<< "$crashes"
+          grep -qF 'reason=6 (ANR)' <<< "$crashes"
