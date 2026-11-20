@@ -78,10 +78,16 @@ class Automation:
                 status = error.status
                 output.append({"command": name, "ok": False, "error": error_result(error)})
                 break
+            except LookupError:
+                status = 404
+                output.append({"command": name, "ok": False, "error": {
+                    "code": "target_not_found", "message": "The requested driver target is no longer available.",
+                }})
+                break
             except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
                 if isinstance(error, ValueError):
                     code, message, status = "invalid_arguments", "The driver rejected these arguments.", 400
-                elif isinstance(error, subprocess.TimeoutExpired):
+                elif isinstance(error, (TimeoutError, subprocess.TimeoutExpired)):
                     code, message, status = "driver_timeout", "The platform command timed out.", 504
                 else:
                     code, message, status = "driver_error", "The platform command failed.", 502

@@ -21,9 +21,11 @@ MAX_CLIPBOARD_BYTES = 1024 * 1024
 
 KEY_ALIASES = {
     "control": "ctrl", "command": "meta", "cmd": "meta", "win": "meta", "super": "meta",
-    "option": "alt", "escape": "esc", "return": "enter", "insert": "insert",
+    "option": "alt", "escape": "esc", "return": "enter",
     "arrowleft": "left", "arrowright": "right", "arrowup": "up", "arrowdown": "down",
     "page-up": "pageup", "page-down": "pagedown", "del": "delete", "spacebar": "space",
+    "minus": "-", "equal": "=", "leftbracket": "[", "rightbracket": "]", "backslash": "\\",
+    "semicolon": ";", "apostrophe": "'", "comma": ",", "period": ".", "slash": "/", "backtick": "`",
 }
 X11_KEYS = {
     "ctrl": "Control_L", "alt": "Alt_L", "shift": "Shift_L", "meta": "Super_L",
@@ -63,7 +65,7 @@ def os_command(*args, timeout=12, input_data=None, env=None, read=True):
     except subprocess.CalledProcessError as error:
         raise RuntimeError(f"{Path(args[0]).name} failed with status {error.returncode}") from None
     except subprocess.TimeoutExpired:
-        raise TimeoutError(f"{Path(args[0]).name} did not finish in time") from None
+        raise subprocess.TimeoutExpired(Path(args[0]).name, timeout) from None
 
 
 def box(x, y, width, height):
@@ -77,14 +79,22 @@ class DesktopDriver:
         self.win = WindowsDesktop() if target == "windows" else None
         self.x11_clipboard = target == "linux" and shutil.which("xclip") is not None
         self.x11_windows = target == "linux" and shutil.which("wmctrl") is not None
-        self.x11_tree = target == "linux" and bool(os.environ.get("DBUS_SESSION_BUS_ADDRESS"))
+        if self.x11_windows:
+            try:
+                os_command("wmctrl", "-m", timeout=2)
+            except (RuntimeError, OSError, subprocess.TimeoutExpired):
+                self.x11_windows = False
+        self.x11_tree = (
+            target == "linux" and bool(os.environ.get("DBUS_SESSION_BUS_ADDRESS"))
+            and Path("/usr/lib/python3/dist-packages/pyatspi").is_dir()
+        )
         self.ax = None
         if target == "macos":
             try:
                 from ApplicationServices import AXIsProcessTrusted
                 if AXIsProcessTrusted():
                     self.ax = MacAccessibility()
-            except ImportError:
+            except (ImportError, AttributeError, OSError):
                 pass
 
     def capabilities(self):
@@ -178,7 +188,7 @@ class DesktopDriver:
         try:
             self.move(end, params.get("duration_ms", 400), held=button, start=start)
         finally:
-            self.mouse_event("up", self.cursor(), button)
+            self.mouse_event("up", end, button)
 
     def mouse_event(self, action, point, button=None, count=1):
         x, y = point
@@ -223,6 +233,9 @@ class DesktopDriver:
 
     def press(self, requested):
         keys = [KEY_ALIASES.get(key.lower(), key.lower()) for key in requested]
+        if len(keys) != len(set(keys)):
+            raise ValueError("A key cannot appear twice in one chord")
+        keys.sort(key=lambda key: key not in MODIFIERS)
         if self.target == "linux":
             names = []
             for key in keys:
@@ -237,9 +250,17 @@ class DesktopDriver:
             os_command("xdotool", "key", "--clearmodifiers", "+".join(names), read=False)
         elif self.win:
             names = [WINDOWS_KEYS.get(key, key) for key in keys]
-            if any(key not in self.legacy.gui.KEYBOARD_KEYS for key in names):
+            gui = self.legacy.gui
+            if any(not gui.isValidKey(key) for key in names):
                 raise ValueError("Unknown key for Windows")
-            self.legacy.gui.hotkey(*names, interval=0.02)
+            held = []
+            try:
+                for name in names:
+                    gui.keyDown(name, _pause=False)
+                    held.append(name)
+            finally:
+                for name in reversed(held):
+                    gui.keyUp(name, _pause=False)
         else:
             self.mac_press(keys)
 
@@ -373,7 +394,6 @@ class WindowsDesktop:
             (self.user, "DestroyWindow", wt.BOOL, wt.HWND),
             (self.user, "EnumWindows", wt.BOOL, self.enum_callback, wt.LPARAM),
             (self.user, "IsWindowVisible", wt.BOOL, wt.HWND),
-            (self.user, "IsWindow", wt.BOOL, wt.HWND),
             (self.user, "GetWindowTextLengthW", ctypes.c_int, wt.HWND),
             (self.user, "GetWindowTextW", ctypes.c_int, wt.HWND, wt.LPWSTR, ctypes.c_int),
             (self.user, "GetWindowRect", wt.BOOL, wt.HWND, ctypes.POINTER(wt.RECT)),
@@ -438,7 +458,10 @@ class WindowsDesktop:
                 raise RuntimeError("Clipboard text exceeds the session size limit")
             with self.global_buffer(handle) as pointer:
                 data = ctypes.string_at(pointer, size - size % 2)
-        return data.decode("utf-16-le").partition("\x00")[0].replace("\r\n", "\n")
+        end = next((i for i, unit in enumerate(memoryview(data).cast("H")) if not unit), None)
+        if end is None:
+            raise OSError("Windows clipboard text is missing its terminator")
+        return data[:2 * end].decode("utf-16-le").replace("\r\n", "\n")
 
     def clipboard_write(self, text):
         cf_unicode_text = 13
@@ -519,7 +542,7 @@ $desktop = $elementType::RootElement
 $root = $elementType::FocusedElement
 while ($root) {
     $parent = $walker.GetParent($root)
-    if (-not $parent -or $elementType::Compare($parent, $desktop)) { break }
+    if (-not $parent -or [System.Windows.Automation.Automation]::Compare($parent, $desktop)) { break }
     $root = $parent
 }
 $nodes = [System.Collections.Generic.List[object]]::new()
@@ -640,25 +663,29 @@ class MacAccessibility:
             deadline = time.monotonic() + 8
             stack = [("0", root)]
             nodes = []
+            truncated = False
             while stack and len(nodes) < 300 and time.monotonic() < deadline:
                 key, item = stack.pop()
                 role = self.string(item, "AXRole", 128)
                 secure = role == "AXSecureTextField" or self.value(item, "AXSubrole") == "AXSecureTextField"
                 bounds = self.bounds(item)
+                enabled = self.value(item, "AXEnabled")
                 nodes.append({
                     "id": f"mac:{pid}:{key}", "role": role.removeprefix("AX").lower(),
                     "name": "" if secure else (
                         self.string(item, "AXTitle", 512) or self.string(item, "AXDescription", 512)
                     ),
                     "text": "" if secure else self.string(item, "AXValue", 2048),
-                    "enabled": self.value(item, "AXEnabled") is not False,
+                    "enabled": True if enabled is None else bool(enabled),
                     "visible": bounds is not None and not bool(self.value(item, "AXHidden")),
                     "bounds": bounds,
                 })
                 if not secure:
                     children = self.value(item, "AXChildren") or ()
-                    stack.extend((f"{key}.{i}", child) for i, child in reversed(list(enumerate(children[:300]))))
-            return {"nodes": nodes, "truncated": bool(stack)}
+                    available = 300 - len(nodes) - len(stack)
+                    truncated = truncated or len(children) > available
+                    stack.extend((f"{key}.{i}", child) for i, child in reversed(list(enumerate(children[:available]))))
+            return {"nodes": nodes, "truncated": truncated or bool(stack)}
 
     def windows(self):
         result = []
