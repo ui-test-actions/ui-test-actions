@@ -50,6 +50,10 @@ APP_ID = string(255, 1, r"^[a-zA-Z0-9_.-]+$")
 
 FILE_NAME = string(100, 1, r"[a-zA-Z0-9][a-zA-Z0-9_.-]*")
 
+NETWORK_PROFILE = obj(delay_ms=integer(0, 5000), jitter_ms=integer(0, 1000),
+                      loss_percent=integer(0, 100), rate_kbit=integer(0, 100000),
+                      offline=BOOLEAN, seconds=integer(1, 180), seed=integer(0, 2147483647))
+
 TOUCH_POINT = obj(("x", "y", "duration_ms"), **XY, duration_ms=TIME)
 TRACK = {"type": "array", "minItems": 2, "maxItems": 12, "items": TOUCH_POINT}
 
@@ -84,6 +88,9 @@ COMMANDS = {
     "trace.start": obj(capture_text=BOOLEAN),
     "trace.stop": obj(),
     "performance.observations": obj(),
+    "network.profile.get": obj(),
+    "network.profile.set": NETWORK_PROFILE,
+    "network.profile.reset": obj(),
     "visual.sample": obj(region=RECT),
     "visual.wait": obj(("baseline",), baseline=IDENTIFIER, condition=choice("changed", "stable"),
                        threshold=integer(1, 255), timeout_ms=integer(100, 10000)),

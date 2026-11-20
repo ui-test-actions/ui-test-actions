@@ -11,11 +11,16 @@ from pathlib import Path
 import re
 import ssl
 import struct
+import sys
 from urllib.parse import urlsplit
 
 from websockets.asyncio.client import connect
 from websockets.asyncio.server import serve
 from websockets.exceptions import InvalidStatus
+
+# The workflow runs this file directly.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from link_faults import FrameQueue, LinkFaults
 
 FRAME_MAX = 1514
 STREAM_CHUNK = 16384
@@ -50,7 +55,7 @@ def permitted(frame, source, peer):
     return dst_port == 5353 or destination == peer and src_port == 5353
 
 
-async def records(reader, writer, source, peer, counts):
+async def frames(reader, source, peer):
     while True:
         header = await reader.readexactly(2)
         length, = struct.unpack("!H", header)
@@ -58,15 +63,36 @@ async def records(reader, writer, source, peer, counts):
             raise ValueError("Invalid LAN frame length")
         frame = await reader.readexactly(length)
         if permitted(frame, source, peer):
-            if frame[12:14] == b"\x08\x06":
-                counts["arp"] += 1
-            else:
-                counts[{1: "icmp", 6: "tcp", 17: "mdns"}[frame[23]]] += 1
-                if frame[23] == 17 and P2PKIT_SERVICE in frame[42:].lower():
-                    kind = "response" if int.from_bytes(frame[44:46], "big") & 0x8000 else "query"
-                    counts[f"p2pkit_mdns_{kind}"] += 1
-            writer.write(header + frame)
-            await writer.drain()
+            yield header, frame
+
+
+async def records(reader, writer, source, peer, counts, faults=None, direction=0):
+    async def forward(header, frame):
+        if frame[12:14] == b"\x08\x06":
+            counts["arp"] += 1
+        else:
+            counts[{1: "icmp", 6: "tcp", 17: "mdns"}[frame[23]]] += 1
+            if frame[23] == 17 and P2PKIT_SERVICE in frame[42:].lower():
+                kind = "response" if int.from_bytes(frame[44:46], "big") & 0x8000 else "query"
+                counts[f"p2pkit_mdns_{kind}"] += 1
+        writer.write(header + frame)
+        await writer.drain()
+
+    if faults is None:
+        async for header, frame in frames(reader, source, peer):
+            await forward(header, frame)
+        return
+    queue = FrameQueue(faults, direction, counts)
+
+    async def enqueue():
+        async for header, frame in frames(reader, source, peer):
+            queue.push(header, frame)
+
+    async def deliver():
+        while True:
+            await forward(*(await queue.next()))
+
+    await duplex(enqueue(), deliver())
 
 
 async def duplex(left, right):
@@ -93,7 +119,10 @@ async def frame_session(reader, writer, args, source, peer):
 
     def dump_counts():
         temporary = args.stats.with_suffix(".tmp")
-        temporary.write_text(json.dumps({"sent": sent, "received": received}) + "\n", encoding="utf-8")
+        state = {"sent": sent, "received": received}
+        if args.faults:
+            state["link"] = args.faults.inspect()
+        temporary.write_text(json.dumps(state) + "\n", encoding="utf-8")
         temporary.replace(args.stats)
 
     monitor = asyncio.create_task(evidence())
@@ -102,8 +131,8 @@ async def frame_session(reader, writer, args, source, peer):
             raise RuntimeError("Native frame port failed its readiness check")
         args.ready.touch()
         print("Authenticated LAN peer attached", flush=True)
-        await duplex(records(process.stdout, writer, source, peer, sent),
-                     records(reader, process.stdin, peer, source, received))
+        await duplex(records(process.stdout, writer, source, peer, sent, args.faults, 0),
+                     records(reader, process.stdin, peer, source, received, args.faults, 1))
     except (asyncio.IncompleteReadError, ConnectionError):
         pass
     finally:
@@ -217,6 +246,20 @@ async def client(args):
         await frame_session(reader, writer, args, IOS, ANDROID)
 
 
+async def run(args):
+    args.faults = LinkFaults() if args.control else None
+    service = server if args.role == "server" else client
+    if not args.faults:
+        await service(args)
+        return
+    control = await args.faults.listen(args.control)
+    try:
+        async with control:
+            await service(args)
+    finally:
+        args.control.unlink(missing_ok=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("role", choices=("server", "client"))
@@ -229,8 +272,9 @@ def main():
     parser.add_argument("--stats", required=True, type=Path)
     parser.add_argument("--port", type=int, default=8788)
     parser.add_argument("--origin")
+    parser.add_argument("--control", type=Path)
     args = parser.parse_args()
-    asyncio.run(server(args) if args.role == "server" else client(args))
+    asyncio.run(run(args))
 
 
 if __name__ == "__main__":

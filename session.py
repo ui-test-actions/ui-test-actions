@@ -231,7 +231,7 @@ def download_tunnel(work):
 
 
 class Session(ThreadingHTTPServer):
-    def __init__(self, digest, backend, target, driver=None, port=0, exchange=None):
+    def __init__(self, digest, backend, target, driver=None, port=0, exchange=None, network=None):
         super().__init__(("127.0.0.1", port), Handler)
         self.digest = digest
         self.backend = backend
@@ -241,7 +241,7 @@ class Session(ThreadingHTTPServer):
         self.deadline = 0
         self.size = (0, 0)
         self.startup = {}
-        self.automation = Automation(self, driver, exchange)
+        self.automation = Automation(self, driver, exchange, network)
         self.workers = threading.BoundedSemaphore(24)
 
     def process_request(self, request, address):
@@ -510,7 +510,7 @@ def main(control):
     startup = duration_setting("UI_TEST_STARTUP_TIMEOUT", 1, 1800)
     named, port = take_named_configuration()
     processes = []
-    driver = tunnel = None
+    driver = tunnel = network = None
     with tempfile.TemporaryDirectory(prefix="live-ui-") as directory:
         work = Path(directory)
         try:
@@ -531,6 +531,10 @@ def main(control):
             if target in ("linux", "windows", "macos") and os.environ.get("UI_TEST_FILE_EXCHANGE") == "1":
                 exchange = Exchange(work / "files")
                 os.environ["UI_TEST_EXCHANGE_DIR"] = str(exchange.directory)
+            if network_path := os.environ.get("UI_TEST_NETWORK_CONTROL"):
+                from network_control import NetworkControl
+                network = NetworkControl(Path(network_path), Path(os.environ["RUNNER_TEMP"]))
+                network.execute("network.profile.get", {})
             startup_observation = launch_app(startup)
             if target == "android" or native_ios:
                 run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "Pillow==12.2.0", timeout=180)
@@ -555,7 +559,7 @@ def main(control):
             elif axe_path:
                 from ios_axe import AxeSimulator
                 driver = backend = AxeSimulator(axe_path, driver)
-            with Session(digest, backend, target, driver, port, exchange) as session:
+            with Session(digest, backend, target, driver, port, exchange, network) as session:
                 session.startup = startup_observation
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)
@@ -599,6 +603,11 @@ def main(control):
                     tunnel.close()
                 except (RuntimeError, OSError, subprocess.SubprocessError):
                     print("The Cloudflare connector could not complete cleanup", flush=True)
+            if network:
+                try:
+                    network.execute("network.profile.reset", {})
+                except ValueError:
+                    print("The isolated link controller could not confirm reset. Its profile lease will expire.", flush=True)
             if hasattr(driver, "close"):
                 try:
                     driver.close()

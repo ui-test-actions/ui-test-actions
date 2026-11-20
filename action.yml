@@ -52,6 +52,9 @@ inputs:
   file-exchange:
     description: Enable the private, bounded file exchange on a desktop runner
     default: '0'
+  network-control-socket:
+    description: Optional private runner-local socket for an isolated test network
+    default: ''
   tunnel-hostname:
     description: Optional hostname of a dedicated remotely managed Cloudflare Tunnel
     default: ''
@@ -86,6 +89,7 @@ runs:
         UI_TEST_WEBDRIVER_CAPS: ${{ inputs.webdriver-capabilities }}
         UI_TEST_IOS_AXE: ${{ inputs.ios-axe-path }}
         UI_TEST_FILE_EXCHANGE: ${{ inputs.file-exchange }}
+        UI_TEST_NETWORK_CONTROL: ${{ inputs.network-control-socket }}
         UI_TEST_TUNNEL_HOSTNAME: ${{ inputs.tunnel-hostname }}
         UI_TEST_TUNNEL_TOKEN: ${{ inputs.tunnel-token }}
         UI_TEST_ORIGIN_PORT: ${{ inputs.origin-port }}

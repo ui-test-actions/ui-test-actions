@@ -26,10 +26,11 @@ def error_result(error):
 
 
 class Automation:
-    def __init__(self, session, driver, exchange=None):
+    def __init__(self, session, driver, exchange=None, network=None):
         self.session = session
         self.driver = driver
         self.exchange = exchange
+        self.network = network
         self.recording = Recording(session)
         self.trace = InteractionTrace(session)
         self.timings = deque(maxlen=256)
@@ -43,6 +44,8 @@ class Automation:
                          "performance.observations"))
         if self.exchange:
             provided.update(("files.list", "files.stage", "files.read"))
+        if self.network:
+            provided.update(("network.profile.get", "network.profile.set", "network.profile.reset"))
         if "tree.snapshot" in provided:
             provided.update(("element.find", "element.assert", "element.wait"))
             if "pointer.click" in provided:
@@ -144,6 +147,8 @@ class Automation:
             return self.trace.stop()
         if name == "performance.observations":
             return {"startup": self.session.startup, "actions": list(self.timings)}
+        if name.startswith("network.profile."):
+            return self.network.execute(name, params)
         if name.startswith("files."):
             return self.exchange.execute(name, params)
         if name.startswith("pointer."):

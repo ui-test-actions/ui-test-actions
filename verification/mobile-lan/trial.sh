@@ -51,10 +51,15 @@ case "$stage" in
     else
       origin=()
     fi
+    control=()
+    if [[ "$target" == android && "${LAN_FAULTS:-0}" == 1 ]]; then
+      install -d -m 0700 "$dir/control"
+      control=(--control "$dir/control/link.sock")
+    fi
     # The privileged helper sees only the dedicated job-local interface.
     sudo -n "$dir/venv/bin/python" "$src/bridge.py" "$role" --interface "$interface" --frame-port "$dir/frame-port" \
       --cert "$dir/public/cert.pem" --key "$dir/key.pem" --peer-cert "$dir/peer/cert.pem" \
-      --ready "$dir/ready" --stats "$evidence/traffic.json" ${origin[@]+"${origin[@]}"} > "$evidence/bridge.log" 2>&1 &
+      --ready "$dir/ready" --stats "$evidence/traffic.json" ${origin[@]+"${origin[@]}"} ${control[@]+"${control[@]}"} > "$evidence/bridge.log" 2>&1 &
     echo "$!" > "$dir/bridge.pid"
     for _ in {1..350}; do
       if [[ -f "$dir/ready" ]]; then exit 0; fi
@@ -86,7 +91,7 @@ case "$stage" in
       sudo ifconfig feth81 destroy || true
       if [[ -s "$evidence/device" ]]; then xcrun simctl shutdown "$(cat "$evidence/device")" || true; fi
     fi
-    rm -f "$dir/key.pem"
+    rm -f "$dir/key.pem" "$dir/control/link.sock"
     ;;
   *) exit 2 ;;
 esac
