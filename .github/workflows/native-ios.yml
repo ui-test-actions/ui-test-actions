@@ -53,7 +53,7 @@ jobs:
           echo "NATIVE_IOS_VERSION=$ios_version" >> "$GITHUB_ENV"
           echo "NATIVE_IOS_WDA=$wda" >> "$GITHUB_ENV"
           curl --fail --silent --show-error --retry 5 --retry-connrefused http://127.0.0.1:4723/status
-      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
+      - uses: ui-test-actions/ui-test-actions@e65046fd4880d8e903ea2db57eea9a68f9204af9
         with:
           target: ios
           token-sha256: ${{ inputs.token_sha256 }}
