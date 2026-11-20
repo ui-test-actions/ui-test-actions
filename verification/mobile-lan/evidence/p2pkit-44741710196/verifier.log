@@ -1,0 +1,4 @@
+Both apps are on their initial screens
+Started both native LAN apps
+Each app rendered the other app's discovery name
+Both apps reported Connected after ios selected the discovered peer

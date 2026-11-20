@@ -1,0 +1,12 @@
+{
+  "native_discovery": {
+    "android_observed": "iPhone",
+    "ios_observed": "Android-7224"
+  },
+  "initiator": "ios",
+  "connected_on_both": true,
+  "observed_receiver_lines": {
+    "android": "13:25:28  iPhone → iOS reply MANGO",
+    "ios": "Android-7224 -> MANGO"
+  }
+}

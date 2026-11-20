@@ -4,12 +4,24 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
+import re
 import struct
 import sys
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from agent import Client, ClientError
+
+
+def ios_received_message(line, android_name, payload, *, visual):
+    if line == f"{android_name} -> {payload}":
+        return True
+    if visual:
+        # The sample's random numeric name suffix was already verified on the
+        # discovery screen. OCR can misread the tiny Android prefix in chat.
+        match = re.fullmatch(r"[A-Za-z]+-(\d{1,4}) -> (.+)", line)
+        return bool(match and android_name == f"Android-{match[1]}" and match[2] == payload)
+    return False
 
 
 class Device:
@@ -111,10 +123,13 @@ class Device:
 
     def message(self, value):
         if self.ocr:
-            _, button = self.find(
-                lambda node: node["text"].startswith("Send all ("),
-                "visible iOS message composer", scroll=1,
-            )
+            def is_send(node):
+                return node["text"].startswith("Send all (")
+
+            _, button = self.find(is_send, "visible iOS message composer", scroll=1)
+            if button["center"][1] < self.crop[1] + 42:
+                self.drag(-1)
+                _, button = self.find(is_send, "iOS composer below the status bar")
             x, y = button["center"]
             self.command("pointer.click", {"x": x - (self.crop[2] - self.crop[0]) // 2, "y": y})
             time.sleep(.6)
@@ -193,11 +208,14 @@ def run_pair(android, ios, android_name, ios_name, nonce, initiator, output):
         ios.screenshot("connected")
         print(f"Both apps reported Connected after {initiator} selected the discovered peer", flush=True)
 
-        from_android = f"Android hello {nonce}"
+        # A short unique payload is legible in the Simulator's compact message row.
+        from_android = nonce
         from_ios = f"iOS reply {nonce}"
         android.message(from_android)
-        ios_received = f"{android_name} -> {from_android}"
-        _, ios_message = ios.find(lambda node: any(ios_received in field for field in ios.content(node)),
+        def received_on_ios(field):
+            return ios_received_message(field, android_name, from_android, visual=bool(ios.ocr))
+
+        _, ios_message = ios.find(lambda node: any(received_on_ios(field) for field in ios.content(node)),
             "the Android sender and message in the iOS timeline", scroll=1)
         ios.screenshot("received-android")
         ios.message(from_ios)
@@ -210,7 +228,7 @@ def run_pair(android, ios, android_name, ios_name, nonce, initiator, output):
               "initiator": initiator, "connected_on_both": True,
               "observed_receiver_lines": {
                   "android": next(field for field in android.content(android_message) if android_received in field),
-                  "ios": next(field for field in ios.content(ios_message) if ios_received in field),
+                  "ios": next(field for field in ios.content(ios_message) if received_on_ios(field)),
               }}
     (output / "journey.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

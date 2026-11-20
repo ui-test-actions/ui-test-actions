@@ -33,3 +33,18 @@ class AndroidComposerTest(unittest.TestCase):
         matches_sent = device.find.call_args_list[-1].args[0]
         self.assertFalse(matches_sent({"role": "textbox", "text": "Android hello ORANGE"}))
         self.assertTrue(matches_sent({"role": "text", "text": "me [broadcast]: Android hello ORANGE"}))
+
+
+class IOSChatObservationTest(unittest.TestCase):
+    def test_requires_the_observed_peer_suffix_and_exact_incoming_message(self):
+        received = journey["ios_received_message"]
+        name = "Android-1116"
+        text = "Android hello BANANA"
+        misread_prefix = f"Andraid-1116 -> {text}"
+
+        self.assertTrue(received(f"{name} -> {text}", name, text, visual=False))
+        self.assertTrue(received(misread_prefix, name, text, visual=True))
+        self.assertFalse(received(misread_prefix, name, text, visual=False))
+        self.assertFalse(received(f"Android-1161 -> {text}", name, text, visual=True))
+        self.assertFalse(received(f"me -> {name}: {text}", name, text, visual=True))
+        self.assertFalse(received(f"{name} -> {text}!", name, text, visual=True))
