@@ -9,8 +9,13 @@ evidence="$PWD/real-app-evidence"
 
 case "$target" in
   linux)
-    openbox > "$evidence/window-manager.log" 2>&1 &
     XDG_CONFIG_HOME="$app_dir/config" "$app_dir/squashfs-root/AppRun" "$evidence/document.txt" > "$evidence/app.log" 2>&1 &
+    app_pid=$!
+    sleep 1
+    if ! kill -0 "$app_pid" 2>/dev/null; then
+      cat "$evidence/app.log" >&2
+      exit 1
+    fi
     ;;
   windows)
     "$app_dir/editor/notepad++.exe" -nosession -noPlugin -multiInst "$evidence/document.txt" > "$evidence/app.log" 2>&1 &

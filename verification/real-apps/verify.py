@@ -27,6 +27,7 @@ def prepare(target: str, directory: Path, evidence: Path) -> None:
         return
     url = f"https://github.com/{entry['repository']}/releases/download/{entry['ref']}/{entry['asset']}"
     downloaded = directory / entry["asset"]
+    print(f"Downloading pinned release for {entry['app']}", flush=True)
     with urlopen(url, timeout=60) as response, downloaded.open("wb") as destination:
         shutil.copyfileobj(response, destination)
     with downloaded.open("rb") as source:

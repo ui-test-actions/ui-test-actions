@@ -11,8 +11,12 @@ python "$source_dir/verify.py" prepare "$target" "$app_dir" "$evidence"
 
 case "$target" in
   linux)
-    sudo apt-get update
-    sudo apt-get install -y openbox libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-keysyms1 libxcb-render-util0
+    packages=(libegl1 libgl1 libopengl0 libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-keysyms1 libxcb-render-util0)
+    apt_options=(-o Acquire::Retries=1 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15)
+    if ! timeout 90 sudo apt-get "${apt_options[@]}" install -y --no-install-recommends "${packages[@]}"; then
+      timeout 90 sudo apt-get "${apt_options[@]}" update
+      timeout 90 sudo apt-get "${apt_options[@]}" install -y --no-install-recommends "${packages[@]}"
+    fi
     image="$app_dir/NotepadNext-v0.15-x86_64.AppImage"
     chmod +x "$image"
     (cd "$app_dir" && "$image" --appimage-extract >/dev/null)

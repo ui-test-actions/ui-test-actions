@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: bash verification/real-apps/prepare.sh "$REAL_APP_TARGET"
       - name: Expose the application for an external agent
-        uses: ui-test-actions/ui-test-actions@bae377bdd8928ed958f60c09de8a3e9929e4b06f
+        uses: ui-test-actions/ui-test-actions@be3ac23b529359405547ea1189a0221e4212080f
         with:
           target: ${{ inputs.target }}
           token-sha256: ${{ inputs.token_sha256 }}
