@@ -39,10 +39,13 @@ class NativeMetricsTest(unittest.TestCase):
         self.assertEqual(result["cpu_ms"], 2000)
 
     def test_android_exit_reason_is_labeled_by_the_os(self):
-        shell = Mock(side_effect=[b"PID NAME\n43 other\n", b"reason=6 (ANR) subreason=0\n"])
-        result = android_metrics(shell, "dev.example.app")
-        self.assertFalse(result["running"])
-        self.assertEqual(result["last_os_exit"], {"reason_code": 6, "reason": "ANR"})
+        for code, label in ((6, "ANR"), (4, "APP CRASH(EXCEPTION)"), (7, "INITIALIZATION FAILURE")):
+            with self.subTest(code=code):
+                reason = f"reason={code} ({label}) subreason=0\n".encode()
+                shell = Mock(side_effect=[b"PID NAME\n43 other\n", reason])
+                result = android_metrics(shell, "dev.example.app")
+                self.assertFalse(result["running"])
+                self.assertEqual(result["last_os_exit"], {"reason_code": code, "reason": label})
 
 
 class PerformanceReportTest(unittest.TestCase):

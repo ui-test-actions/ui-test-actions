@@ -79,7 +79,7 @@ def android_metrics(shell, identifier):
             exits = shell("dumpsys", "activity", "exit-info", identifier, timeout=7).decode("utf-8", errors="replace")
         except (OSError, RuntimeError, subprocess.SubprocessError):
             return result
-        reason = re.search(r"\breason=(\d+)\s*\(([A-Z_]+)\)", exits)
+        reason = re.search(r"\breason=(\d+)\s*\(([A-Z0-9_ -]+(?:\([A-Z0-9_ -]+\))?)\)", exits)
         if reason:
             result["last_os_exit"] = {"reason_code": int(reason[1]), "reason": reason[2]}
         return result
