@@ -91,6 +91,10 @@ jobs:
           app-ids: ${{ env.LAN_APP_ID }}
           ios-axe-path: ${{ env.LAN_AXE }}
           launch: bash verification/mobile-lan/launch-sample.sh "$LAN_TARGET"
+      - name: Collect sanitized sample event outcomes
+        if: ${{ always() && !cancelled() && inputs.mode == 'apps' && env.LAN_DEVICE != '' }}
+        continue-on-error: true
+        run: bash verification/mobile-lan/collect-sample.sh "$LAN_TARGET"
       - name: Retire LAN resources
         if: always()
         run: bash verification/mobile-lan/trial.sh cleanup "$LAN_TARGET"

@@ -31,17 +31,9 @@ else
   ditto -x -k "$package/sample-app.zip" "$staging"
   app="$staging/p2pkit-sample.app"
   test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = dev.p2pkit.sample
-  cat > "$staging/simulator-entitlements.plist" <<'PLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-  <key>application-identifier</key><string>UITEST0001.dev.p2pkit.sample</string>
-  <key>keychain-access-groups</key><array><string>UITEST0001.dev.p2pkit.sample</string></array>
-</dict></plist>
-PLIST
-  codesign --force --sign - "$app/Frameworks/P2pKitShared.framework"
-  codesign --force --sign - --entitlements "$staging/simulator-entitlements.plist" "$app"
-  codesign --verify --deep --strict "$app"
+  executable=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$app/Info.plist")
+  otool -l "$app/$executable" > "$staging/load-commands.txt"
+  grep -Eq 'sectname __entitlements|sectname __ents_der' "$staging/load-commands.txt"
   {
     printf 'LAN_DEVICE=%s\n' "$(cat "$RUNNER_TEMP/mobile-lan-preflight/device")"
     echo LAN_APP_ID=dev.p2pkit.sample

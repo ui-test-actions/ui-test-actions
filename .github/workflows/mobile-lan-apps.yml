@@ -53,11 +53,24 @@ jobs:
           command -v xcodegen || brew install xcodegen
           ./gradlew :p2p-transport-lan:verifyP2pKitSharedReleaseXCFrameworkProvenance --console=plain
           (cd samples/iosApp && xcodegen generate)
+          cat > "$RUNNER_TEMP/sample-simulator.entitlements" <<'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>application-identifier</key><string>UITEST0001.dev.p2pkit.sample</string>
+            <key>keychain-access-groups</key><array><string>UITEST0001.dev.p2pkit.sample</string></array>
+          </dict></plist>
+          PLIST
           xcodebuild -project samples/iosApp/p2pkit-sample.xcodeproj -scheme p2pkit-sample \
             -configuration Debug -destination 'generic/platform=iOS Simulator' ARCHS=arm64 \
-            -derivedDataPath "$RUNNER_TEMP/p2p-derived" CODE_SIGNING_ALLOWED=NO -quiet build
+            -derivedDataPath "$RUNNER_TEMP/p2p-derived" CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+            CODE_SIGN_STYLE=Manual CODE_SIGN_ENTITLEMENTS="$RUNNER_TEMP/sample-simulator.entitlements" -quiet build
+          app="$RUNNER_TEMP/p2p-derived/Build/Products/Debug-iphonesimulator/p2pkit-sample.app"
+          executable=$(/usr/libexec/PlistBuddy -c 'Print CFBundleExecutable' "$app/Info.plist")
+          otool -l "$app/$executable" > "$RUNNER_TEMP/sample-load-commands.txt"
+          grep -Eq 'sectname __entitlements|sectname __ents_der' "$RUNNER_TEMP/sample-load-commands.txt"
           mkdir -p "$RUNNER_TEMP/p2p-sample"
-          ditto -c -k --keepParent "$RUNNER_TEMP/p2p-derived/Build/Products/Debug-iphonesimulator/p2pkit-sample.app" "$RUNNER_TEMP/p2p-sample/sample-app.zip"
+          ditto -c -k --keepParent "$app" "$RUNNER_TEMP/p2p-sample/sample-app.zip"
       - name: Record source and hashes
         run: |
           cd "$RUNNER_TEMP/p2p-sample"

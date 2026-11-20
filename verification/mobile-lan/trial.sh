@@ -56,11 +56,12 @@ case "$stage" in
       --cert "$dir/public/cert.pem" --key "$dir/key.pem" --peer-cert "$dir/peer/cert.pem" \
       --ready "$dir/ready" --stats "$evidence/traffic.json" ${origin[@]+"${origin[@]}"} > "$evidence/bridge.log" 2>&1 &
     echo "$!" > "$dir/bridge.pid"
-    for _ in {1..220}; do
+    for _ in {1..350}; do
       if [[ -f "$dir/ready" ]]; then exit 0; fi
       kill -0 "$(cat "$dir/bridge.pid")" || { cat "$evidence/bridge.log"; exit 1; }
       sleep 1
     done
+    echo "The paired job did not attach before the LAN readiness deadline" >&2
     exit 1
     ;;
   verify)
