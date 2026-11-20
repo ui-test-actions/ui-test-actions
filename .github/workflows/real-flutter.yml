@@ -39,22 +39,23 @@ jobs:
           test -x "$executable"
           echo "FLUTTER_APP=$executable" >> "$GITHUB_ENV"
           apt=(sudo apt-get -o DPkg::Lock::Timeout=60 -o Acquire::Retries=1 -o Acquire::http::Timeout=20)
-          packages=(fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1 libegl1 libegl-mesa0 libgl1 libopengl0)
+          packages=(fonts-noto-core libgtk-3-0t64 libayatana-appindicator3-1 libegl1 libegl-mesa0 libgl1 libopengl0
+                    libgles2 libgl1-mesa-dri libgbm1)
           if ! timeout 120 "${apt[@]}" install -y --no-install-recommends "${packages[@]}"; then
             timeout 120 "${apt[@]}" update
             timeout 120 "${apt[@]}" install -y --no-install-recommends "${packages[@]}"
           fi
-      - uses: ui-test-actions/ui-test-actions@803d83d50713f845db414c30c7c826071ede907c
+      - uses: ui-test-actions/ui-test-actions@b57a9501805d6b75f94c6fa7ac1df4e37726a959
         with:
           target: linux
           token-sha256: ${{ inputs.token_sha256 }}
-          duration-minutes: '15'
+          duration-minutes: '10'
           launch: |
             XDG_CONFIG_HOME="$RUNNER_TEMP/localsend-settings" LIBGL_ALWAYS_SOFTWARE=1 \
               "$FLUTTER_APP" > flutter-evidence/app.log 2>&1 &
             app_pid=$!
             printf '%s\n' "$app_pid" > flutter-evidence/app.pid
-            sleep 2
+            sleep 6
             kill -0 "$app_pid" || { cat flutter-evidence/app.log >&2; exit 1; }
           ready: |
             kill -0 "$(cat flutter-evidence/app.pid)"

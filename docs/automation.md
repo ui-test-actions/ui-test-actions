@@ -116,3 +116,28 @@ The default Quick Tunnel gives a temporary HTTPS address and uses the action's p
 For a fixed hostname, provision a dedicated remotely managed Cloudflare Tunnel. Set its service to `http://127.0.0.1:8787` and configure the action with `tunnel-hostname`, `origin-port` if different, and `tunnel-token: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}`. Serialize runs per hostname with GitHub workflow concurrency, since multiple connectors on the same hostname can route to different runners. The action attempts bounded restarts of an exited named connector during a live session. The connector token is passed through a private file and stays outside the app launch environment. Named Tunnel and Cloudflare Access are configured by the consumer and have local regression coverage. Their deployment requires real Cloudflare account configuration and an external acceptance check before relying on them.
 
 Cloudflare Access is optional in front of a named tunnel. Automated clients can supply Access service-token headers in addition to the session bearer. The Python client accepts a private file containing `client_id` and `client_secret` with `--access-file`. Cloudflare terminates TLS on the edge. Run the action on dedicated GitHub-hosted test jobs with test data and least-privilege GitHub permissions. The authenticated desktop can operate any UI visible to that runner account. [Tunnel configuration](https://developers.cloudflare.com/tunnel/get-started/) · [Access service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)
+
+## Operational checks
+
+| Signal | Check |
+| --- | --- |
+| Connection artifact is missing | Inspect the app launch and readiness steps, selected emulator or simulator, then the tunnel registration message. A valid ready command should detect the state the agent needs. |
+| The first screenshot is blank | Check for the expected foreground window or activity, and inspect the application's own startup log. In a Linux workflow, confirm its renderer can use the configured X display. |
+| HTTP 401 | Check the private token file and the connection artifact for this run. Use a new token per session. |
+| HTTP 429 from a command | Wait briefly and retry with the same request ID. Keep one writer per session. |
+| HTTP 410 or Cloudflare 530 | Check the job status and remaining time. An expired or cancelled runner needs a fresh job. |
+| Expected element is missing | Inspect a current screenshot and the source exposed by the platform. Check focus, popups, the viewport, and whether the relevant native framework exports that element. |
+| Visual assertion misses a change | Capture the correct current rectangle. Use a deterministic region and pair the pixel observation with an app-specific check. |
+
+## Development and releases
+
+The composite action starts the loopback listener and publishes connection metadata, then its hold step renews a short lease while the job is alive. The session owns request authentication, expiry, and driver serialization. The automation layer handles schemas, replay, visual evidence, and selectors. The platform adapters translate typed operations into native events. Keep the action bearer and any Cloudflare credentials in their separate trust boundaries.
+
+Run the same portable tests as the hosted regression workflow before changing the action pin.
+
+```bash
+python3 -m pip install Pillow==12.2.0
+python3 -m unittest discover -s tests -v
+```
+
+The normal pull-request checks run across Windows, macOS, and Linux. Emulator, simulator, upstream application, and timed-session workflows run on demand. Reuse verified upstream binaries when available and verify their content hashes. The release pin is a full action commit shown in the consumer examples. Publish a new pin when its supported targets have external checks and retained observations. Preserve existing endpoint behavior within its API version and evolve optional operations through capability discovery. [CI workflow](../.github/workflows/tests.yml) · [Hosted evidence](../verification/v2/README.md)

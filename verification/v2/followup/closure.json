@@ -1,0 +1,42 @@
+{
+  "linux": {
+    "run_id": 44693002136,
+    "conclusion": "success",
+    "after_authenticated_status": 530,
+    "raw_token_absent_from_logs_and_connection_artifact": true,
+    "hold_step_logged_closure": true,
+    "observed_at": "2026-11-20T07:23:56+00:00"
+  },
+  "windows": {
+    "run_id": 44693002473,
+    "conclusion": "success",
+    "after_authenticated_status": 530,
+    "raw_token_absent_from_logs_and_connection_artifact": true,
+    "hold_step_logged_closure": true,
+    "observed_at": "2026-11-20T07:19:12+00:00"
+  },
+  "macos": {
+    "run_id": 44693002132,
+    "conclusion": "success",
+    "after_authenticated_status": 530,
+    "raw_token_absent_from_logs_and_connection_artifact": true,
+    "hold_step_logged_closure": true,
+    "observed_at": "2026-11-20T07:19:24+00:00"
+  },
+  "android": {
+    "run_id": 44693001890,
+    "conclusion": "success",
+    "after_authenticated_status": 530,
+    "raw_token_absent_from_logs_and_connection_artifact": true,
+    "hold_step_logged_closure": true,
+    "observed_at": "2026-11-20T07:20:22+00:00"
+  },
+  "ios": {
+    "run_id": 44693002066,
+    "conclusion": "success",
+    "after_authenticated_status": 530,
+    "raw_token_absent_from_logs_and_connection_artifact": true,
+    "hold_step_logged_closure": true,
+    "observed_at": "2026-11-20T07:25:45+00:00"
+  }
+}

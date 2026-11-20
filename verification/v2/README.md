@@ -4,19 +4,19 @@ The external clients used the repository-qualified action and the same authentic
 
 ## Immutable candidate
 
-The desktop, Android, and iOS consumer examples reference `803d83d50713f845db414c30c7c826071ede907c`. An external client discovered the API, entered mixed Arabic and English text into each fixture, applied it, and asserted the expected blue-to-green transition. A fresh client observed the same live session and resulting screen. Anonymous session requests returned HTTP 401. Replaying the same batch ID returned the original response. The before-and-after images show the actual applied text. [Candidate commit](https://github.com/ui-test-actions/ui-test-actions/commit/803d83d50713f845db414c30c7c826071ede907c)
+The desktop, Android, and iOS consumer examples reference `b57a9501805d6b75f94c6fa7ac1df4e37726a959`. An external client discovered the API, entered mixed Arabic and English text into each fixture, applied it, and asserted the expected blue-to-green transition. A fresh client observed the same live session and resulting screen. Anonymous session requests returned HTTP 401. Replaying the same batch ID returned the original response. The before-and-after images show the actual applied text. [Candidate commit](https://github.com/ui-test-actions/ui-test-actions/commit/b57a9501805d6b75f94c6fa7ac1df4e37726a959)
 
 | Target | Workflow at the exact action ref | External evidence |
 | --- | --- | --- |
-| Linux | [Ubuntu 24.04](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688735749) | [Before, after, and assertions](candidate/linux/) |
-| Windows | [Windows Server 2025](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688735537) | [Before, after, and assertions](candidate/windows/) |
-| macOS | [macOS 15](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688735459) | [Before, after, and assertions](candidate/macos/) |
-| Android | [Android 35 emulator](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688735408) | [Before, after, and assertions](candidate/android/) |
-| iOS | [iPhone 17 Pro, iOS 26.2](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688735152) | [Before, after, and assertions](candidate/ios/) |
+| Linux | [Ubuntu 24.04](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002136) | [Before, after, and exact Tk emoji copy-back](followup/linux/) |
+| Windows | [Windows Server 2025](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002473) | [Before, after, and assertions](followup/windows/) |
+| macOS | [macOS 15](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002132) | [Before, after, and assertions](followup/macos/) |
+| Android | [Android 35 emulator](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693001890) | [Before, after, and assertions](followup/android/) |
+| iOS | [iPhone 17 Pro, iOS 26.2](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44693002066) | [Before, after, and assertions](followup/ios/) |
 
-The fixture proof is reproducible using [probe_fixture.py](../probe_fixture.py) on the external machine with Pillow. Supply the connection file, private token file, evidence directory, and the coordinates from the current screenshot. Use `--dismiss` only if a startup dialog is visible. The regular agent CLI has no Pillow dependency. [Fast compatibility tests at the candidate](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688269102) · [45-test follow-up on Windows, macOS, and Linux](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44689292574)
+The fixture proof is reproducible using [probe_fixture.py](../probe_fixture.py) on the external machine with Pillow. Supply the connection file, private token file, evidence directory, and the coordinates from the current screenshot. Use `--dismiss` only if a startup dialog is visible. The regular agent CLI has no Pillow dependency. The 48-case regression suite passed on three desktop operating systems at this action ref. [Fast hosted compatibility tests](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44692922003)
 
-All five jobs reported normal closure. Each old URL returned HTTP 530 with its valid bearer, and the raw bearer was absent from its GitHub log and connection artifact. A distinct Windows job returned HTTP 401 for another live session's bearer and for a missing bearer, then stopped accepting its own bearer 8.43 seconds after cancellation was submitted. [Closure checks](candidate/closure.json) · [Cancellation trace](candidate/cancellation.json) · [GitHub cancellation run](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44690408070)
+At the earlier heartbeat candidate `803d83d50713f845db414c30c7c826071ede907c`, all five jobs reported normal closure. Each old URL returned HTTP 530 with its valid bearer, and the raw bearer was absent from its GitHub log and connection artifact. Each runner also completed 96 session reads in eight-client bursts. A distinct Windows job returned HTTP 401 for another live session's bearer and for a missing bearer, then stopped accepting its own bearer 8.43 seconds after cancellation was submitted. [Earlier verification records and run IDs](candidate/) · [GitHub cancellation run](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44690408070)
 
 ## Real applications
 
