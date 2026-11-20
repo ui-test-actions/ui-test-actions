@@ -1,0 +1,44 @@
+name: Live UI test session
+description: Open an authenticated, temporary UI test session on a GitHub-hosted runner
+inputs:
+  target:
+    description: linux, windows, macos, android, or ios
+    required: true
+  token-sha256:
+    description: SHA-256 hex digest of a fresh 256-bit session token held by the client
+    required: true
+  duration-minutes:
+    description: Minutes to keep the session open after readiness (1–180)
+    default: '15'
+  launch:
+    description: Bash script that starts the app and returns, or an empty string to attach
+    default: ''
+  ready:
+    description: Bash command that succeeds once the application is ready
+    default: ''
+  startup-timeout-seconds:
+    description: Maximum time to launch the app and pass its readiness check
+    default: '180'
+  device:
+    description: ADB serial or iOS simulator UDID, or empty to use the only attached/booted device
+    default: ''
+  ios-bundle-id:
+    description: iOS application bundle ID
+    default: ''
+runs:
+  using: composite
+  steps:
+    - name: Open UI session
+      shell: bash
+      env:
+        UI_TEST_ACTION_PATH: ${{ github.action_path }}
+        UI_TEST_TARGET: ${{ inputs.target }}
+        UI_TEST_TOKEN_SHA256: ${{ inputs.token-sha256 }}
+        UI_TEST_DURATION: ${{ inputs.duration-minutes }}
+        UI_TEST_LAUNCH: ${{ inputs.launch }}
+        UI_TEST_READY: ${{ inputs.ready }}
+        UI_TEST_STARTUP_TIMEOUT: ${{ inputs.startup-timeout-seconds }}
+        UI_TEST_DEVICE: ${{ inputs.device }}
+        UI_TEST_IOS_BUNDLE_ID: ${{ inputs.ios-bundle-id }}
+        PYTHONUNBUFFERED: '1'
+      run: python "$UI_TEST_ACTION_PATH/session.py"

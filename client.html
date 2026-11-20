@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live UI test session</title>
+<style>
+  body { font: 1rem system-ui, sans-serif; max-width: 85rem; margin: 2rem auto; padding: 0 1rem; color: #18243a; }
+  form { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .7rem 0; }
+  input, button { font: inherit; padding: .4rem .6rem; }
+  button { cursor: pointer; }
+  img { display: block; max-width: 100%; max-height: 75vh; touch-action: none; cursor: crosshair; }
+</style>
+<h1>Live UI test session</h1>
+<form id="connect">
+  <label for="token">Session token</label>
+  <input id="token" type="password" autocomplete="off" spellcheck="false" required pattern="[0-9a-f]{64}" size="30">
+  <button>Connect</button>
+</form>
+<form id="controls" hidden>
+  <button type="button" id="refresh">Refresh screenshot</button>
+  <label for="entry">Type into focused field</label>
+  <input id="entry" maxlength="256" required pattern="[ -~]+">
+  <button>Send text</button>
+</form>
+<p role="status" id="status">Enter the token to view the live screen.</p>
+<img id="screen" alt="Runner screenshot" hidden>
+<script>
+  const $ = id => document.getElementById(id);
+  const screen = $('screen');
+  let token = '', imageURL, start, busy = false;
+
+  async function request(path, body) {
+    const headers = { Authorization: 'Bearer ' + token };
+    const options = { headers, cache: 'no-store' };
+    if (body) {
+      headers['Content-Type'] = 'application/json';
+      Object.assign(options, { method: 'POST', body: JSON.stringify(body) });
+    }
+    const response = await fetch('/v1/' + path, options);
+    if (!response.ok) throw new Error('Request failed (HTTP ' + response.status + ').');
+    return response;
+  }
+
+  async function snapshot() {
+    const image = await (await request('screenshot')).blob();
+    const next = URL.createObjectURL(image);
+    screen.src = next;
+    screen.hidden = false;
+    if (imageURL) URL.revokeObjectURL(imageURL);
+    imageURL = next;
+  }
+
+  async function perform(action) {
+    if (busy) return;
+    busy = true;
+    try { await action(); }
+    catch (error) { $('status').textContent = error.message; }
+    finally { busy = false; }
+  }
+
+  $('connect').onsubmit = event => {
+    event.preventDefault();
+    perform(async () => {
+      token = $('token').value.trim();
+      $('token').value = '';
+      $('controls').hidden = true;
+      screen.hidden = true;
+      const session = await (await request('session')).json();
+      await snapshot();
+      $('controls').hidden = false;
+      $('status').textContent = 'Connected to ' + session.target + '. Click or drag on the screenshot.';
+    });
+  };
+
+  $('refresh').onclick = () => perform(snapshot);
+  async function send(body) {
+    await request('input', body);
+    await new Promise(resolve => setTimeout(resolve, 250));
+    await snapshot();
+  }
+  $('controls').onsubmit = event => {
+    event.preventDefault();
+    perform(async () => {
+      await send({ action: 'type', text: $('entry').value });
+      $('entry').value = '';
+    });
+  };
+
+  function point(event) {
+    const rect = screen.getBoundingClientRect();
+    return {
+      x: Math.max(0, Math.min(screen.naturalWidth - 1, Math.floor((event.clientX - rect.left) * screen.naturalWidth / rect.width))),
+      y: Math.max(0, Math.min(screen.naturalHeight - 1, Math.floor((event.clientY - rect.top) * screen.naturalHeight / rect.height)))
+    };
+  }
+  screen.ondragstart = event => event.preventDefault();
+  screen.onpointerdown = event => {
+    if (busy || event.button !== 0) return;
+    start = { ...point(event), time: performance.now() };
+    screen.setPointerCapture(event.pointerId);
+  };
+  screen.onpointercancel = () => { start = null; };
+  screen.onpointerup = event => {
+    if (!start) return;
+    const { x, y, time } = start;
+    const end = point(event);
+    start = null;
+    const drag = Math.hypot(end.x - x, end.y - y) > 10;
+    const body = drag
+      ? { action: 'swipe', x, y, end_x: end.x, end_y: end.y, duration_ms: Math.round(Math.max(100, Math.min(3000, performance.now() - time))) }
+      : { action: 'click', x, y };
+    perform(() => send(body));
+  };
+</script>
+</html>
