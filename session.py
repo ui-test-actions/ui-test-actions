@@ -240,6 +240,7 @@ class Session(ThreadingHTTPServer):
         self.id = os.urandom(12).hex()
         self.deadline = 0
         self.size = (0, 0)
+        self.startup = {}
         self.automation = Automation(self, driver, exchange)
         self.workers = threading.BoundedSemaphore(24)
 
@@ -442,12 +443,15 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def launch_app(timeout):
-    deadline = time.monotonic() + timeout
+    started = time.monotonic()
+    deadline = started + timeout
+    observation = {}
     bash = os.environ.get("UI_TEST_BASH", "bash")
     launch = os.environ.get("UI_TEST_LAUNCH")
     if launch:
         print("Starting the application")
         run(bash, "-e", "-c", launch, timeout=timeout)
+        observation["launch_command_ms"] = round((time.monotonic() - started) * 1000, 3)
     ready = os.environ.get("UI_TEST_READY")
     if ready:
         print("Waiting for the application readiness check")
@@ -456,9 +460,11 @@ def launch_app(timeout):
                 [bash, "-c", ready], timeout=remaining, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
             if result.returncode == 0:
-                return
+                observation["workflow_readiness_ms"] = round((time.monotonic() - started) * 1000, 3)
+                return observation
             time.sleep(1)
         raise RuntimeError("Application readiness check timed out")
+    return observation
 
 
 def stop(*_args):
@@ -525,7 +531,7 @@ def main(control):
             if target in ("linux", "windows", "macos") and os.environ.get("UI_TEST_FILE_EXCHANGE") == "1":
                 exchange = Exchange(work / "files")
                 os.environ["UI_TEST_EXCHANGE_DIR"] = str(exchange.directory)
-            launch_app(startup)
+            startup_observation = launch_app(startup)
             if target == "android" or native_ios:
                 run(sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "Pillow==12.2.0", timeout=180)
             if target == "android":
@@ -550,6 +556,7 @@ def main(control):
                 from ios_axe import AxeSimulator
                 driver = backend = AxeSimulator(axe_path, driver)
             with Session(digest, backend, target, driver, port, exchange) as session:
+                session.startup = startup_observation
                 session.capture()
                 serving = threading.Thread(target=session.serve_forever, daemon=True)
                 serving.start()

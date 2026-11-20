@@ -301,7 +301,7 @@ class MobileDriver:
         if self.target == "ios" and self.legacy is not None:
             commands.extend(("pointer.pinch", "device.rotate"))
         if self.app_ids:
-            commands.extend(("app.launch", "app.close", "app.restart", "app.uninstall"))
+            commands.extend(("app.launch", "app.close", "app.restart", "app.uninstall", "app.metrics"))
             if self.target == "android" or self.install_paths:
                 commands.append("app.reset")
         if self.install_paths:
@@ -563,6 +563,11 @@ class MobileDriver:
             return self._open_url(params)
         if command.startswith("app."):
             identifier = self._app_id(params)
+            if command == "app.metrics":
+                from process_metrics import android_metrics, simulator_metrics
+                if self.target == "android":
+                    return android_metrics(self.shell, identifier)
+                return simulator_metrics(self.simctl, identifier)
             if command == "app.install":
                 return self._install(identifier, self._app_install_path(identifier))
             if self.target == "android":

@@ -7,6 +7,7 @@ import shutil
 import subprocess
 
 from contract import CommandError
+from process_metrics import host_process
 
 
 class DesktopApps:
@@ -37,7 +38,7 @@ class DesktopApps:
     def capabilities(self):
         commands = set(self.driver.capabilities())
         if self.apps:
-            commands.update(("app.status", "app.launch", "app.close", "app.restart"))
+            commands.update(("app.status", "app.metrics", "app.launch", "app.close", "app.restart"))
         return commands
 
     def execute(self, command, params):
@@ -47,6 +48,13 @@ class DesktopApps:
         if identifier not in self.apps:
             raise CommandError("unapproved_app", "This desktop application is outside the workflow allowlist.", 403)
         current = self.running.get(identifier)
+        if command == "app.metrics":
+            exit_code = current.poll() if current else None
+            sample = host_process(current.pid) if current and exit_code is None else None
+            if current:
+                exit_code = current.poll()
+            return {"id": identifier, "running": bool(current and exit_code is None), "exit_code": exit_code,
+                    **(sample or {})}
         if command in ("app.close", "app.restart"):
             self.terminate(current)
         if command == "app.restart" or command == "app.launch" and (not current or current.poll() is not None):

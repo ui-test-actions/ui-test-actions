@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 from struct import unpack
 import sys
+import time
 
 from agent import Client, ClientError
 from contract import COORD, SELECTOR, choice, integer, obj, string, validate, validate_operation
@@ -163,6 +164,7 @@ def replay(client, workflow, inputs, output, screenshots=False):
                 raise ValueError("The replay precondition did not appear.")
             if action:
                 result["stage"] = "action"
+                started = time.monotonic()
                 if "legacy" in action:
                     response = json.loads(client.fetch("/v1/input", action["legacy"], retries=0))
                     if not response.get("ok"):
@@ -174,10 +176,15 @@ def replay(client, workflow, inputs, output, screenshots=False):
                     observed = ui.act(action)
                     if "save_as" in step:
                         baselines[step["save_as"]] = observed["baseline"]
+                result["client_action_ms"] = round((time.monotonic() - started) * 1000, 3)
             if "expect" in step:
                 result["stage"] = "assertion"
+                waiting = time.monotonic()
                 if not ui.check(step["expect"], wait=True):
                     raise ValueError("The replay expectation did not appear.")
+                result["client_assertion_ms"] = round((time.monotonic() - waiting) * 1000, 3)
+                if action:
+                    result["client_action_to_expectation_ms"] = round((time.monotonic() - started) * 1000, 3)
             result["stage"] = "complete"
             if screenshots:
                 (output / f"step-{number:03}.png").write_bytes(ui.screenshot())

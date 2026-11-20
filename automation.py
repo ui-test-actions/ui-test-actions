@@ -1,6 +1,6 @@
 """Session-local orchestration for agent commands and observable assertions."""
 
-from collections import OrderedDict
+from collections import OrderedDict, deque
 import hashlib
 import io
 import json
@@ -32,13 +32,15 @@ class Automation:
         self.exchange = exchange
         self.recording = Recording(session)
         self.trace = InteractionTrace(session)
+        self.timings = deque(maxlen=256)
         self.replies = OrderedDict()
         self.baselines = OrderedDict()
         self.snapshot = None
 
     def capabilities(self):
         provided = set(self.driver.capabilities()) if self.driver else set()
-        provided.update(("visual.sample", "visual.wait", "recording.start", "recording.stop", "trace.start", "trace.stop"))
+        provided.update(("visual.sample", "visual.wait", "recording.start", "recording.stop", "trace.start", "trace.stop",
+                         "performance.observations"))
         if self.exchange:
             provided.update(("files.list", "files.stage", "files.read"))
         if "tree.snapshot" in provided:
@@ -70,11 +72,15 @@ class Automation:
         output = []
         batch_deadline = time.monotonic() + 30
         for name, params in commands:
+            started = time.monotonic()
+            count = len(output)
             try:
                 self.check_live()
                 if batch and time.monotonic() >= batch_deadline:
                     raise CommandError("batch_timeout", "The batch time budget has elapsed.", 408)
                 result = self.dispatch(name, params)
+                if name == "app.metrics":
+                    result["sample_monotonic_ms"] = round(time.monotonic() * 1000, 3)
                 self.trace.command(name, params, result)
                 output.append({"command": name, "ok": True, "result": result})
             except CommandError as error:
@@ -100,6 +106,10 @@ class Automation:
                 self.trace.command(name, params, error=code)
                 output.append({"command": name, "ok": False, "error": {"code": code, "message": message}})
                 break
+            finally:
+                if name != "performance.observations" and len(output) > count:
+                    self.timings.append({"command": name, "milliseconds": round((time.monotonic() - started) * 1000, 3),
+                                         "ok": output[-1]["ok"]})
         else:
             status = 200
         reply = {"request_id": request_id, "ok": status == 200, "steps": output,
@@ -132,6 +142,8 @@ class Automation:
             return self.trace.start(params.get("capture_text", False))
         if name == "trace.stop":
             return self.trace.stop()
+        if name == "performance.observations":
+            return {"startup": self.session.startup, "actions": list(self.timings)}
         if name.startswith("files."):
             return self.exchange.execute(name, params)
         if name.startswith("pointer."):

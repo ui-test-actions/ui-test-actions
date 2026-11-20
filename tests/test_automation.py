@@ -135,6 +135,19 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(events[3]["action"]["params"]["selector"]["text"], {"input": "text_2"})
         self.assertEqual(self.action("trace.stop", {})[0], 409)
 
+    def test_performance_timing_records_execution_without_user_arguments(self):
+        message = "private fixture input"
+        self.action("text.insert", {"text": message}, "measured")
+        self.action("text.insert", {"text": message}, "measured")
+        status, response = self.action("performance.observations", {})
+        self.assertEqual(status, 200)
+        samples = response["result"]["actions"]
+        self.assertEqual(len(samples), 1)
+        self.assertEqual(samples[0]["command"], "text.insert")
+        self.assertTrue(samples[0]["ok"])
+        self.assertGreaterEqual(samples[0]["milliseconds"], 0)
+        self.assertNotIn(message, json.dumps(response))
+
     def test_replay_cache_is_bounded_and_refreshes_an_observed_id(self):
         old = {"text": "old"}
         keep = {"text": "keep"}
