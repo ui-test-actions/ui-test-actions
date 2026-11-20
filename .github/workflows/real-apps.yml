@@ -1,0 +1,66 @@
+name: Verify real application journeys
+run-name: Real application journey · ${{ inputs.target }}
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        options: [linux, windows, macos, android, ios]
+        required: true
+      token_sha256:
+        description: SHA-256 digest of the external verifier's session token
+        type: string
+        required: true
+      duration:
+        description: Minutes for the external verifier to drive the application
+        type: string
+        default: '12'
+permissions:
+  contents: read
+jobs:
+  real-app:
+    runs-on: ${{ fromJSON('{"linux":"ubuntu-24.04","windows":"windows-2025","macos":"macos-26","android":"ubuntu-24.04","ios":"macos-26"}')[inputs.target] }}
+    timeout-minutes: 45
+    env:
+      REAL_APP_TARGET: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Prepare pinned upstream application
+        shell: bash
+        run: bash verification/real-apps/prepare.sh "$REAL_APP_TARGET"
+      - name: Expose the application for an external agent
+        uses: ui-test-actions/ui-test-actions@decc69f4d817bfffa60c5631e99410b048abf8ed
+        with:
+          target: ${{ inputs.target }}
+          token-sha256: ${{ inputs.token_sha256 }}
+          duration-minutes: ${{ inputs.duration }}
+          device: ${{ env.REAL_APP_DEVICE }}
+          launch: bash verification/real-apps/launch.sh "$REAL_APP_TARGET"
+          ready: bash verification/real-apps/ready.sh "$REAL_APP_TARGET"
+      - name: Assert that the real application persisted the edit
+        shell: bash
+        run: |
+          document=real-app-evidence/document.txt
+          case "$REAL_APP_TARGET" in
+            android)
+              adb -s "$REAL_APP_DEVICE" pull /sdcard/Documents/ui-test-actions/document.txt "$document"
+              ;;
+            ios)
+              data=$(xcrun simctl get_app_container "$REAL_APP_DEVICE" com.alawyadnan.waraqa data)
+              document="$data/Library/Application Support/Waraqa/vault.json"
+              ;;
+          esac
+          python verification/real-apps/verify.py assert "$REAL_APP_TARGET" "$document" real-app-evidence
+      - name: Publish real-app checks
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: real-app-${{ inputs.target }}-${{ github.run_attempt }}
+          path: real-app-evidence/
+          if-no-files-found: ignore
+          retention-days: 7
