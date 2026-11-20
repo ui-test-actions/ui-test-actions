@@ -10,6 +10,7 @@ evidence="$PWD/real-app-evidence"
 case "$target" in
   linux)
     XDG_CONFIG_HOME="$app_dir/config" "$app_dir/squashfs-root/AppRun" "$evidence/document.txt" > "$evidence/app.log" 2>&1 &
+    printf '%s\n' "$!" > "$app_dir/launcher.pid"
     app_pid=$!
     sleep 1
     if ! kill -0 "$app_pid" 2>/dev/null; then

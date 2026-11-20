@@ -3,7 +3,8 @@ set -euo pipefail
 
 case "${1:?choose a target}" in
   linux)
-    pgrep -x NotepadNext >/dev/null
+    pid=$(<"$RUNNER_TEMP/ui-real-app/launcher.pid")
+    [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid"
     grep -Fq 'void MainWindow::activateEditor(ScintillaNext*)' real-app-evidence/app.log
     ;;
   windows)
