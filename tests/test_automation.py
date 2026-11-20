@@ -82,7 +82,7 @@ class AutomationTests(unittest.TestCase):
         return self.request("/v2/action", data)
 
     def test_unicode_replay_and_batch(self):
-        message = "مرحبا بالعالم، ١٢٣؟ mixed English 🙂\n第二行"
+        message = "مَرْحَبًا بالعالم، ١٢٣؟\u200f mixed English 👩🏽‍💻\n第二行"
         status, first = self.action("text.insert", {"text": message}, "same-id")
         self.assertEqual(status, 200)
         self.assertEqual(self.driver.text, message)
@@ -98,6 +98,30 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(result["completed"], 1)
         self.assertEqual(result["steps"][1]["error"]["code"], "assertion_failed")
         self.assertEqual(self.driver.text, message)
+
+    def test_invalid_batch_preflight_does_not_apply_valid_prefix(self):
+        status, result = self.request("/v2/batch", {"steps": [
+            {"command": "text.insert", "params": {"text": "must not execute"}},
+            {"command": "pointer.click", "params": {"x": -1, "y": 0}},
+        ]})
+        self.assertEqual((status, result["error"]["code"]), (400, "invalid_arguments"))
+        self.assertEqual(self.driver.calls, [])
+
+    def test_replay_cache_is_bounded_and_refreshes_an_observed_id(self):
+        old = {"text": "old"}
+        keep = {"text": "keep"}
+        self.action("text.insert", old, "old")
+        cached = self.action("text.insert", keep, "keep")
+        for index in range(62):
+            self.action("text.insert", {"text": str(index)}, f"filler-{index}")
+        self.assertEqual(self.action("text.insert", keep, "keep"), cached)
+        self.assertEqual(len(self.driver.calls), 64)
+        self.action("text.insert", {"text": "new"}, "new")
+        self.assertEqual(self.action("text.insert", keep, "keep"), cached)
+        self.action("text.insert", old, "old")
+        self.assertEqual(len(self.server.automation.replies), 64)
+        self.assertEqual(self.driver.calls[-1], ("text.insert", old))
+        self.assertEqual(len(self.driver.calls), 66)
 
     def test_invalid_requests_and_discovery(self):
         self.assertEqual(self.request("/v2/capabilities", authenticated=False)[0], 401)

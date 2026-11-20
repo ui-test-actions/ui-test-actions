@@ -11,7 +11,7 @@ from urllib.error import HTTPError
 
 from agent import Client, ClientError, NoRedirect
 from contract import CommandError, validate_operation
-from exchange import Exchange
+from exchange import Exchange, MAX_FILE, MAX_FILES
 from tunnel import Tunnel, take_named_configuration
 
 
@@ -42,6 +42,31 @@ class ExchangeTest(unittest.TestCase):
                 exchange.execute("files.read", {"name": "copy.txt"})
             with self.assertRaises(CommandError):
                 exchange.execute("files.read", {"name": "NUL.txt"})
+
+    def test_file_exchange_recovers_capacity_when_the_app_removes_a_file(self):
+        with tempfile.TemporaryDirectory() as temp:
+            exchange = Exchange(Path(temp, "files"))
+            for index in range(MAX_FILES):
+                exchange.execute("files.stage", {"name": f"test-{index}.txt", "base64": "dGVzdA=="})
+            with self.assertRaises(CommandError) as full:
+                exchange.execute("files.stage", {"name": "new.txt", "base64": ""})
+            self.assertEqual((full.exception.status, full.exception.code), (413, "exchange_full"))
+            (exchange.directory / "test-0.txt").unlink()
+            staged = exchange.execute("files.stage", {"name": "new.txt", "base64": ""})
+            self.assertEqual(staged["size"], 0)
+            self.assertEqual(len(exchange.execute("files.list", {})["entries"]), MAX_FILES)
+
+    def test_app_generated_files_cannot_exceed_the_download_limit(self):
+        with tempfile.TemporaryDirectory() as temp:
+            exchange = Exchange(Path(temp, "files"))
+            output = exchange.directory / "export.bin"
+            output.write_bytes(b"x" * (MAX_FILE + 1))
+            with self.assertRaises(CommandError) as too_large:
+                exchange.execute("files.read", {"name": output.name})
+            self.assertEqual((too_large.exception.status, too_large.exception.code), (413, "file_too_large"))
+            output.write_bytes(b"x" * MAX_FILE)
+            result = exchange.execute("files.read", {"name": output.name})
+            self.assertEqual(len(base64.b64decode(result["base64"])), MAX_FILE)
 
 
 class TransportTest(unittest.TestCase):
