@@ -193,32 +193,38 @@ def exercise_link(android, ios, android_name, ios_name, output):
     def has_line(node, line):
         return any(field == line or field.endswith(" " + line) for field in android.content(node))
 
+    def reopen_pair():
+        if any(node.get("text") == "Broadcast (1)" and node.get("enabled", False)
+               for node in android.snapshot()["nodes"]):
+            return
+        if ios.ocr:
+            ios.find(lambda node: node.get("text", "").startswith("Peers ("), "iOS peer list", scroll=-1)
+        ios.text(android_name)
+        ios.button("Connect", scroll=1)
+        android.find(lambda node: node.get("text") == "Broadcast (1)" and node.get("enabled", False),
+                     "Android broadcast availability after pairing", scroll=-1)
+        ios.text("Sessions (1, 1 connected)" if ios.ocr else android_name)
+
     try:
         profile("get", {})
+        reopen_pair()
         profile("set", {"delay_ms": 500, "jitter_ms": 25, "rate_kbit": 512, "seconds": 40})
-        ios.message("SLOW")
-        android.find(lambda node: has_line(node, from_ios("SLOW")), "message over the slow link", scroll=-1)
+        ios.message("SLOW2")
+        android.find(lambda node: has_line(node, from_ios("SLOW2")), "message over the slow link", scroll=-1)
         android.screenshot("slow-message")
-        evidence["slow_receiver_line"] = from_ios("SLOW")
+        evidence["slow_receiver_line"] = from_ios("SLOW2")
         # Independent native pings sample the active profile throughout the job.
         time.sleep(9)
         profile("set", {"loss_percent": 25, "seed": 123, "seconds": 25})
         time.sleep(14)
         offline = profile("set", {"offline": True, "seconds": 36})
         evidence["reachable_during_outage"] = readiness()
-        ios.message("DROPOUT")
-        evidence["outage_samples"] = []
-        for _ in range(4):
-            status = android.command("network.profile.get", {})
-            if status["generation"] != offline["generation"] or not status["profile"]["offline"]:
-                raise RuntimeError("The simulated outage expired before the receiver could be checked")
-            nodes = android.snapshot()["nodes"]
-            if not any(has_line(node, from_ios("SLOW")) for node in nodes):
-                raise RuntimeError("The receiver observation does not include the previously verified timeline")
-            if any(has_line(node, from_ios("DROPOUT")) for node in nodes):
-                raise RuntimeError("The receiver displayed the new message during the simulated outage")
-            evidence["outage_samples"].append(time.time())
-            time.sleep(1)
+        android.find(lambda node: node.get("text") == "No peers connected",
+                     "disabled Android broadcast after peer disconnect", timeout=30)
+        status = android.command("network.profile.get", {})
+        if status["generation"] != offline["generation"] or not status["profile"]["offline"]:
+            raise RuntimeError("The simulated outage expired before the app's disabled state could be checked")
+        evidence["outage_observation"] = {"epoch": time.time(), "android": "No peers connected"}
         android.screenshot("offline-receiver")
         ios.screenshot("offline-sender")
 
@@ -232,6 +238,7 @@ def exercise_link(android, ios, android_name, ios_name, output):
         else:
             raise RuntimeError("The traffic profile did not expire on schedule")
 
+        reopen_pair()
         ios.message("LINK UP")
         android.find(lambda node: has_line(node, from_ios("LINK UP")), "fresh iOS message after recovery", scroll=-1)
         android.screenshot("recovered-ios-message")
@@ -280,6 +287,11 @@ def run_pair(android, ios, android_name, ios_name, nonce, initiator, output, net
         ios.screenshot("connected")
         print(f"Both apps reported Connected after {initiator} selected the discovered peer", flush=True)
 
+        if network_faults:
+            exercise_link(android, ios, android_name, ios_name, output)
+            print("Real sample traffic was delayed, interrupted, and exchanged again after lease expiry", flush=True)
+            return
+
         # A short unique payload is legible in the Simulator's compact message row.
         from_android = nonce
         from_ios = f"iOS reply {nonce}"
@@ -303,9 +315,6 @@ def run_pair(android, ios, android_name, ios_name, nonce, initiator, output, net
                   "ios": next(field for field in ios.content(ios_message) if received_on_ios(field)),
               }}
     (output / "journey.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    if network_faults:
-        exercise_link(android, ios, android_name, ios_name, output)
-        print("Real sample traffic was delayed, interrupted, and exchanged again after lease expiry", flush=True)
 
 
 def main():

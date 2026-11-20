@@ -89,6 +89,29 @@ jobs:
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
           echo "PROOF_DEVICE=$simulator" >> "$GITHUB_ENV"
+      - name: Capture native Android permission diagnostics
+        if: inputs.scenario == 'environment' && inputs.target == 'android'
+        shell: bash
+        run: |
+          adb -s "$PROOF_DEVICE" install -r build/android/fixture.apk
+          mkdir -p "$RUNNER_TEMP/android-environment"
+          for phase in baseline granted denied; do
+            case "$phase" in
+              granted) adb -s "$PROOF_DEVICE" shell pm grant --user 0 dev.uitest.fixture android.permission.CAMERA ;;
+              denied) adb -s "$PROOF_DEVICE" shell pm revoke --user 0 dev.uitest.fixture android.permission.CAMERA ;;
+            esac
+            state="$RUNNER_TEMP/android-environment/$phase.txt"
+            adb -s "$PROOF_DEVICE" shell dumpsys package dev.uitest.fixture |
+              grep -E 'User 0:|permissions:|android\.permission\.CAMERA' > "$state"
+          done
+          adb -s "$PROOF_DEVICE" uninstall dev.uitest.fixture
+      - name: Retain scoped Android fixture diagnostics
+        if: inputs.scenario == 'environment' && inputs.target == 'android'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: android-environment-permissions
+          path: ${{ runner.temp }}/android-environment
+          retention-days: 7
       - uses: ui-test-actions/ui-test-actions@c788f818ee688f49385fb9885350158da8127d07
         with:
           target: ${{ inputs.target }}
