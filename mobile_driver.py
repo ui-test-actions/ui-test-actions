@@ -296,6 +296,8 @@ class MobileDriver:
             commands.extend(("clipboard.get", "clipboard.set"))
             if self.legacy is not None:
                 commands.append("text.insert")
+        if self.target == "ios" and self.legacy is not None:
+            commands.extend(("pointer.pinch", "device.rotate"))
         if self.app_ids:
             commands.extend(("app.launch", "app.close", "app.restart", "app.uninstall"))
             if self.target == "android" or self.install_paths:
@@ -347,6 +349,41 @@ class MobileDriver:
         if params.get("replace"):
             self.legacy.gui.hotkey("command", "a")
         self.legacy.gui.hotkey("command", "v")
+        return {}
+
+    def _ios_pinch(self, params):
+        self._require_simulator_focus()
+        q = self.legacy.quartz
+        start = (params["x"], params["y"])
+        end = (params["end_x"], params["end_y"])
+        if end == start:
+            raise ValueError("Provide distinct start and end positions.")
+        duration = max(0.1, params.get("duration_ms", 400) / 1000)
+        option = q.kCGEventFlagMaskAlternate
+
+        def mouse(event_type, point, flags=option):
+            event = q.CGEventCreateMouseEvent(None, event_type, point, q.kCGMouseButtonLeft)
+            q.CGEventSetFlags(event, flags)
+            q.CGEventPost(q.kCGHIDEventTap, event)
+
+        def modifier(down):
+            event = q.CGEventCreateKeyboardEvent(None, 58, down)
+            q.CGEventSetFlags(event, option if down else 0)
+            q.CGEventPost(q.kCGHIDEventTap, event)
+
+        mouse(q.kCGEventMouseMoved, start, 0)
+        modifier(True)
+        try:
+            mouse(q.kCGEventMouseMoved, start)
+            time.sleep(.12)
+            mouse(q.kCGEventLeftMouseDown, start)
+            try:
+                self.legacy.interpolate((start, end), duration,
+                                        lambda x, y: mouse(q.kCGEventLeftMouseDragged, (x, y)))
+            finally:
+                mouse(q.kCGEventLeftMouseUp, end)
+        finally:
+            modifier(False)
         return {}
 
     def _click(self, params):
@@ -512,6 +549,12 @@ class MobileDriver:
             raise NotImplementedError(f"{command} is unavailable on this mobile session")
         if command == "text.insert":
             return self._text(params)
+        if command == "pointer.pinch":
+            return self._ios_pinch(params)
+        if command == "device.rotate":
+            self._require_simulator_focus()
+            self.legacy.gui.hotkey("command", params["direction"])
+            return {"direction": params["direction"]}
         if command.startswith("clipboard."):
             return self._clipboard(command, params)
         if command == "app.deeplink":

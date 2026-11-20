@@ -51,6 +51,7 @@ TOUCH_POINT = obj(("x", "y", "duration_ms"), **XY, duration_ms=TIME)
 TRACK = {"type": "array", "minItems": 2, "maxItems": 12, "items": TOUCH_POINT}
 
 COMMANDS = {
+    "pointer.pinch": obj(("x", "y", "end_x", "end_y"), **XY, **END, duration_ms=TIME),
     "pointer.gesture": obj(("tracks",), tracks={"type": "array", "minItems": 1, "maxItems": 5, "items": TRACK}),
     "files.list": obj(),
     "files.stage": obj(("name", "base64"), name=FILE_NAME, base64=string(44000, 0)),
@@ -88,6 +89,7 @@ COMMANDS = {
     "app.uninstall": obj(("id",), id=APP_ID),
     "app.install": obj(("id",), id=APP_ID),
     "app.deeplink": obj(("url",), id=APP_ID, url=string(4096)),
+    "device.rotate": obj(("direction",), direction=choice("left", "right")),
     "device.orientation": obj(("orientation",), orientation=choice("portrait", "landscape", "reverse_portrait",
                                                                      "reverse_landscape", "auto")),
 }
