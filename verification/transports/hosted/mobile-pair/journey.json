@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-11-20T18:53:17.724475+00:00",
+  "application": "P2pKit Sample at fd3cd74fcc82d342ee6c5a305f7ed15b0b7ed19d",
+  "native_discovery": {
+    "android_observed": "iPhone",
+    "ios_observed": "Android-5728"
+  },
+  "connection_initiator": "ios",
+  "connected_on_both": true,
+  "observed_receiver_lines": {
+    "ios": "Android-5728 -> MAPLE",
+    "android": "18:53:19  iPhone → iOS reply MAPLE"
+  },
+  "agent_transport": {
+    "android": "cloudflare-quick",
+    "ios": "cloudflare-quick"
+  },
+  "journey_note": "After the scripted scroll passed the iOS Messages list, the external agent located the row with a shorter drag and completed the reply through the same live sessions."
+}

@@ -1,0 +1,20 @@
+{
+  "target": "ios",
+  "runner": "macos-26",
+  "before_pixel": [
+    25,
+    43,
+    66
+  ],
+  "after_ambiguous_batch_pixel": [
+    25,
+    43,
+    66
+  ],
+  "after_single_click_pixel": [
+    23,
+    99,
+    59
+  ],
+  "observation": "The client reported an unknown batch outcome. A live screenshot showed a focused empty field and the initial label. An explicit, separately identified tap applied one visible change."
+}

@@ -1,0 +1,6 @@
+{
+  "request_id": "ios-fixture-apply-only",
+  "command": "pointer.click",
+  "ok": true,
+  "result": {}
+}

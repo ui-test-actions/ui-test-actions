@@ -1,0 +1,13 @@
+{
+  "android": {
+    "peer_bearer_http": 401,
+    "transport": "cloudflare-quick",
+    "authenticated_target": "android"
+  },
+  "ios": {
+    "peer_bearer_http": 401,
+    "transport": "cloudflare-quick",
+    "authenticated_target": "ios"
+  },
+  "observed_at": "2026-11-20T18:49:46.431940+00:00"
+}
