@@ -16,6 +16,8 @@ The desktop, Android, and iOS consumer examples reference `803d83d50713f845db414
 
 The fixture proof is reproducible using [probe_fixture.py](../probe_fixture.py) on the external machine with Pillow. Supply the connection file, private token file, evidence directory, and the coordinates from the current screenshot. Use `--dismiss` only if a startup dialog is visible. The regular agent CLI has no Pillow dependency. [Fast compatibility tests at the candidate](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44688269102) · [45-test follow-up on Windows, macOS, and Linux](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44689292574)
 
+All five jobs reported normal closure. Each old URL returned HTTP 530 with its valid bearer, and the raw bearer was absent from its GitHub log and connection artifact. A distinct Windows job returned HTTP 401 for another live session's bearer and for a missing bearer, then stopped accepting its own bearer 8.43 seconds after cancellation was submitted. [Closure checks](candidate/closure.json) · [Cancellation trace](candidate/cancellation.json) · [GitHub cancellation run](https://github.com/ui-test-actions/ui-test-actions/actions/runs/44690408070)
+
 ## Real applications
 
 | Target | App | Checked outcome | GitHub run and evidence |
@@ -57,13 +59,13 @@ App screenshots may be cropped to the display or window containing the test. Con
 | Unicode clipboard, multiline persistence, mixed RTL and LTR content | Verified | Verified | Verified on GTK and Qt with different rendering | Verified | Verified |
 | General Arabic hardware-keyboard input, composition, and precise bidirectional caret control | Partial | Partial | Partial | Partial | Partial |
 | Click/tap, shortcuts, scrolling, dragging, and context actions | Partial across all gesture options | Partial across all gesture options | Partial across all gesture options | Partial with native single-touch and selected shortcuts | Partial with Simulator gestures and selected shortcuts |
-| Native semantics, unique element selection, and assertions | Verified on the tested Win32 app; other providers vary | Verified on the tested AppKit app; other providers vary | Verified on GTK; unavailable in the tested Qt build | Verified in Markor | Visual assertions on the default backend |
-| Multi-finger input | Unavailable | Unavailable | Unavailable | Verified with optional Appium UiAutomator2 | Verified for visible Simulator pinch; arbitrary touch tracks remain unverified |
-| Window list, focus, move/resize, and close | Partial coverage across operations | Verified list, focus, and resize; close partial | Verified list, focus, and resize; close partial | Unavailable as desktop window operations | Simulator host window only |
+| Native semantics, unique element selection, and assertions | Verified on the tested Win32 app. Other providers vary | Verified on the tested AppKit app. Other providers vary | Verified on GTK. Unavailable in the tested Qt build | Verified in Markor | Visual assertions on the default backend |
+| Multi-finger input | Unavailable | Unavailable | Unavailable | Verified with optional Appium UiAutomator2 | Verified for visible Simulator pinch. Arbitrary touch tracks remain unverified |
+| Window list, focus, move/resize, and close | Verified with the hosted detail window | Verified with the hosted detail window | Verified with the hosted detail window | Unavailable as desktop window operations | Simulator host window only |
 | Managed app lifecycle and restart | Verified owned process | Verified owned process | Verified owned process | Verified allowlisted package | Verified allowlisted simulator bundle |
 | Rotating display/device | Desktop resize only | Desktop resize only | Desktop resize and configurable virtual display | Verified portrait and landscape | Verified relative rotation |
-| Native file dialogs and file exchange | Verified desktop exchange; native UI coverage is partial | Verified desktop exchange and native dialog | Verified desktop exchange and native open dialog | Native app file and permission UI; generalized transfer unavailable | App-driven file UI only; generalized transfer unavailable |
-| GIF recording and visual comparison | Verified | Verified | Verified | Verified recording; partial visual cases | Verified recording; partial visual cases |
+| Native file dialogs and file exchange | Verified desktop exchange. Native UI coverage is partial | Verified desktop exchange and native dialog | Verified desktop exchange and native open dialog | Native app file and permission UI. Generalized transfer is unavailable | App-driven file UI. Generalized transfer is unavailable |
+| GIF recording and visual comparison | Verified | Verified | Verified | Verified recording. Partial visual cases | Verified recording. Partial visual cases |
 | Batch replay, fresh-client reconnect, anonymous rejection | Verified | Verified | Verified | Verified | Verified |
 
 Coverage includes Win32/Scintilla, AppKit/SwiftUI, GTK, Qt/Scintilla, AndroidX and WebView, and SwiftUI/UIKit. Electron, Flutter, Compose Multiplatform, Wayland, real mobile devices, locale-specific hardware keyboard layouts, browser DOM inspection, system notifications beyond the observed Android shade, and a full DPI or display compatibility matrix have no acceptance evidence here.

@@ -1,0 +1,34 @@
+{
+  "run": 44690408070,
+  "action_ref": "803d83d50713f845db414c30c7c826071ede907c",
+  "before_authenticated": 200,
+  "anonymous": 401,
+  "foreign_session_token": 401,
+  "cancel_requested_at": "2026-11-20T06:49:23+00:00",
+  "after": [
+    {
+      "elapsed_seconds": 0.57,
+      "status": 200
+    },
+    {
+      "elapsed_seconds": 2.14,
+      "status": 200
+    },
+    {
+      "elapsed_seconds": 3.69,
+      "status": 200
+    },
+    {
+      "elapsed_seconds": 5.25,
+      "status": 200
+    },
+    {
+      "elapsed_seconds": 6.9,
+      "status": 200
+    },
+    {
+      "elapsed_seconds": 8.43,
+      "status": 530
+    }
+  ]
+}

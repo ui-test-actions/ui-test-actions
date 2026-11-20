@@ -39,7 +39,9 @@ def run(client, evidence):
     def point(px, py):
         return {"x": x + px, "y": y + py}
 
-    client.command("pointer.move", point(244, 50) | {"duration_ms": 200})
+    client.command("pointer.click", point(322, 170))
+    client.command("pointer.move", point(155, 175) | {"duration_ms": 250})
+    client.command("pointer.move", point(244, 50) | {"duration_ms": 300})
     client.command("pointer.click", point(394, 51) | {"count": 2})
     client.command("pointer.click", point(84, 132) | {"hold_ms": 750})
     client.command("pointer.drag", point(86, 53) | {"end_x": x + 240, "end_y": y + 132, "duration_ms": 650})
