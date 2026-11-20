@@ -16,12 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - target: android
-            runner: ubuntu-24.04
-          - target: ios
-            runner: macos-26
-    runs-on: ${{ matrix.runner }}
+        target: ${{ fromJSON(inputs.target == 'both' && '["android","ios"]' || format('["{0}"]', inputs.target)) }}
+    runs-on: ${{ matrix.target == 'android' && 'ubuntu-24.04' || 'macos-26' }}
     timeout-minutes: 45
     defaults:
       run:
@@ -42,7 +38,7 @@ jobs:
             17
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6
       - name: Build Android sample APK
-        if: matrix.target == 'android' && inputs.target != 'ios'
+        if: matrix.target == 'android'
         run: |
           test "$(git rev-parse HEAD)" = "$P2PKIT_REF"
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'platforms;android-37.0' 'ndk;29.0.14206865'
@@ -50,11 +46,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/p2p-sample"
           cp "$(find samples/p2p-sample-android/build/outputs/apk/debug -name '*.apk' -print -quit)" "$RUNNER_TEMP/p2p-sample/sample.apk"
       - name: Build iOS Simulator sample
-        if: matrix.target == 'ios' && inputs.target != 'android'
+        if: matrix.target == 'ios'
         run: |
           test "$(uname -m)" = arm64
           test "$(git rev-parse HEAD)" = "$P2PKIT_REF"
           command -v xcodegen || brew install xcodegen
+          ./gradlew :p2p-transport-lan:verifyP2pKitSharedReleaseXCFrameworkProvenance --console=plain
           (cd samples/iosApp && xcodegen generate)
           xcodebuild -project samples/iosApp/p2pkit-sample.xcodeproj -scheme p2pkit-sample \
             -configuration Debug -destination 'generic/platform=iOS Simulator' ARCHS=arm64 \
@@ -62,13 +59,11 @@ jobs:
           mkdir -p "$RUNNER_TEMP/p2p-sample"
           ditto -c -k --keepParent "$RUNNER_TEMP/p2p-derived/Build/Products/Debug-iphonesimulator/p2pkit-sample.app" "$RUNNER_TEMP/p2p-sample/sample-app.zip"
       - name: Record source and hashes
-        if: inputs.target == 'both' || inputs.target == matrix.target
         run: |
           cd "$RUNNER_TEMP/p2p-sample"
           shasum -a 256 sample* > SHA256SUMS
           printf '%s\n' "$P2PKIT_REF" > SOURCE_COMMIT
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        if: inputs.target == 'both' || inputs.target == matrix.target
         with:
           name: p2pkit-sample-${{ matrix.target }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/p2p-sample
