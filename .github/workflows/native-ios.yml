@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   ios:
-    runs-on: macos-26
+    runs-on: macos-15
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -36,9 +36,10 @@ jobs:
           ')
           bash fixtures/ios/build.sh "$RUNNER_TEMP/LiveUIFixture.app"
           xcrun simctl bootstatus "$simulator" -b
+          xcrun simctl install "$simulator" "$RUNNER_TEMP/LiveUIFixture.app"
           echo "NATIVE_IOS_DEVICE=$simulator" >> "$GITHUB_ENV"
           curl --fail --silent --show-error --retry 5 --retry-connrefused http://127.0.0.1:4723/status
-      - uses: ui-test-actions/ui-test-actions@e5343edd0407bc32a3fe85767aa69838a1300639
+      - uses: ui-test-actions/ui-test-actions@8d73e35a4acc2574c019f38d1e8d9c75813a6c02
         with:
           target: ios
           token-sha256: ${{ inputs.token_sha256 }}
@@ -47,9 +48,6 @@ jobs:
           webdriver-url: http://127.0.0.1:4723
           webdriver-capabilities: >-
             {"platformName":"iOS","appium:automationName":"XCUITest","appium:bundleId":"dev.uitest.fixture","appium:waitForIdleTimeout":2}
-          launch: |
-            xcrun simctl install "$NATIVE_IOS_DEVICE" "$RUNNER_TEMP/LiveUIFixture.app"
-            xcrun simctl launch "$NATIVE_IOS_DEVICE" dev.uitest.fixture
       - name: Retain backend diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
