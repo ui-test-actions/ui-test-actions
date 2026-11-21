@@ -1,5 +1,6 @@
 """Verify whether credentialed requests reach a synthetic loopback origin."""
 
+from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
@@ -45,10 +46,12 @@ def main():
     token = os.environ.pop("UI_TEST_TUNNEL_TOKEN")
     identifier = os.environ.pop("UI_TEST_ACCESS_CLIENT_ID")
     secret = os.environ.pop("UI_TEST_ACCESS_CLIENT_SECRET")
+    expected_id = os.environ.pop('EXPECTED_ACCESS_ID_HASH', '')
     if not token or not all(re.fullmatch(r"[!-~]{1,4096}", value) for value in (identifier, secret)):
         raise RuntimeError("Missing or malformed credential material.")
     print(json.dumps({"standard_client_id_suffix": identifier.endswith(".access"),
-                      "credentials_have_distinct_values": identifier != secret}))
+                      "credentials_have_distinct_values": identifier != secret,
+                      "configured_client_id_matches_policy_token": (sha256(identifier.encode()).hexdigest() == expected_id) if expected_id else None}))
     with tempfile.TemporaryDirectory() as directory, HTTPServer(("127.0.0.1", 8787), Origin) as server:
         work = Path(directory)
         thread = threading.Thread(target=server.serve_forever, daemon=True)

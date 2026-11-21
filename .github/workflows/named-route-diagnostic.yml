@@ -20,5 +20,6 @@ jobs:
         env:
           UI_TEST_TUNNEL_TOKEN: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
           UI_TEST_ACCESS_CLIENT_ID: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}
+          EXPECTED_ACCESS_ID_HASH: ${{ secrets.NAMED_ACCEPTANCE_CLIENT_ID_HASH }}
           UI_TEST_ACCESS_CLIENT_SECRET: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
         run: python verification/named-route-diagnostic.py
