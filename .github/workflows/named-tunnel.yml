@@ -55,7 +55,7 @@ jobs:
             python3-tk fonts-noto-core xvfb xauth xdotool xclip openbox wmctrl \
             python3-pyatspi at-spi2-core dbus-x11
           mkdir -m 700 "$RUNNER_TEMP/named-transport-proof"
-      - uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
+      - uses: ui-test-actions/ui-test-actions@aa993a101396b7cfa1aab0891ad37a46a94153af
         with:
           target: linux
           token-sha256: ${{ inputs.token_sha256 }}
