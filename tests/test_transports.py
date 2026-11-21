@@ -54,8 +54,9 @@ class TransportTests(unittest.TestCase):
         probe = RouteProbe("/_ui_origin/random", "right-runner", {"CF-Access-Client-Secret": "example"})
         with patch.object(probe, "request", side_effect=[(403, b""), (200, b"right-runner")]) as request:
             self.assertTrue(probe(origin, 4))
-            self.assertNotIn("CF-Access-Client-Secret", request.call_args_list[0].args[2])
-            self.assertIn("CF-Access-Client-Secret", request.call_args_list[1].args[2])
+            anonymous, authenticated = (call.args[2] for call in request.call_args_list)
+            self.assertEqual(anonymous, {"Cache-Control": "no-store", "User-Agent": "ui-test-actions/2"})
+            self.assertEqual(authenticated, {**anonymous, "CF-Access-Client-Secret": "example"})
         for responses in ([(200, b"right-runner")], [(403, b""), (200, b"other-runner")]):
             with patch.object(probe, "request", side_effect=responses):
                 self.assertFalse(probe(origin, 4))
@@ -196,3 +197,16 @@ class ClientTests(unittest.TestCase):
             with self.assertRaises(ClientError):
                 client.fetch(path)
         client.opener.open.assert_not_called()
+
+    def test_named_client_identifies_itself_without_replacing_access_credentials(self):
+        access_file = self.work / "access.json"
+        access_file.write_text(json.dumps({"client_id": "test-id", "client_secret": "test-secret"}))
+        config = {"url": "https://ci.example.com", "transport": "cloudflare-named", "cloudflare_access": True}
+        client = Client(config, self.token_file, access_file)
+        with patch.object(client.opener, "open", return_value=io.BytesIO(b"{}")) as open_request:
+            client.fetch("/v1/session")
+        request = open_request.call_args.args[0]
+        self.assertEqual(request.get_header("User-agent"), "ui-test-actions/2")
+        self.assertEqual(request.get_header("Cf-access-client-id"), "test-id")
+        self.assertEqual(request.get_header("Cf-access-client-secret"), "test-secret")
+        self.assertEqual(request.get_header("Authorization"), f"Bearer {self.token}")

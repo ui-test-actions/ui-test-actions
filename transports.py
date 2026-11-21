@@ -14,7 +14,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import ProxyHandler, Request, build_opener
 
-from agent import NoRedirect
+from agent import HTTP_USER_AGENT, NoRedirect
 from tunnel import ConnectorCancelled, ConnectorUnavailable, HOSTNAME, QUICK_URL, Tunnel, download_tunnel
 
 
@@ -183,6 +183,8 @@ class RouteProbe:
 
     def __call__(self, origin, timeout):
         headers = {"Cache-Control": "no-store"}
+        if not QUICK_URL.fullmatch(origin):
+            headers["User-Agent"] = HTTP_USER_AGENT
         if self.access:
             timeout /= 2
             denied = self.request(origin, timeout, headers)[0]

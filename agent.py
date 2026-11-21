@@ -16,6 +16,9 @@ from urllib.request import HTTPRedirectHandler, HTTPSHandler, ProxyHandler, Requ
 import uuid
 
 
+HTTP_USER_AGENT = "ui-test-actions/2"
+
+
 class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, request, fp, code, message, headers, newurl):
         return None
@@ -36,6 +39,8 @@ class Client:
         if not re.fullmatch(r"[0-9a-f]{64}", token):
             raise ClientError("The private token file must contain one 64-digit hexadecimal token.")
         self.headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
+        if connection.get("transport") == "cloudflare-named" or access_file:
+            self.headers["User-Agent"] = HTTP_USER_AGENT
         if self.session_id:
             self.headers["X-UI-Session-ID"] = self.session_id
         if connection.get("cloudflare_access") and not access_file:
