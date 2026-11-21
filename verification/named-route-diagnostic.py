@@ -12,6 +12,8 @@ import sys
 import tempfile
 import threading
 import time
+from urllib.error import HTTPError
+from urllib.request import Request
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tunnel import Tunnel, download_tunnel
@@ -31,16 +33,30 @@ class Origin(BaseHTTPRequestHandler):
         pass
 
 
-def request(url, workspace, access):
+def markers(body):
+    indicators = ("access denied", "forbidden", "service token", "cloudflare access",
+                  "cloudflare tunnel", "1033", "1010", "1020", "self-hosted", "diagnostic-only",
+                  "security service", "browser integrity", "just a moment", "cloudflare ray id")
+    return [item for item in indicators if item.encode() in body.lower()]
+
+
+def request(url, workspace, access, *options):
     output = workspace / "response"
     config = "".join(f'header = {json.dumps(key + ": " + value)}\n' for key, value in access.items())
     status = subprocess.check_output(["curl", "--noproxy", "*", "--silent", "--max-time", "12",
-        "--config", "-", "--output", str(output), "--write-out", "%{http_code}", url],
+        "--config", "-", "--output", str(output), "--write-out", "%{http_code}", *options, url],
         input=config.encode(), stderr=subprocess.DEVNULL, timeout=15).decode()
-    body = output.read_bytes().lower()
-    indicators = ("access denied", "forbidden", "service token", "cloudflare access",
-                  "cloudflare tunnel", "1033", "self-hosted", "diagnostic-only")
-    return {"http": int(status), "markers": [item for item in indicators if item.encode() in body]}
+    return {"http": int(status), "markers": markers(output.read_bytes())}
+
+
+def python_request(probe, url, headers):
+    try:
+        with probe.opener.open(Request(url, headers=headers), timeout=10) as response:
+            return {"http": response.status, "markers": markers(response.read(32768))}
+    except HTTPError as error:
+        with error:
+            return {"http": error.code, "markers": markers(error.read(32768)),
+                    "edge_challenge": error.headers.get("cf-mitigated") == "challenge"}
 
 
 def main():
@@ -75,6 +91,16 @@ def main():
             probe = RouteProbe(server.probe_path, identity, valid)
             print(json.dumps({"python_action_route_probe": probe(origin, 10), "observation": probe.observation}),
                   flush=True)
+            url = origin + server.probe_path
+            config = {**valid, "Cache-Control": "no-store"}
+            default_agent = f"Python-urllib/{sys.version_info.major}.{sys.version_info.minor}"
+            options = {"curl_h2": (), "curl_h1": ("--http1.1",),
+                       "curl_python_agent": ("--http1.1", "--user-agent", default_agent)}
+            for label, option in options.items():
+                print(json.dumps({"comparison": label, **request(url, work, config, *option)}), flush=True)
+            for label, fields in (("urllib_no_cache", valid), ("urllib_default", config),
+                                  ("urllib_product_agent", {**config, "User-Agent": "ui-test-actions/2"})):
+                print(json.dumps({"comparison": label, **python_request(probe, url, fields)}), flush=True)
         finally:
             connector.close()
             server.shutdown()
