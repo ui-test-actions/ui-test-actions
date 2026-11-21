@@ -15,15 +15,17 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tunnel import Tunnel, download_tunnel
+from transports import RouteProbe
 
 
 class Origin(BaseHTTPRequestHandler):
     def do_GET(self):
+        body = self.server.probe_body if self.path == self.server.probe_path else b"diagnostic-only"
         self.send_response(200)
-        self.send_header("Content-Length", "15")
+        self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
-        self.wfile.write(b"diagnostic-only")
+        self.wfile.write(body)
 
     def log_message(self, *_args):
         pass
@@ -54,6 +56,9 @@ def main():
                       "configured_client_id_matches_policy_token": (sha256(identifier.encode()).hexdigest() == expected_id) if expected_id else None}))
     with tempfile.TemporaryDirectory() as directory, HTTPServer(("127.0.0.1", 8787), Origin) as server:
         work = Path(directory)
+        server.probe_path = "/_ui_origin/" + secrets.token_hex(16)
+        identity = secrets.token_hex(12)
+        server.probe_body = identity.encode("ascii")
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         connector = Tunnel(download_tunnel(work), 8787, work, hostname=host, token=token)
@@ -67,6 +72,9 @@ def main():
                     result = request(origin + path, work, headers)
                     print(json.dumps({"path": path.rsplit("/", 1)[0] + "/…" if path.startswith("/_ui_origin/") else path,
                                       "request": label, **result}), flush=True)
+            probe = RouteProbe(server.probe_path, identity, valid)
+            print(json.dumps({"python_action_route_probe": probe(origin, 10), "observation": probe.observation}),
+                  flush=True)
         finally:
             connector.close()
             server.shutdown()
