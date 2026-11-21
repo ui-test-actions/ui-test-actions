@@ -1,5 +1,5 @@
 import hashlib
-from http.client import HTTPConnection
+from http.client import HTTPConnection, HTTPResponse
 from contextlib import closing
 import io
 import json
@@ -182,13 +182,35 @@ class ClientTests(unittest.TestCase):
                 client.opener = Mock()
                 client.opener.open.side_effect = failure
                 with self.assertRaises(ClientError) as uncertain:
-                    client.command("mouse.click", {})
+                    client.command("pointer.click", {"x": 1, "y": 1}, "lost-mutation")
                 self.assertEqual(uncertain.exception.payload["error"]["code"], "action_outcome_unknown")
+                self.assertEqual(uncertain.exception.payload["request_id"], "lost-mutation")
                 client.opener.open.assert_called_once()
         for url in ("http://127.0.0.2:10", "http://localhost:10", "https://127.0.0.1:10",
                     "http://127.0.0.1:10@other.example.com"):
             with self.assertRaises(ClientError):
                 Client({"transport": "local", "url": url}, self.token_file)
+
+    def test_client_preserves_request_id_on_truncated_or_mismatched_success(self):
+        for payload, overstate in (
+            (b'{"ok":true,"request_id":"known"}', 1),
+            (b'{"ok":', 0),
+            (b'{"ok":true,"request_id":"another"}', 0),
+        ):
+            with self.subTest(overstate=overstate, payload=payload):
+                client = Client({"url": "https://ci.example.com"}, self.token_file)
+                wire = (f"HTTP/1.1 200 OK\r\nContent-Length: {len(payload) + overstate}\r\n\r\n".encode()
+                        + payload)
+                peer = Mock()
+                peer.makefile.return_value = io.BytesIO(wire)
+                response = HTTPResponse(peer)
+                response.begin()
+                with patch.object(client.opener, "open", return_value=response) as opener:
+                    with self.assertRaises(ClientError) as uncertain:
+                        client.command("pointer.click", {"x": 1, "y": 1}, "known")
+                    opener.assert_called_once()
+                self.assertEqual(uncertain.exception.payload["error"]["code"], "action_outcome_unknown")
+                self.assertEqual(uncertain.exception.payload["request_id"], "known")
 
     def test_client_never_attaches_credentials_to_another_origin(self):
         client = Client({"url": "https://ci.example.com"}, self.token_file)

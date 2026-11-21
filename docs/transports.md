@@ -11,14 +11,14 @@ Use the same [UI API](automation.md) and client with every transport. The action
 
 The transport carries screenshots and control requests. The Android/iOS app LAN has its own interfaces, routes, discovery traffic, and credentials. Selecting a transport does not reconfigure those networks. The [mobile LAN workflow](mobile-lan.md) keeps its own relay and interface lifecycle.
 
-The same release supports all four transports. Use `v3.0.0` or its full Action commit from the [release page](https://github.com/ui-test-actions/ui-test-actions/releases/tag/v3.0.0). In the snippets below, declare `token_sha256` as a required string dispatch input, set up Python 3.12 earlier in the job, and use your app's existing Bash launch and readiness commands.
+The same release supports all four transports. Use `v3.0.1` or its full Action commit from the [release page](https://github.com/ui-test-actions/ui-test-actions/releases/tag/v3.0.1). In the snippets below, declare `token_sha256` as a required string dispatch input, set up Python 3.12 earlier in the job, and use your app's existing Bash launch and readiness commands.
 
 ## Quick Tunnel
 
 This is the default. No Cloudflare account, custom domain, client installation or GitHub network secret is required. Download the live artifact and follow the [agent connection guide](../README.md#connect-and-hand-the-session-to-an-agent).
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@v3.0.0
+- uses: ui-test-actions/ui-test-actions@v3.0.1
   with:
     target: linux
     token-sha256: ${{ inputs.token_sha256 }}
@@ -44,7 +44,7 @@ concurrency:
 ```
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@v3.0.0
+- uses: ui-test-actions/ui-test-actions@v3.0.1
   with:
     target: linux
     transport: cloudflare-named
@@ -88,7 +88,7 @@ The example uses the official Tailscale Action with a federated identity and an 
 - id: overlay
   shell: bash
   run: printf 'ip=%s\n' "$(tailscale ip -4)" >> "$GITHUB_OUTPUT"
-- uses: ui-test-actions/ui-test-actions@v3.0.0
+- uses: ui-test-actions/ui-test-actions@v3.0.1
   with:
     transport: private
     private-address: ${{ steps.overlay.outputs.ip }}
@@ -106,7 +106,7 @@ The official Tailscale Action currently installs on hosted Linux. If you already
 When only a process on the runner needs UI access, use `local`. A process elsewhere cannot reach a GitHub runner using its advertised loopback URL. Start the observer before the action because the action holds its caller's step open. The [hosted transport workflow](../.github/workflows/transports.yml) includes a working Bash example with a background observer and a private bearer generated in that job.
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@v3.0.0
+- uses: ui-test-actions/ui-test-actions@v3.0.1
   with:
     transport: local
     target: linux
@@ -119,7 +119,7 @@ When only a process on the runner needs UI access, use `local`. A process elsewh
 
 Use the same trusted artifact and private token file to reconnect. Each official client request includes the session ID when the artifact carries it. The runner rejects a request addressed to a different session even if its bearer is accepted. Parallel jobs need different tokens. The action stops the API listener at expiry or cancellation and tracks the GitHub hold step with a watchdog. Use the live `seconds_remaining` countdown for timing-sensitive work. The artifact's `expires_unix` is a wall-clock estimate from the runner.
 
-The Python client retries transient failures on reads and retries a command when the runner explicitly reports `session_busy` before dispatch. If a mutation loses its response, it returns `action_outcome_unknown`. Inspect the live result before retrying. If you resend with the same request ID, the runner can return its cached response within the session's 64-response replay window. Creating a new session does not replay commands. The browser controller uses the same bearer and refuses redirects on API requests.
+The Python client retries transient failures on reads and retries a command when the runner explicitly reports `session_busy` before dispatch. If a mutation loses its response, it returns `action_outcome_unknown` with the original request ID when available. Inspect the live result before retrying. In the same session, a resend with the same ID and arguments returns the cached response or `replay_unavailable` without repeating the mutation. The legacy input endpoint has no replay IDs. The browser controller uses the same bearer and refuses redirects on API requests.
 
 [Hosted results and provider-specific limits](../verification/transports/README.md)
 

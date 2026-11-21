@@ -2,7 +2,7 @@
 """Small standard-library client for an existing agent's host."""
 
 import argparse
-from http.client import HTTPException
+from http.client import HTTPException, HTTPResponse, IncompleteRead
 from ipaddress import IPv4Address
 import json
 from pathlib import Path
@@ -17,6 +17,7 @@ import uuid
 
 
 HTTP_USER_AGENT = "ui-test-actions/2"
+MAX_DOWNLOAD = 24 * 1024 * 1024
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -66,8 +67,10 @@ class Client:
             try:
                 request = Request(self.origin + path, data=payload, headers=self.headers)
                 with self.opener.open(request, timeout=38) as response:
-                    data = response.read(24 * 1024 * 1024 + 1)
-                if len(data) > 24 * 1024 * 1024:
+                    data = response.read(MAX_DOWNLOAD + 1)
+                    if len(data) <= MAX_DOWNLOAD and isinstance(response, HTTPResponse) and response.length:
+                        raise IncompleteRead(b"", response.length)
+                if len(data) > MAX_DOWNLOAD:
                     raise ClientError("The response exceeds the client download limit.")
                 return data
             except HTTPError as error:
@@ -98,11 +101,11 @@ class Client:
                 else:
                     status = "http_error"
                 if body is not None and upstream_unavailable:
-                    raise uncertain_action(error.code) from None
+                    raise uncertain_action(error.code, body) from None
                 raise ClientError(f"HTTP {error.code} ({status})", error.code, error_payload) from None
             except (URLError, TimeoutError, HTTPException, ConnectionError):
                 if body is not None:
-                    raise uncertain_action() from None
+                    raise uncertain_action(body=body) from None
                 if attempt >= retries:
                     raise ClientError("The session could not be reached. Confirm the job is still running.") from None
                 time.sleep(0.5 * (attempt + 1))
@@ -114,14 +117,25 @@ class Client:
         return data
 
     def command(self, name, params, request_id=None):
-        return json.loads(self.fetch("/v2/action", {
+        return self.action_result("/v2/action", {
             "request_id": request_id or uuid.uuid4().hex, "command": name, "params": params,
-        }))
+        })
 
     def batch(self, steps, request_id=None):
-        return json.loads(self.fetch("/v2/batch", {
+        return self.action_result("/v2/batch", {
             "request_id": request_id or uuid.uuid4().hex, "steps": steps,
-        }))
+        })
+
+    def action_result(self, path, body):
+        data = self.fetch(path, body)
+        try:
+            result = json.loads(data)
+        except (ValueError, RecursionError):
+            raise uncertain_action(body=body) from None
+        if (not isinstance(result, dict) or type(result.get("ok")) is not bool
+                or result.get("request_id") != body["request_id"]):
+            raise uncertain_action(body=body)
+        return result
 
 
 def open_origin(connection):
@@ -152,9 +166,12 @@ def open_origin(connection):
     raise ClientError("Invalid transport or origin. Use the connection artifact from your trusted run.")
 
 
-def uncertain_action(status=None):
+def uncertain_action(status=None, body=None):
     message = "The action response was lost. Inspect the live UI before deciding whether to retry."
-    return ClientError(message, status, {"ok": False, "error": {"code": "action_outcome_unknown", "message": message}})
+    payload = {"ok": False, "error": {"code": "action_outcome_unknown", "message": message}}
+    if isinstance(body, dict) and isinstance(body.get("request_id"), str):
+        payload["request_id"] = body["request_id"]
+    return ClientError(message, status, payload)
 
 
 def main():

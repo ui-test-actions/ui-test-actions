@@ -6,6 +6,7 @@ import socket
 import threading
 import time
 import unittest
+from unittest.mock import patch
 
 from session import Session
 
@@ -151,7 +152,7 @@ class AutomationTests(unittest.TestCase):
     def test_replay_cache_is_bounded_and_refreshes_an_observed_id(self):
         old = {"text": "old"}
         keep = {"text": "keep"}
-        self.action("text.insert", old, "old")
+        self.assertEqual(self.action("text.insert", old, "old")[0], 200)
         cached = self.action("text.insert", keep, "keep")
         for index in range(62):
             self.action("text.insert", {"text": str(index)}, f"filler-{index}")
@@ -159,10 +160,37 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(len(self.driver.calls), 64)
         self.action("text.insert", {"text": "new"}, "new")
         self.assertEqual(self.action("text.insert", keep, "keep"), cached)
-        self.action("text.insert", old, "old")
+        status, unavailable = self.action("text.insert", old, "old")
+        self.assertEqual((status, unavailable["error"]["code"]), (409, "replay_unavailable"))
+        status, conflict = self.action("text.insert", keep, "old")
+        self.assertEqual((status, conflict["error"]["code"]), (409, "request_conflict"))
         self.assertEqual(len(self.server.automation.replies), 64)
-        self.assertEqual(self.driver.calls[-1], ("text.insert", old))
-        self.assertEqual(len(self.driver.calls), 66)
+        self.assertEqual(self.driver.calls[-1], ("text.insert", {"text": "new"}))
+        self.assertEqual(len(self.driver.calls), 65)
+
+    def test_request_budget_preserves_cached_results_and_does_not_dispatch(self):
+        with patch("automation.REQUEST_ID_LIMIT", 1):
+            self.assertEqual(self.action("not-a-command", {}, "first")[0], 404)
+            first = self.action("text.insert", {"text": "one"}, "first")
+            status, excess = self.action("text.insert", {"text": "two"}, "second")
+            self.assertEqual((status, excess["error"]["code"]), (503, "request_id_limit"))
+            self.assertEqual(self.action("text.insert", {"text": "one"}, "first"), first)
+        self.assertEqual(self.driver.calls, [("text.insert", {"text": "one"})])
+
+    def test_driver_failure_before_response_cannot_repeat_side_effect(self):
+        service = self.server.automation
+        request = {"command": "text.insert", "params": {"text": "already applied"}, "request_id": "uncertain"}
+
+        def apply_then_fail(name, params):
+            self.driver.execute(name, params)
+            raise TypeError("Unexpected driver exception")
+
+        with patch.object(service, "dispatch", side_effect=apply_then_fail):
+            with self.assertRaises(TypeError):
+                service.execute(request)
+        status, reply = self.request("/v2/action", request)
+        self.assertEqual((status, reply["error"]["code"]), (409, "replay_unavailable"))
+        self.assertEqual(len(self.driver.calls), 1)
 
     def test_invalid_requests_and_discovery(self):
         self.assertEqual(self.request("/v2/capabilities", authenticated=False)[0], 401)
@@ -191,12 +219,29 @@ class AutomationTests(unittest.TestCase):
         self.server.deadline = time.monotonic() - 1
         self.assertEqual(self.action("tree.snapshot", {})[0], 410)
 
+    def test_expiry_during_element_refresh_prevents_click(self):
+        _, result = self.action("tree.snapshot", {})
+        snapshot = result["result"]["snapshot_id"]
+        execute = self.driver.execute
+
+        def observe(command, params):
+            observed = execute(command, params)
+            self.server.deadline = 0
+            return observed
+
+        with patch.object(self.driver, "execute", side_effect=observe):
+            status, result = self.action("element.click", {"id": "edit", "snapshot_id": snapshot})
+        self.assertEqual((status, result["error"]["code"]), (410, "session_ended"))
+        self.assertEqual(self.driver.calls, [])
+
     def test_concurrent_duplicate_is_retryable(self):
         results = []
         self.driver.release.clear()
         client = threading.Thread(target=lambda: results.append(self.action("text.insert", {"text": "A"}, "busy")))
         client.start()
         self.assertTrue(self.driver.started.wait(2))
+        self.assertEqual(self.request("/v1/input", {"action": "click", "x": 1, "y": 1})[0], 429)
+        self.assertEqual(self.request("/v1/session")[0], 200)
         status, result = self.action("text.insert", {"text": "A"}, "busy")
         self.assertEqual((status, result["error"]["code"]), (429, "session_busy"))
         self.driver.release.set()
@@ -224,6 +269,25 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertTrue(reply["ok"])
         self.assertEqual(self.driver.calls, [("text.insert", {"text": "انقطع الاتصال"})])
+
+    def test_truncated_json_with_a_complete_prefix_cannot_dispatch(self):
+        for path, body in (
+            ("/v1/input", {"action": "click", "x": 1, "y": 1}),
+            ("/v2/action", {"command": "text.insert", "params": {"text": "must not run"}}),
+        ):
+            with self.subTest(path=path):
+                payload = json.dumps(body).encode()
+                with socket.create_connection(("127.0.0.1", self.server.server_port), timeout=3) as connection:
+                    connection.sendall(
+                        f"POST {path} HTTP/1.1\r\nHost: localhost\r\nAuthorization: Bearer {self.token}\r\n"
+                        f"Content-Type: application/json\r\nContent-Length: {len(payload) + 1}\r\n\r\n".encode()
+                        + payload
+                    )
+                    connection.shutdown(socket.SHUT_WR)
+                    with connection.makefile("rb") as response:
+                        self.assertIn(b" 400 ", response.readline())
+                        self.assertIn(b"invalid_json", response.read())
+        self.assertEqual(self.driver.calls, [])
 
     def test_visual_recording_contains_observed_frames(self):
         try:

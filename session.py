@@ -17,7 +17,7 @@ import tempfile
 import threading
 import time
 
-from automation import Automation, error_result
+from automation import Automation, CACHE_SIZE, REQUEST_ID_LIMIT, error_result
 from contract import CommandError
 from exchange import Exchange
 from lease import HoldLease
@@ -282,6 +282,21 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(421, {"error": "Incorrect origin"})
         return False
 
+    def body_size(self):
+        lengths = self.headers.get_all("Content-Length", [])
+        if self.headers.get_all("Transfer-Encoding") or len(lengths) != 1 or not re.fullmatch(r"[0-9]{1,20}", lengths[0]):
+            raise CommandError("invalid_request", "Provide a single valid Content-Length header.")
+        return int(lengths[0])
+
+    def read_json(self, size):
+        data = self.rfile.read(size)
+        if len(data) != size:
+            raise CommandError("invalid_json", "The JSON request body was incomplete.")
+        try:
+            return json.loads(data.decode("utf-8"))
+        except (ValueError, RecursionError):
+            raise CommandError("invalid_json", "Provide well-formed UTF-8 JSON.") from None
+
     def authorized(self):
         header = self.headers.get("Authorization", "")
         scheme, _, token = header.partition(" ")
@@ -313,7 +328,8 @@ class Handler(BaseHTTPRequestHandler):
                     "api_version": 2, "id": self.server.id, "target": self.server.target,
                     "screen": {"width": self.server.size[0], "height": self.server.size[1]},
                     "commands": self.server.automation.capabilities(),
-                    "limits": {"max_batch_steps": 12, "replay_window": 64, "max_request_bytes": 65536},
+                    "limits": {"max_batch_steps": 12, "replay_window": CACHE_SIZE, "max_request_bytes": 65536,
+                               "max_request_ids": REQUEST_ID_LIMIT},
                 })
             elif self.path == "/v2/recording":
                 data = self.server.automation.recording.latest
@@ -359,18 +375,25 @@ class Handler(BaseHTTPRequestHandler):
             self.reply(404, {"error": "Unknown endpoint"})
             return
         try:
-            size = int(self.headers.get("Content-Length", "0"))
+            size = self.body_size()
             if not 1 <= size <= 4096:
                 raise ValueError("Expected a JSON request of 1–4096 bytes")
-            data = json.loads(self.rfile.read(size))
+            data = self.read_json(size)
             if not isinstance(data, dict):
                 raise ValueError("Expected a JSON object")
-            with self.server.lock:
+            if not self.server.lock.acquire(blocking=False):
+                raise CommandError("session_busy", "Another command is running.", 429)
+            try:
                 if time.monotonic() >= self.server.deadline:
                     self.reply(410, {"error": "Session ended"})
                     return
                 self.server.automation.snapshot = None
                 self.server.automation.trace.legacy(self.apply_input(data))
+            finally:
+                self.server.lock.release()
+        except CommandError as error:
+            self.reply(error.status, {"error": error_result(error)})
+            return
         except (ValueError, KeyError, TypeError) as error:
             message = str(error) if type(error) is ValueError else "Malformed input"
             self.reply(400, {"error": message})
@@ -383,20 +406,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def execute_v2(self):
         try:
-            if self.headers.get("Transfer-Encoding") or len(self.headers.get_all("Content-Length", [])) != 1:
-                raise CommandError("invalid_request", "Provide a single Content-Length header.")
+            size = self.body_size()
             if self.headers.get_content_type() != "application/json":
                 raise CommandError("invalid_media_type", "Expected application/json.", 415)
-            try:
-                size = int(self.headers["Content-Length"])
-            except ValueError:
-                raise CommandError("invalid_request", "Invalid Content-Length.") from None
             if not 1 <= size <= 65536:
                 raise CommandError("request_too_large", "The request must contain 1–65536 bytes.", 413)
-            try:
-                request = json.loads(self.rfile.read(size).decode("utf-8"))
-            except (ValueError, RecursionError):
-                raise CommandError("invalid_json", "Provide well-formed UTF-8 JSON.") from None
+            request = self.read_json(size)
             if not self.server.lock.acquire(blocking=False):
                 raise CommandError("session_busy", "Another command is running. Retry the same request ID.", 429)
             try:

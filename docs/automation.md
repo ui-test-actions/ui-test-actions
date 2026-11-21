@@ -107,7 +107,7 @@ On desktops, enable `file-exchange: '1'` to stage base64 test files in a private
 
 ### Recovery and concurrency
 
-One driver operation controls a given runner at a time. Retry temporary `429 session_busy` responses with the same request ID, or wait for the active action to finish. Independent runner jobs have separate sessions and credentials. The latest 64 identified responses can be replayed within the same session. Reusing an ID with changed arguments returns `409 request_conflict`. When the replay window has passed, inspect the UI before retrying a mutation.
+One driver operation controls a given runner at a time. Retry temporary `429 session_busy` responses with the same request ID, or wait for the active action to finish. Independent runner jobs have separate sessions and credentials. The latest 64 identified responses can be replayed in the same session. Reusing an ID with changed arguments returns `409 request_conflict`. When the original response is unavailable, the runner returns `409 replay_unavailable` without applying the action again. The runner retains up to 65,536 accepted request IDs in a session. If that budget is exhausted, new IDs receive `503 request_id_limit`. Start a fresh session to renew the budget. Use an ID with every mutation that may need to be retried.
 
 Operation failures include `unsupported_command`, `invalid_arguments`, `stale_snapshot`, `target_not_found`, `driver_timeout`, `condition_timeout`, and `assertion_failed`. A job expiry invalidates the credential and terminates the connector. Start a new job and get a fresh connection artifact when the session ends. The client cannot carry state or replay IDs between runners.
 

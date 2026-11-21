@@ -18,6 +18,7 @@ from contract import BATCH_REQUEST, COMMANDS, OPERATION_REQUEST, CommandError, v
 LOG = logging.getLogger(__name__)
 RESPONSE_LIMIT = 512 * 1024
 CACHE_SIZE = 64
+REQUEST_ID_LIMIT = 65536
 TREE_LIMIT = 2500
 
 
@@ -36,6 +37,7 @@ class Automation:
         self.trace = InteractionTrace(session)
         self.timings = deque(maxlen=256)
         self.replies = OrderedDict()
+        self.request_hashes = {}
         self.baselines = OrderedDict()
         self.snapshot = None
 
@@ -62,19 +64,27 @@ class Automation:
     def execute(self, request, batch=False):
         validate(request, BATCH_REQUEST if batch else OPERATION_REQUEST, "request")
         request_id = request.get("request_id")
-        fingerprint = hashlib.sha256(json.dumps(
-            [batch, request], sort_keys=True, separators=(",", ":"), ensure_ascii=True,
-        ).encode()).digest()
-        if request_id in self.replies:
-            saved_hash, status, reply = self.replies[request_id]
-            if fingerprint != saved_hash:
-                raise CommandError("request_conflict", "This request ID was already used for different input.", 409)
-            self.replies.move_to_end(request_id)
-            return status, reply
+        if request_id is not None:
+            fingerprint = hashlib.sha256(json.dumps(
+                [batch, request], sort_keys=True, separators=(",", ":"), ensure_ascii=True,
+            ).encode()).digest()
+            if request_id in self.request_hashes:
+                if fingerprint != self.request_hashes[request_id]:
+                    raise CommandError("request_conflict", "This request ID was already used for different input.", 409)
+                if request_id not in self.replies:
+                    raise CommandError("replay_unavailable",
+                                       "The original response is unavailable. Inspect the live UI.", 409)
+                self.replies.move_to_end(request_id)
+                return self.replies[request_id]
+            if len(self.request_hashes) >= REQUEST_ID_LIMIT:
+                raise CommandError("request_id_limit", "The session's request ID budget is exhausted.", 503)
 
         capabilities = self.capabilities()
         operations = request["steps"] if batch else [request]
         commands = [validate_operation(item, capabilities) for item in operations]
+        if request_id is not None:
+            # Reserve before dispatch. A driver can change the UI before raising an unexpected error.
+            self.request_hashes[request_id] = fingerprint
         output = []
         batch_deadline = time.monotonic() + 30
         for name, params in commands:
@@ -126,7 +136,7 @@ class Automation:
                 "code": "result_too_large", "message": "The driver returned more observation data than the session allows.",
             }}
         if request_id is not None:
-            self.replies[request_id] = (fingerprint, status, reply)
+            self.replies[request_id] = (status, reply)
             if len(self.replies) > CACHE_SIZE:
                 self.replies.popitem(last=False)
         return status, reply
@@ -233,6 +243,7 @@ class Automation:
         if left >= right or top >= bottom:
             raise CommandError("element_not_actionable", "The element is outside the visible screen.", 422)
         x, y = (left + right) // 2, (top + bottom) // 2
+        self.check_live()
         result = self.dispatch("pointer.click", {"x": x, "y": y})
         self.trace.click(node, current["nodes"], x, y)
         return result
@@ -242,6 +253,7 @@ class Automation:
         while True:
             self.check_live()
             observation = observe()
+            self.check_live()
             if observation["satisfied"]:
                 return observation
             remaining = deadline - time.monotonic()

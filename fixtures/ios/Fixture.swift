@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case "verify": fixture.showDeepLink()
         case "environment": fixture.showEnvironment()
         case "request-photos": fixture.requestPhotos()
+        case "fail-crash":
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                fatalError("Controlled UI fixture crash")
+            }
         default: return false
         }
         return true

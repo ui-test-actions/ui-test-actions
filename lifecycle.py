@@ -19,6 +19,7 @@ def show_log(directory):
 
 
 def start():
+    signal.signal(signal.SIGTERM, interrupt)
     work = Path(tempfile.mkdtemp(prefix="ui-session-", dir=os.environ["RUNNER_TEMP"]))
     if os.name == "nt":
         options = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}

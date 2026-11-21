@@ -13,6 +13,7 @@ class Recording:
         self.session = session
         self.frames = []
         self.latest = b""
+        self.result = None
         self.stop = threading.Event()
         self.thread = None
         self.failed = False
@@ -22,6 +23,7 @@ class Recording:
             raise CommandError("recording_active", "A recording is already running.", 409)
         self.frames.clear()
         self.latest = b""
+        self.result = None
         self.failed = False
         self.stop.clear()
         deadline = min(time.monotonic() + duration, self.session.deadline)
@@ -51,13 +53,15 @@ class Recording:
         if self.thread is None:
             raise CommandError("recording_missing", "Start a recording first.", 404)
         self.stop.set()
-        if self.latest:
-            return {"frames": len(self.frames), "bytes": len(self.latest), "download": "/v2/recording"}
+        if self.result is not None:
+            return self.result
         if not self.frames:
             raise CommandError("recording_empty", "No frames were captured. Start a new recording.", 422)
         first, *frames = self.frames
         output = io.BytesIO()
         first.save(output, format="GIF", save_all=True, append_images=frames, duration=500, loop=0, optimize=False)
         self.latest = output.getvalue()
-        return {"frames": len(self.frames), "bytes": len(self.latest),
-                "partial": self.failed, "download": "/v2/recording"}
+        self.result = {"frames": len(self.frames), "bytes": len(self.latest),
+                       "partial": self.failed, "download": "/v2/recording"}
+        self.frames.clear()
+        return self.result
