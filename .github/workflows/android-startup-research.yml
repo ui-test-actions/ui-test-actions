@@ -1,0 +1,44 @@
+name: Android startup diagnostics research
+on:
+  push:
+    branches: [research/android-startup-diagnostics-20261121]
+permissions:
+  contents: read
+jobs:
+  diagnostics:
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [34, 36]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Boot emulator and classify independent fixture exits
+        env:
+          API: ${{ matrix.api }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/proof"
+          sudo chmod a+rw /dev/kvm
+          tools="$ANDROID_HOME/cmdline-tools/latest/bin"
+          image="system-images;android-${API};google_apis;x86_64"
+          "$tools/sdkmanager" --install emulator "$image" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018'
+          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.2.12479018"
+          "$tools/avdmanager" create avd --force --name startup-fixture --package "$image" <<< no
+          "$ANDROID_HOME/emulator/emulator" -avd startup-fixture -port 5554 -no-window -no-audio \
+            -no-snapshot -no-boot-anim -gpu swiftshader_indirect > "$RUNNER_TEMP/proof/emulator.log" 2>&1 &
+          emulator_pid=$!
+          trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
+          timeout 360 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do kill -0 "$1" || exit 1; sleep 2; done' bash "$emulator_pid"
+          adb -s emulator-5554 shell wm dismiss-keyguard
+          bash fixtures/android-startup/run-fixture.sh emulator-5554 "$RUNNER_TEMP/proof"
+      - name: Retain fixture diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: android-startup-api-${{ matrix.api }}
+          path: ${{ runner.temp }}/proof
+          retention-days: 7
