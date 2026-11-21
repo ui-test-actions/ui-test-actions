@@ -1,0 +1,12 @@
+{
+  "android": {
+    "transport": "cloudflare-quick",
+    "other_bearer_http": 401,
+    "remaining": 638
+  },
+  "ios": {
+    "transport": "cloudflare-quick",
+    "other_bearer_http": 401,
+    "remaining": 837
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "linux": {
+    "reconnect_same_identity": true,
+    "other_bearer_http": 401,
+    "no_bearer_http": 401,
+    "other_session_id_http": 409
+  },
+  "windows": {
+    "reconnect_same_identity": true,
+    "other_bearer_http": 401,
+    "no_bearer_http": 401,
+    "other_session_id_http": 409
+  },
+  "macos": {
+    "reconnect_same_identity": true,
+    "other_bearer_http": 401,
+    "no_bearer_http": 401,
+    "other_session_id_http": 409
+  }
+}

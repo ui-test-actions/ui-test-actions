@@ -97,7 +97,7 @@ The portable regressions cover structured invalid input, replay conflicts and ev
 
 | Item | Required external input |
 | --- | --- |
-| Hosted Cloudflare Named Tunnel | A dedicated Cloudflare-routed hostname with the service mapped to `http://127.0.0.1:8787` and the matching remotely managed tunnel connector token stored as the repository Actions secret `CLOUDFLARE_TUNNEL_TOKEN`. The verification repository has no configured Cloudflare hostname or connector secret. Local tests cover credential handling and retry. |
+| Hosted Cloudflare Named Tunnel | The baseline had local coverage for credential handling and retry. A later Action pin verified a live protected tunnel on hosted Linux. [Follow-up Named Tunnel evidence](../consumer-acceptance/#cloudflare-named-tunnel) |
 | Cloudflare Access on that hostname | An Access application and service-auth policy for the hostname plus a valid Access service token ID and secret through a private credential file. |
 | Physical Arabic keyboard acceptance | An interactive physical test device or workstation with an Arabic-layout hardware keyboard and the ability to observe composition, bidirectional selection, and caret movement in its apps. Hosted Unicode entry, clipboard, and saving were checked separately. |
 | Other iOS Appium image and runtime combinations | The exact target runner image, Xcode and simulator runtime, and a compatible WebDriverAgent build that can start a loopback Appium session there. For the older hosted setup the observed blocker was the `POST /session` timeout. The pinned prebuilt setup above is verified. |

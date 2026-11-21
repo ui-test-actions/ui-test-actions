@@ -1,6 +1,6 @@
 # Investigate a failed UI test
 
-Capture evidence while the authenticated runner session is still live. Give the workflow client a new private output directory.
+Capture evidence while the authenticated runner session is still live. Give the workflow client a new private output directory. Install `Pillow==12.2.0` in the client environment before running a journey with pixel assertions.
 
 ```bash
 python3 workflow.py run journey.yaml connection.json --token-file "$TOKEN_FILE" \

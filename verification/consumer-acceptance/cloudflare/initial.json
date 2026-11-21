@@ -1,0 +1,13 @@
+{
+  "protected_host_run": 44842056936,
+  "connector_registrations": 3,
+  "credentialed_route_probe_http": 403,
+  "published_live_ui_session": false,
+  "synthetic_origin_run": 44842732789,
+  "anonymous_http": 200,
+  "invalid_access_http": 200,
+  "configured_access_http": 200,
+  "tested_paths": ["/", "/v1/session", "/v2/capabilities", "/_ui_origin/<ephemeral>"],
+  "independent_consumer_gate_run": 44843638257,
+  "independent_consumer_gate_stopped_before_connector": true
+}

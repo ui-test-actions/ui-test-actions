@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "started_at": "2026-11-21T00:48:41.367+00:00",
+  "failure": {
+    "step": 3,
+    "stage": "assertion",
+    "operation": null,
+    "code": null
+  },
+  "files": {
+    "session.json": {
+      "sha256": "0c3a1dd35c69a640299b27b2583400499fddc78066a32fb7ce30adea96fddf58",
+      "captured_at": "2026-11-21T00:48:41.961+00:00"
+    },
+    "failure.png": {
+      "sha256": "63373382cfa36078355ba24feb69e5e94474e40ec28f26bb01c8bfd7f4ed18e6",
+      "captured_at": "2026-11-21T00:48:42.558+00:00"
+    },
+    "capabilities.json": {
+      "sha256": "dd29f9415021ea9d993d669220aa6b9bdc218b81fae98b1cb572400038611a40",
+      "captured_at": "2026-11-21T00:48:43.149+00:00"
+    },
+    "tree.json": {
+      "sha256": "e463264fcea156d0adf60583549f9dd911e4931b8d46de4149d873db769de63c",
+      "captured_at": "2026-11-21T00:48:43.835+00:00"
+    },
+    "timing.json": {
+      "sha256": "1005049786f7afb1754c7d36661cd655fad12a3549bdc389f468ed72759f934a",
+      "captured_at": "2026-11-21T00:48:44.546+00:00"
+    },
+    "process.json": {
+      "sha256": "c06d7593aca8bf8e3d34ce1b5e2bba2f6e5ba7c863a955048dd2a570e938bfa5",
+      "captured_at": "2026-11-21T00:48:45.140+00:00"
+    },
+    "log-sources.json": {
+      "sha256": "0035c8201ab8881264e0fb8f36b3ed0f7ec48489a1494e88b8d3a0d3d9d54e4b",
+      "captured_at": "2026-11-21T00:48:45.709+00:00"
+    },
+    "log-app.json": {
+      "sha256": "139bcc24a03b42ae0196b0c45af9960c97747778450c727bc714608c4df0f125",
+      "captured_at": "2026-11-21T00:48:46.291+00:00"
+    },
+    "aftermath.gif": {
+      "sha256": "2fae1a67c20cb576356135bf819716630cb8c2dd01eb671c0b1e73e371365d66",
+      "captured_at": "2026-11-21T00:48:52.093+00:00"
+    }
+  },
+  "target": "linux",
+  "unavailable": {},
+  "finished_at": "2026-11-21T00:48:52.093+00:00"
+}

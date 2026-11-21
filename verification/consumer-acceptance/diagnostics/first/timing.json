@@ -1,0 +1,20 @@
+{
+  "startup": {},
+  "actions": [
+    {
+      "command": "app.launch",
+      "milliseconds": 0.443,
+      "ok": true
+    },
+    {
+      "command": "pointer.click",
+      "milliseconds": 23.05,
+      "ok": true
+    },
+    {
+      "command": "tree.snapshot",
+      "milliseconds": 106.02,
+      "ok": true
+    }
+  ]
+}

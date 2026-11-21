@@ -11,7 +11,7 @@ Use the same [UI API](automation.md) and client with every transport. The action
 
 The transport carries screenshots and control requests. The Android/iOS app LAN has its own interfaces, routes, discovery traffic, and credentials. Selecting a transport does not reconfigure those networks. The [mobile LAN workflow](mobile-lan.md) keeps its own relay and interface lifecycle.
 
-Use the exact tested action pin `672f07488d17d39375d8895398d72e4fb94b4437`. In the snippets below, declare `token_sha256` as a required string dispatch input, set up Python 3.12 earlier in the job, and use your app's existing Bash launch and readiness commands.
+Use the full Action commit in the example for your chosen transport. In the snippets below, declare `token_sha256` as a required string dispatch input, set up Python 3.12 earlier in the job, and use your app's existing Bash launch and readiness commands.
 
 ## Quick Tunnel
 
@@ -44,7 +44,7 @@ concurrency:
 ```
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
+- uses: ui-test-actions/ui-test-actions@aa993a101396b7cfa1aab0891ad37a46a94153af
   with:
     target: linux
     transport: cloudflare-named
@@ -59,6 +59,8 @@ concurrency:
 ```
 
 For Access, create a self-hosted application covering the entire hostname and use a Service Auth policy for a dedicated service token. Store its credential pair in the Actions secrets shown above. During startup the action requires the anonymous probe to be denied at the edge and a probe with service headers to reach the exact live origin. The probes carry no UI bearer. Omit both Access inputs for a route protected solely by the UI bearer. Use the two Cloudflare service headers so the UI bearer can still use `Authorization`. [Cloudflare Access service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)
+
+Use the client from the Named example's pin. The readiness probe and API client send `User-Agent: ui-test-actions/2` to identify themselves to Cloudflare. A prior pin used Python's default HTTP identifier, which the test zone rejected with error 1010 before checking the service token. [Cloudflare error 1010](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-1xxx-errors/error-1010/)
 
 Give automated clients a private JSON file with keys `client_id` and `client_secret`, and pass it separately from the UI bearer:
 

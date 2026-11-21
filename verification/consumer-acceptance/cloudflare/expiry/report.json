@@ -1,0 +1,424 @@
+{
+  "host_run": 44845998583,
+  "mode": "expiry",
+  "opening": 351,
+  "missing_access_http": 403,
+  "invalid_access_http": 401,
+  "wrong_session_http": 409,
+  "journey": {
+    "transport": "cloudflare-named",
+    "target": "linux",
+    "initial_seconds_remaining": 351,
+    "before_pixel": [
+      25,
+      43,
+      66
+    ],
+    "after_pixel": [
+      23,
+      99,
+      59
+    ],
+    "anonymous_http": 401,
+    "wrong_bearer_http": 401,
+    "reconnected": true,
+    "replayed_request_equal": true,
+    "unpinned_tls_rejected": false,
+    "wrong_host_http": null,
+    "image_sha256": {
+      "before.png": "8d1baf41fd65e69407de379a2e98d4170eb4958f8f6874d4d2f8dd70529fa31f",
+      "after.png": "23ca0a9a1ff664ca82c5e29080a237a6825d1f91b4f1356b766bcbb1f194e3be"
+    }
+  },
+  "samples": [
+    {
+      "at": "2026-11-21T00:47:34.593+00:00",
+      "http": 200,
+      "remaining": 350,
+      "latency_ms": 50
+    },
+    {
+      "at": "2026-11-21T00:47:40.642+00:00",
+      "http": 200,
+      "remaining": 344,
+      "latency_ms": 59
+    },
+    {
+      "at": "2026-11-21T00:47:46.701+00:00",
+      "http": 200,
+      "remaining": 338,
+      "latency_ms": 54
+    },
+    {
+      "at": "2026-11-21T00:47:52.755+00:00",
+      "http": 200,
+      "remaining": 332,
+      "latency_ms": 63
+    },
+    {
+      "at": "2026-11-21T00:47:58.818+00:00",
+      "http": 200,
+      "remaining": 326,
+      "latency_ms": 55
+    },
+    {
+      "at": "2026-11-21T00:48:04.874+00:00",
+      "http": 200,
+      "remaining": 320,
+      "latency_ms": 59
+    },
+    {
+      "at": "2026-11-21T00:48:10.933+00:00",
+      "http": 200,
+      "remaining": 313,
+      "latency_ms": 44
+    },
+    {
+      "at": "2026-11-21T00:48:16.977+00:00",
+      "http": 200,
+      "remaining": 307,
+      "latency_ms": 62
+    },
+    {
+      "at": "2026-11-21T00:48:23.039+00:00",
+      "http": 200,
+      "remaining": 301,
+      "latency_ms": 53
+    },
+    {
+      "at": "2026-11-21T00:48:29.092+00:00",
+      "http": 200,
+      "remaining": 295,
+      "latency_ms": 54
+    },
+    {
+      "at": "2026-11-21T00:48:35.146+00:00",
+      "http": 200,
+      "remaining": 289,
+      "latency_ms": 137
+    },
+    {
+      "at": "2026-11-21T00:48:41.283+00:00",
+      "http": 200,
+      "remaining": 283,
+      "latency_ms": 97
+    },
+    {
+      "at": "2026-11-21T00:48:47.380+00:00",
+      "http": 200,
+      "remaining": 277,
+      "latency_ms": 140
+    },
+    {
+      "at": "2026-11-21T00:48:53.520+00:00",
+      "http": 200,
+      "remaining": 271,
+      "latency_ms": 75
+    },
+    {
+      "at": "2026-11-21T00:48:59.595+00:00",
+      "http": 200,
+      "remaining": 265,
+      "latency_ms": 74
+    },
+    {
+      "at": "2026-11-21T00:49:05.669+00:00",
+      "http": 200,
+      "remaining": 259,
+      "latency_ms": 247
+    },
+    {
+      "at": "2026-11-21T00:49:11.917+00:00",
+      "http": 200,
+      "remaining": 252,
+      "latency_ms": 52
+    },
+    {
+      "at": "2026-11-21T00:49:17.969+00:00",
+      "http": 200,
+      "remaining": 246,
+      "latency_ms": 60
+    },
+    {
+      "at": "2026-11-21T00:49:24.028+00:00",
+      "http": 200,
+      "remaining": 240,
+      "latency_ms": 68
+    },
+    {
+      "at": "2026-11-21T00:49:30.096+00:00",
+      "http": 200,
+      "remaining": 234,
+      "latency_ms": 76
+    },
+    {
+      "at": "2026-11-21T00:49:36.173+00:00",
+      "http": 200,
+      "remaining": 228,
+      "latency_ms": 68
+    },
+    {
+      "at": "2026-11-21T00:49:42.241+00:00",
+      "http": 200,
+      "remaining": 222,
+      "latency_ms": 67
+    },
+    {
+      "at": "2026-11-21T00:49:48.308+00:00",
+      "http": 200,
+      "remaining": 216,
+      "latency_ms": 72
+    },
+    {
+      "at": "2026-11-21T00:49:54.380+00:00",
+      "http": 200,
+      "remaining": 210,
+      "latency_ms": 72
+    },
+    {
+      "at": "2026-11-21T00:50:00.452+00:00",
+      "http": 200,
+      "remaining": 204,
+      "latency_ms": 78
+    },
+    {
+      "at": "2026-11-21T00:50:06.529+00:00",
+      "http": 200,
+      "remaining": 198,
+      "latency_ms": 59
+    },
+    {
+      "at": "2026-11-21T00:50:12.588+00:00",
+      "http": 200,
+      "remaining": 192,
+      "latency_ms": 66
+    },
+    {
+      "at": "2026-11-21T00:50:18.654+00:00",
+      "http": 200,
+      "remaining": 186,
+      "latency_ms": 73
+    },
+    {
+      "at": "2026-11-21T00:50:24.728+00:00",
+      "http": 200,
+      "remaining": 180,
+      "latency_ms": 73
+    },
+    {
+      "at": "2026-11-21T00:50:30.800+00:00",
+      "http": 200,
+      "remaining": 174,
+      "latency_ms": 66
+    },
+    {
+      "at": "2026-11-21T00:50:36.867+00:00",
+      "http": 200,
+      "remaining": 167,
+      "latency_ms": 83
+    },
+    {
+      "at": "2026-11-21T00:50:42.950+00:00",
+      "http": 200,
+      "remaining": 161,
+      "latency_ms": 73
+    },
+    {
+      "at": "2026-11-21T00:50:49.023+00:00",
+      "http": 200,
+      "remaining": 155,
+      "latency_ms": 60
+    },
+    {
+      "at": "2026-11-21T00:50:55.084+00:00",
+      "http": 200,
+      "remaining": 149,
+      "latency_ms": 80
+    },
+    {
+      "at": "2026-11-21T00:51:01.164+00:00",
+      "http": 200,
+      "remaining": 143,
+      "latency_ms": 103
+    },
+    {
+      "at": "2026-11-21T00:51:07.267+00:00",
+      "http": 200,
+      "remaining": 137,
+      "latency_ms": 65
+    },
+    {
+      "at": "2026-11-21T00:51:13.332+00:00",
+      "http": 200,
+      "remaining": 131,
+      "latency_ms": 55
+    },
+    {
+      "at": "2026-11-21T00:51:19.388+00:00",
+      "http": 200,
+      "remaining": 125,
+      "latency_ms": 69
+    },
+    {
+      "at": "2026-11-21T00:51:25.457+00:00",
+      "http": 200,
+      "remaining": 119,
+      "latency_ms": 44
+    },
+    {
+      "at": "2026-11-21T00:51:31.501+00:00",
+      "http": 200,
+      "remaining": 113,
+      "latency_ms": 61
+    },
+    {
+      "at": "2026-11-21T00:51:37.562+00:00",
+      "http": 200,
+      "remaining": 107,
+      "latency_ms": 63
+    },
+    {
+      "at": "2026-11-21T00:51:43.626+00:00",
+      "http": 200,
+      "remaining": 101,
+      "latency_ms": 73
+    },
+    {
+      "at": "2026-11-21T00:51:49.699+00:00",
+      "http": 200,
+      "remaining": 95,
+      "latency_ms": 80
+    },
+    {
+      "at": "2026-11-21T00:51:55.778+00:00",
+      "http": 200,
+      "remaining": 89,
+      "latency_ms": 69
+    },
+    {
+      "at": "2026-11-21T00:52:01.847+00:00",
+      "http": 200,
+      "remaining": 83,
+      "latency_ms": 76
+    },
+    {
+      "at": "2026-11-21T00:52:07.924+00:00",
+      "http": 200,
+      "remaining": 76,
+      "latency_ms": 77
+    },
+    {
+      "at": "2026-11-21T00:52:14.000+00:00",
+      "http": 200,
+      "remaining": 70,
+      "latency_ms": 75
+    },
+    {
+      "at": "2026-11-21T00:52:20.076+00:00",
+      "http": 200,
+      "remaining": 64,
+      "latency_ms": 71
+    },
+    {
+      "at": "2026-11-21T00:52:26.146+00:00",
+      "http": 200,
+      "remaining": 58,
+      "latency_ms": 57
+    },
+    {
+      "at": "2026-11-21T00:52:32.203+00:00",
+      "http": 200,
+      "remaining": 52,
+      "latency_ms": 76
+    },
+    {
+      "at": "2026-11-21T00:52:38.279+00:00",
+      "http": 200,
+      "remaining": 46,
+      "latency_ms": 118
+    },
+    {
+      "at": "2026-11-21T00:52:44.397+00:00",
+      "http": 200,
+      "remaining": 40,
+      "latency_ms": 86
+    },
+    {
+      "at": "2026-11-21T00:52:50.483+00:00",
+      "http": 200,
+      "remaining": 34,
+      "latency_ms": 65
+    },
+    {
+      "at": "2026-11-21T00:52:56.548+00:00",
+      "http": 200,
+      "remaining": 28,
+      "latency_ms": 62
+    },
+    {
+      "at": "2026-11-21T00:53:02.609+00:00",
+      "http": 200,
+      "remaining": 22,
+      "latency_ms": 60
+    },
+    {
+      "at": "2026-11-21T00:53:08.669+00:00",
+      "http": 200,
+      "remaining": 16,
+      "latency_ms": 69
+    },
+    {
+      "at": "2026-11-21T00:53:14.738+00:00",
+      "http": 200,
+      "remaining": 10,
+      "latency_ms": 59
+    },
+    {
+      "at": "2026-11-21T00:53:16.297+00:00",
+      "http": 200,
+      "remaining": 8,
+      "latency_ms": 62
+    },
+    {
+      "at": "2026-11-21T00:53:17.859+00:00",
+      "http": 200,
+      "remaining": 7,
+      "latency_ms": 63
+    },
+    {
+      "at": "2026-11-21T00:53:19.422+00:00",
+      "http": 200,
+      "remaining": 5,
+      "latency_ms": 84
+    },
+    {
+      "at": "2026-11-21T00:53:21.006+00:00",
+      "http": 200,
+      "remaining": 3,
+      "latency_ms": 58
+    },
+    {
+      "at": "2026-11-21T00:53:22.564+00:00",
+      "http": 200,
+      "remaining": 2,
+      "latency_ms": 61
+    },
+    {
+      "at": "2026-11-21T00:53:24.125+00:00",
+      "http": 200,
+      "remaining": 0,
+      "latency_ms": 70
+    },
+    {
+      "at": "2026-11-21T00:53:25.695+00:00",
+      "http": 530,
+      "latency_ms": 53
+    },
+    {
+      "at": "2026-11-21T00:53:27.248+00:00",
+      "http": 530,
+      "latency_ms": 68
+    }
+  ],
+  "passed": true
+}

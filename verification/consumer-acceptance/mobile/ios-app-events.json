@@ -1,0 +1,29 @@
+{
+  "event_counts": {
+    "connection.state.changed": 2,
+    "connection.authentication.succeeded": 2,
+    "transfer.completed": 1
+  },
+  "observed": [
+    {
+      "event": "connection.state.changed",
+      "state": "Connected"
+    },
+    {
+      "event": "connection.authentication.succeeded",
+      "state": "authenticated"
+    },
+    {
+      "event": "connection.state.changed",
+      "state": "Connected"
+    },
+    {
+      "event": "connection.authentication.succeeded",
+      "state": "authenticated"
+    },
+    {
+      "event": "transfer.completed",
+      "state": "Completed"
+    }
+  ]
+}

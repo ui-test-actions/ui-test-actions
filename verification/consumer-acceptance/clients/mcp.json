@@ -1,0 +1,60 @@
+{
+  "protocol": "2025-11-25",
+  "tools": [
+    "ui_sessions",
+    "ui_capabilities",
+    "ui_inspect",
+    "ui_screenshot",
+    "ui_action",
+    "ui_batch",
+    "ui_assert",
+    "ui_workflow",
+    "ui_coordinate"
+  ],
+  "png_observed": true,
+  "unknown_action": 404,
+  "cross_device": {
+    "version": 1,
+    "status": "passed",
+    "devices": {
+      "linux": "linux",
+      "windows": "windows"
+    },
+    "stages": [
+      {
+        "name": "Read each independent runner clipboard",
+        "status": "passed",
+        "devices": {
+          "linux": {
+            "status": "passed",
+            "elapsed_ms": 645
+          },
+          "windows": {
+            "status": "passed",
+            "elapsed_ms": 570
+          }
+        },
+        "checks": [
+          {
+            "bindings": [
+              "linux_clip",
+              "expected"
+            ],
+            "equal": true
+          },
+          {
+            "bindings": [
+              "windows_clip",
+              "expected"
+            ],
+            "equal": true
+          }
+        ],
+        "captured": [
+          "linux_clip",
+          "windows_clip"
+        ]
+      }
+    ]
+  }
+}

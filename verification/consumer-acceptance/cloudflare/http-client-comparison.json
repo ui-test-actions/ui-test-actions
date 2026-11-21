@@ -1,0 +1,152 @@
+{
+  "run": 44845796403,
+  "observations": [
+    {
+      "standard_client_id_suffix": true,
+      "credentials_have_distinct_values": true,
+      "configured_client_id_matches_policy_token": true
+    },
+    {
+      "path": "/",
+      "request": "anonymous",
+      "http": 403,
+      "markers": [
+        "forbidden",
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/",
+      "request": "configured",
+      "http": 200,
+      "markers": [
+        "diagnostic-only"
+      ]
+    },
+    {
+      "path": "/",
+      "request": "invalid",
+      "http": 401,
+      "markers": [
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/v1/session",
+      "request": "anonymous",
+      "http": 403,
+      "markers": [
+        "forbidden",
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/v1/session",
+      "request": "configured",
+      "http": 200,
+      "markers": [
+        "diagnostic-only"
+      ]
+    },
+    {
+      "path": "/v1/session",
+      "request": "invalid",
+      "http": 401,
+      "markers": [
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/v2/capabilities",
+      "request": "anonymous",
+      "http": 403,
+      "markers": [
+        "forbidden",
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/v2/capabilities",
+      "request": "configured",
+      "http": 200,
+      "markers": [
+        "diagnostic-only"
+      ]
+    },
+    {
+      "path": "/v2/capabilities",
+      "request": "invalid",
+      "http": 401,
+      "markers": [
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/_ui_origin/…",
+      "request": "anonymous",
+      "http": 403,
+      "markers": [
+        "forbidden",
+        "cloudflare access"
+      ]
+    },
+    {
+      "path": "/_ui_origin/…",
+      "request": "configured",
+      "http": 200,
+      "markers": [
+        "diagnostic-only"
+      ]
+    },
+    {
+      "path": "/_ui_origin/…",
+      "request": "invalid",
+      "http": 401,
+      "markers": [
+        "cloudflare access"
+      ]
+    },
+    {
+      "python_action_route_probe": false,
+      "observation": "HTTP 403"
+    },
+    {
+      "comparison": "curl_h2",
+      "http": 200,
+      "markers": []
+    },
+    {
+      "comparison": "curl_h1",
+      "http": 200,
+      "markers": []
+    },
+    {
+      "comparison": "curl_python_agent",
+      "http": 403,
+      "markers": [
+        "1010"
+      ]
+    },
+    {
+      "comparison": "urllib_no_cache",
+      "http": 403,
+      "markers": [
+        "1010"
+      ],
+      "edge_challenge": false
+    },
+    {
+      "comparison": "urllib_default",
+      "http": 403,
+      "markers": [
+        "1010"
+      ],
+      "edge_challenge": false
+    },
+    {
+      "comparison": "urllib_product_agent",
+      "http": 200,
+      "markers": []
+    }
+  ]
+}

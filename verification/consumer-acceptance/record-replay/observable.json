@@ -1,0 +1,6 @@
+{
+  "yaml_status_label_matches": true,
+  "python_status_label_matches": true,
+  "replay_text_copyback_exact": true,
+  "known_tk_select_all_workaround": true
+}

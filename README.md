@@ -81,7 +81,7 @@ An agent can inspect the screenshot, use a fresh selector or coordinates, then c
 
 To test native peer discovery and communication between GitHub-hosted Android and Apple Silicon iOS, follow the [hosted mobile LAN guide](docs/mobile-lan.md).
 
-See the [transport verification report](verification/transports/) for the current pin and hosted connection evidence, and the [verification index](verification/development-phase.md) for the five-platform lifetime baseline and feature coverage.
+See the [external consumer report](verification/consumer-acceptance/) for independent adoption and feature evidence, the [transport verification report](verification/transports/) for hosted connection tests, and the [verification index](verification/development-phase.md) for the five-platform lifetime baseline and feature coverage.
 
 Use the [transport guide](docs/transports.md) to configure Cloudflare Named Tunnel with Access, a private overlay such as WireGuard or Tailscale, or same-runner loopback. Each transport uses the session bearer and the same UI API. The runner closes the session at expiry or cancellation. The authenticated controller can operate the runner's visible UI, so use dedicated test jobs and synthetic data.
 

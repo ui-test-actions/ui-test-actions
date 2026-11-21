@@ -41,7 +41,15 @@ def main():
         edge_auth = Client(config, args.token_file, args.access_file)
         edge_auth.headers.pop("CF-Access-Client-Id")
         edge_auth.headers.pop("CF-Access-Client-Secret")
-        report["edge_access_rejection"] = rejected(edge_auth, {302, 303, 307, 308, 401, 403})
+        wrong_edge_auth = Client(config, args.token_file, args.access_file)
+        wrong_edge_auth.headers["CF-Access-Client-Secret"] = "invalid-acceptance-credential"
+        denials = {302, 303, 307, 308, 401, 403}
+        report["edge_access_rejection"] = rejected(edge_auth, denials)
+        report["invalid_edge_access_rejection"] = rejected(wrong_edge_auth, denials)
+    stale = Client(config, args.token_file, args.access_file)
+    if client.session_id:
+        stale.headers["X-UI-Session-ID"] = "0" * 24
+        report["wrong_session_rejection"] = rejected(stale, {409})
     args.output.mkdir(mode=0o700)
     report["visual_journey"] = observe(config, args.token_file, remote_controls(valid), args.output, args.access_file)
     deadline = time.monotonic() + initial["seconds_remaining"] + 45

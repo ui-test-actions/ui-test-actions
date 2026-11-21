@@ -1,6 +1,6 @@
 # Hosted development-phase verification
 
-Start with the [consumer setup and agent connection guide](../README.md). Each section below links the workflow run and the observations captured outside the runner. The five-platform, one-hour baseline is pinned to action `b57a9501805d6b75f94c6fa7ac1df4e37726a959`. New capabilities have separate immutable pins and acceptance runs.
+Start with the [consumer setup and agent connection guide](../README.md). Each section below links the workflow run and the observations captured outside the runner. The five-platform, one-hour baseline is pinned to action `b57a9501805d6b75f94c6fa7ac1df4e37726a959`. The [independent consumer report](consumer-acceptance/) records the transport release and the separate Named correction, with their own immutable pins and runs.
 
 ## Five-platform session baseline
 
@@ -46,8 +46,8 @@ The source report records opening, last live and first terminal UTC times for ea
 
 | Item | Input or remaining verification |
 | --- | --- |
-| Named Tunnel | The verification repository has no configured connector secret. Live verification requires a dedicated Cloudflare-routed hostname mapped to `http://127.0.0.1:8787` and the matching `CLOUDFLARE_TUNNEL_TOKEN` Actions secret. |
-| Cloudflare Access | Live verification on that hostname requires an Access application, Service Auth policy, and a test service token ID and secret supplied privately to the external agent. |
+| Named Tunnel and service-to-service Cloudflare Access | The configured publisher hostname passed an external hosted lifecycle test at `aa993a101396b7cfa1aab0891ad37a46a94153af`. See the [Named acceptance report](consumer-acceptance/#cloudflare-named-tunnel) for expiry, cancellation, and the independent installation scope. |
+| Cloudflare Access in an interactive browser | An Access user policy and approved identity provider are needed to test human sign-in on the embedded browser. Service Auth and the standalone browser inspector have separate hosted results. |
 | Arabic hardware keyboard | Physical composition and precise bidirectional caret and selection checks require an interactive device or workstation with an Arabic-layout hardware keyboard. Hosted text entry, clipboard, saving and app layout checks can run independently. |
 | iOS native backend compatibility | The prebuilt WebDriverAgent setup is verified on the recorded `macos-26` configuration. The older `macos-15` setup requires a compatible Xcode, simulator runtime and WebDriverAgent build after its session-creation timeout. AXe passed an isolated P2pKit SwiftUI test after an app-tree and framebuffer readiness check. The paired LAN workflow has separate visible-driver evidence. |
 

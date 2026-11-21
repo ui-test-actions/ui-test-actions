@@ -1,0 +1,84 @@
+{
+  "request_id": "1a5743a7273a405dbc4293e9d5bbb418",
+  "command": "trace.stop",
+  "ok": true,
+  "result": {
+    "version": 1,
+    "target": "linux",
+    "events": [
+      {
+        "ms": 652,
+        "action": {
+          "command": "pointer.click",
+          "params": {
+            "x": 320,
+            "y": 194
+          }
+        },
+        "display": [
+          1280,
+          800
+        ]
+      },
+      {
+        "ms": 1264,
+        "action": {
+          "command": "keyboard.press",
+          "params": {
+            "keys": [
+              "home"
+            ]
+          }
+        }
+      },
+      {
+        "ms": 1867,
+        "action": {
+          "command": "keyboard.press",
+          "params": {
+            "keys": [
+              "shift",
+              "end"
+            ]
+          }
+        }
+      },
+      {
+        "ms": 2575,
+        "action": {
+          "command": "keyboard.press",
+          "params": {
+            "keys": [
+              "backspace"
+            ]
+          }
+        }
+      },
+      {
+        "ms": 5425,
+        "action": {
+          "command": "text.insert",
+          "params": {
+            "text": "Consumer replay OK 47"
+          }
+        }
+      },
+      {
+        "ms": 6001,
+        "action": {
+          "command": "pointer.click",
+          "params": {
+            "x": 341,
+            "y": 267
+          }
+        },
+        "display": [
+          1280,
+          800
+        ]
+      }
+    ],
+    "inputs": [],
+    "truncated": false
+  }
+}

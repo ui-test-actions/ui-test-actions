@@ -1,0 +1,89 @@
+{
+  "host_run": 44846275003,
+  "mode": "cancellation",
+  "opening": 475,
+  "missing_access_http": 403,
+  "invalid_access_http": 401,
+  "wrong_session_http": 409,
+  "journey": {
+    "transport": "cloudflare-named",
+    "target": "linux",
+    "initial_seconds_remaining": 475,
+    "before_pixel": [
+      25,
+      43,
+      66
+    ],
+    "after_pixel": [
+      23,
+      99,
+      59
+    ],
+    "anonymous_http": 401,
+    "wrong_bearer_http": 401,
+    "reconnected": true,
+    "replayed_request_equal": true,
+    "unpinned_tls_rejected": false,
+    "wrong_host_http": null,
+    "image_sha256": {
+      "before.png": "cd21d75b0789667fa087a875e89f3897588008f4dd256686af710ab6582c01d7",
+      "after.png": "23ca0a9a1ff664ca82c5e29080a237a6825d1f91b4f1356b766bcbb1f194e3be"
+    }
+  },
+  "cancel_requested_at": "2026-11-21T00:54:29.368+00:00",
+  "samples": [
+    {
+      "at": "2026-11-21T00:54:30.334+00:00",
+      "http": 200,
+      "remaining": 473,
+      "latency_ms": 76
+    },
+    {
+      "at": "2026-11-21T00:54:32.411+00:00",
+      "http": 200,
+      "remaining": 471,
+      "latency_ms": 71
+    },
+    {
+      "at": "2026-11-21T00:54:34.482+00:00",
+      "http": 200,
+      "remaining": 469,
+      "latency_ms": 74
+    },
+    {
+      "at": "2026-11-21T00:54:36.556+00:00",
+      "http": 200,
+      "remaining": 467,
+      "latency_ms": 70
+    },
+    {
+      "at": "2026-11-21T00:54:38.626+00:00",
+      "http": 200,
+      "remaining": 464,
+      "latency_ms": 74
+    },
+    {
+      "at": "2026-11-21T00:54:40.700+00:00",
+      "http": 200,
+      "remaining": 462,
+      "latency_ms": 195
+    },
+    {
+      "at": "2026-11-21T00:54:42.895+00:00",
+      "http": 200,
+      "remaining": 460,
+      "latency_ms": 56
+    },
+    {
+      "at": "2026-11-21T00:54:44.951+00:00",
+      "http": 502,
+      "latency_ms": 92
+    },
+    {
+      "at": "2026-11-21T00:54:47.043+00:00",
+      "http": 502,
+      "latency_ms": 94
+    }
+  ],
+  "passed": true
+}

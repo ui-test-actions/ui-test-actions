@@ -1,0 +1,12 @@
+{
+  "native_discovery": {
+    "android_observed": "iPhone",
+    "ios_observed": "Android-1349"
+  },
+  "initiator": "ios",
+  "connected_on_both": true,
+  "observed_receiver_lines": {
+    "android": "00:31:01  iPhone → iOS reply PLUM",
+    "ios": "Android-1349 -> PLUM"
+  }
+}

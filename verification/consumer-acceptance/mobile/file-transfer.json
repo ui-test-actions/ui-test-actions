@@ -1,0 +1,8 @@
+{
+  "observed_at": "2026-11-21T00:35:47.314309+00:00",
+  "received_bytes": 204800,
+  "expected_sha256": "b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad",
+  "received_sha256": "b3cb6c687966c0bc6205a1aef0d0c25bf0f690e8fcad0dbdbf304bcc5f177aad",
+  "consent_observed": true,
+  "completion_observed_on_receiver": true
+}

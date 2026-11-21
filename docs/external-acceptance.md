@@ -6,14 +6,16 @@ Use the [Named Tunnel verification workflow](../.github/workflows/named-tunnel.y
 
 For Access, configure a self-hosted Access application for the same hostname, with a Service Auth policy allowing a dedicated test service token. Supply that service token's client ID and secret in a private local JSON file with keys `client_id` and `client_secret`. Set the corresponding GitHub Actions secrets `CLOUDFLARE_ACCESS_CLIENT_ID` and `CLOUDFLARE_ACCESS_CLIENT_SECRET` for the runner's route checks. The connector token and the Access credentials serve different purposes. [Cloudflare service tokens](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/)
 
-Dispatch with the hostname and the test UI token digest. For a route without Access, set the workflow's `access` input to false. Download the live connection artifact and run the external acceptance script with Pillow installed on the observer. For a tunnel without an Access application, omit the Access credential argument.
+Dispatch with the hostname and the test UI token digest. For a route without Access, set the workflow's `access` input to false. Download the live connection artifact. Use the client from the Named example's pin and install `Pillow==12.2.0` in the observer's Python environment for visual assertions. For a tunnel without an Access application, omit the Access credential argument.
 
 ```bash
 python3 verification/check-named-tunnel.py connection.json \
   --token-file "$TOKEN_FILE" --access-file "$ACCESS_FILE" --output named-results
 ```
 
-The script checks the runner bearer, the Access policy when configured, authenticated reconnect, a click that changes the native fixture, before-and-after screenshots, the final live countdown, and two terminal responses after expiry. The verification repository currently has no configured connector secret. The account-specific end-to-end check remains pending.
+The script checks the runner bearer, the Access policy when configured, authenticated reconnect, a click that changes the native fixture, before-and-after screenshots, the final live countdown, and two terminal responses after expiry. Verify that anonymous requests and invalid service tokens are denied at both the hostname root and the API paths. A successful connector registration alone proves only the tunnel connection. The [external consumer report](../verification/consumer-acceptance/README.md) records the current hosted results.
+
+Repository Actions secrets are scoped to their repository. A separate consumer needs its own authorized connector and Access secrets, or an explicit organization secret grant to that repository. A GitHub workflow concurrency group serializes jobs within one repository. Use a dedicated hostname and tunnel for each independently scheduled repository so Cloudflare cannot load-balance unrelated UI sessions between connectors.
 
 ## Physical Arabic keyboard
 

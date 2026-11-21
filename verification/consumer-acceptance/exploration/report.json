@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "objective": "Apply the visible macOS fixture button and verify the green success state.",
+  "status": "passed",
+  "steps": [
+    {
+      "number": 1,
+      "before": "622690a710a4c3886066",
+      "plan": {
+        "summary": "Click the observed Apply change button on the macOS fixture",
+        "before": {
+          "pixel": {
+            "x": 50,
+            "y": 465,
+            "rgb": [
+              25,
+              43,
+              66
+            ],
+            "tolerance": 3
+          }
+        },
+        "action": {
+          "command": "pointer.click",
+          "params": {
+            "x": 298,
+            "y": 609
+          }
+        },
+        "expect": {
+          "pixel": {
+            "x": 50,
+            "y": 465,
+            "rgb": [
+              23,
+              99,
+              59
+            ],
+            "tolerance": 3
+          },
+          "timeout_ms": 6000
+        }
+      },
+      "outcome": "passed",
+      "after": "622690a710a4c3886066"
+    },
+    {
+      "number": 2,
+      "before": "622690a710a4c3886066",
+      "plan": {
+        "finish": true,
+        "summary": "The consumer fixture changed to its accepted state.",
+        "expect": {
+          "pixel": {
+            "x": 50,
+            "y": 465,
+            "rgb": [
+              23,
+              99,
+              59
+            ],
+            "tolerance": 3
+          }
+        }
+      },
+      "outcome": "finished"
+    }
+  ],
+  "states": {
+    "622690a710a4c3886066": {
+      "visits": 2,
+      "first": "initial.png",
+      "visible_nodes": 54
+    }
+  },
+  "transitions": [
+    {
+      "step": 1,
+      "from": "622690a710a4c3886066",
+      "to": "622690a710a4c3886066"
+    }
+  ],
+  "target": "macos"
+}
