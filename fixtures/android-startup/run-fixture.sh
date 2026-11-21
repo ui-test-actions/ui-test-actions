@@ -37,14 +37,21 @@ for mode in normal finish java native exit; do
     diff -u "$proof/$mode/exit-before.txt" "$proof/$mode/exit-after.txt" > "$proof/$mode/exit.diff" || [ "$?" = 1 ]
 done
 test -s "$proof/normal/pid-10.txt"
-test -s "$proof/finish/pid-10.txt"
-test ! -s "$proof/java/pid-10.txt"
-test ! -s "$proof/native/pid-10.txt"
-test ! -s "$proof/exit/pid-10.txt"
+grep -Eiq 'topResumedActivity=.*dev[.]uitest[.]startup' "$proof/normal/activities.txt"
+if grep -Eiq 'topResumedActivity=.*dev[.]uitest[.]startup' "$proof/finish/activities.txt"; then
+    echo "The finished fixture still owns the foreground" >&2
+    exit 1
+fi
+if grep -Eq '^\+.*process=dev[.]uitest[.]startup reason=' "$proof/finish/exit.diff"; then
+    echo "Finishing the fixture unexpectedly produced a process exit" >&2
+    exit 1
+fi
+# The OS may relaunch a failing top activity. Classify the recorded exit rather than
+# assuming a 10-second PID sample belongs to the original process.
 grep -Eq '^\+.*reason=4 \(APP CRASH\(EXCEPTION\)\)' "$proof/java/exit.diff"
 grep -Eq '^\+.*reason=5 \(APP CRASH\(NATIVE\)\)' "$proof/native/exit.diff"
 grep -Eq '^\+.*reason=1 \(EXIT_SELF\).*status=23' "$proof/exit/exit.diff"
 grep -q 'StartupFixture synthetic Java failure' "$proof/java/logcat.txt"
 grep -q 'SIGABRT' "$proof/native/logcat.txt"
 grep -q 'mode=finish' "$proof/finish/logcat.txt"
-printf '%s\n' 'normal and finish persisted; Java, native, and explicit exit classified' > "$proof/result.txt"
+printf '%s\n' 'normal UI and graceful finish verified; Java, native, and explicit process exit classified' > "$proof/result.txt"
