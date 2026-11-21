@@ -19,7 +19,9 @@ def probe(client):
     started = time.monotonic()
     stamp = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
     try:
-        state = client.identify()
+        state = json.loads(client.fetch("/v1/session", retries=0))
+        if state["id"] != client.session_id:
+            raise RuntimeError("The endpoint changed session identity.")
         return {"at": stamp, "http": 200, "remaining": state["seconds_remaining"],
                 "latency_ms": round((time.monotonic() - started) * 1000)}
     except ClientError as error:
@@ -39,6 +41,11 @@ def main():
     mode = os.environ["MODE"]
     if not re.fullmatch(r"[0-9]+", run) or mode not in {"expiry", "cancellation"}:
         raise ValueError("Invalid observer inputs")
+    metadata = json.loads(subprocess.check_output([
+        "gh", "api", f"repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{run}"
+    ], timeout=15))
+    if metadata["path"] != ".github/workflows/named-tunnel.yml":
+        raise RuntimeError("The host run must be the dedicated Named Tunnel workflow.")
     raw = os.environ.pop("OBSERVER_BEARER")
     access = {"client_id": os.environ.pop("ACCESS_ID"), "client_secret": os.environ.pop("ACCESS_SECRET")}
     if not re.fullmatch(r"[0-9a-f]{64}", raw) or not all(access.values()):
@@ -98,7 +105,10 @@ def main():
                       and all(item["http"] == 200 for item in samples[:-2])
                       and all(item["http"] in (410, 502, 503, 530) for item in samples[-2:]))
         else:
-            print("External observation complete. Ready for cancellation.", flush=True)
+            report["cancel_requested_at"] = datetime.now(timezone.utc).isoformat(timespec="milliseconds")
+            subprocess.run(["gh", "run", "cancel", run], check=True, timeout=20,
+                           stdout=subprocess.DEVNULL)
+            print("Requested cancellation after the external visual observation.", flush=True)
             report["samples"] = samples = []
             deadline = time.monotonic() + min(130, initial["seconds_remaining"] - 35)
             while time.monotonic() < deadline:
