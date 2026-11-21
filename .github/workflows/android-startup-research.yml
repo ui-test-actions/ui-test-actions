@@ -27,7 +27,12 @@ jobs:
           image="system-images;android-${API};google_apis;x86_64"
           "$tools/sdkmanager" --install emulator "$image" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018'
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.2.12479018"
-          "$tools/avdmanager" create avd --force --name startup-fixture --package "$image" <<< no
+          export ANDROID_USER_HOME="$HOME/.android"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/startup-avds"
+          mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
+          adb start-server
+          "$tools/avdmanager" create avd --force --name startup-fixture --path "$ANDROID_AVD_HOME/startup-fixture.avd" --package "$image" <<< no
+          "$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fx startup-fixture
           "$ANDROID_HOME/emulator/emulator" -avd startup-fixture -port 5554 -no-window -no-audio \
             -no-snapshot -no-boot-anim -gpu swiftshader_indirect > "$RUNNER_TEMP/proof/emulator.log" 2>&1 &
           emulator_pid=$!
