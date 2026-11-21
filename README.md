@@ -4,10 +4,10 @@ Run your app on a GitHub-hosted runner and control its live UI over HTTPS. An ex
 
 ## Add the action to a workflow
 
-Start from a [desktop](examples/desktop.yml), [Android](examples/android.yml), or [iOS](examples/ios.yml) workflow and replace its build, launch, and readiness commands. The examples pin the transport release. [Action commit](https://github.com/ui-test-actions/ui-test-actions/commit/672f07488d17d39375d8895398d72e4fb94b4437)
+Start from a [desktop](examples/desktop.yml), [Android](examples/android.yml), or [iOS](examples/ios.yml) workflow and replace its build, launch, and readiness commands. The examples use `v3.0.0` across every platform and transport. For workflows that require full commit pinning, use the exact commit listed in the release. [Release and verification](https://github.com/ui-test-actions/ui-test-actions/releases/tag/v3.0.0)
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
+- uses: ui-test-actions/ui-test-actions@v3.0.0
   with:
     target: linux
     token-sha256: ${{ inputs.token_sha256 }}

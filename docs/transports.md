@@ -11,14 +11,14 @@ Use the same [UI API](automation.md) and client with every transport. The action
 
 The transport carries screenshots and control requests. The Android/iOS app LAN has its own interfaces, routes, discovery traffic, and credentials. Selecting a transport does not reconfigure those networks. The [mobile LAN workflow](mobile-lan.md) keeps its own relay and interface lifecycle.
 
-Use the full Action commit in the example for your chosen transport. In the snippets below, declare `token_sha256` as a required string dispatch input, set up Python 3.12 earlier in the job, and use your app's existing Bash launch and readiness commands.
+The same release supports all four transports. Use `v3.0.0` or its full Action commit from the [release page](https://github.com/ui-test-actions/ui-test-actions/releases/tag/v3.0.0). In the snippets below, declare `token_sha256` as a required string dispatch input, set up Python 3.12 earlier in the job, and use your app's existing Bash launch and readiness commands.
 
 ## Quick Tunnel
 
 This is the default. No Cloudflare account, custom domain, client installation or GitHub network secret is required. Download the live artifact and follow the [agent connection guide](../README.md#connect-and-hand-the-session-to-an-agent).
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
+- uses: ui-test-actions/ui-test-actions@v3.0.0
   with:
     target: linux
     token-sha256: ${{ inputs.token_sha256 }}
@@ -44,7 +44,7 @@ concurrency:
 ```
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@aa993a101396b7cfa1aab0891ad37a46a94153af
+- uses: ui-test-actions/ui-test-actions@v3.0.0
   with:
     target: linux
     transport: cloudflare-named
@@ -88,7 +88,7 @@ The example uses the official Tailscale Action with a federated identity and an 
 - id: overlay
   shell: bash
   run: printf 'ip=%s\n' "$(tailscale ip -4)" >> "$GITHUB_OUTPUT"
-- uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
+- uses: ui-test-actions/ui-test-actions@v3.0.0
   with:
     transport: private
     private-address: ${{ steps.overlay.outputs.ip }}
@@ -106,7 +106,7 @@ The official Tailscale Action currently installs on hosted Linux. If you already
 When only a process on the runner needs UI access, use `local`. A process elsewhere cannot reach a GitHub runner using its advertised loopback URL. Start the observer before the action because the action holds its caller's step open. The [hosted transport workflow](../.github/workflows/transports.yml) includes a working Bash example with a background observer and a private bearer generated in that job.
 
 ```yaml
-- uses: ui-test-actions/ui-test-actions@672f07488d17d39375d8895398d72e4fb94b4437
+- uses: ui-test-actions/ui-test-actions@v3.0.0
   with:
     transport: local
     target: linux
