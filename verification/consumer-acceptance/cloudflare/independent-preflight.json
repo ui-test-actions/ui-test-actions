@@ -1,0 +1,11 @@
+{
+  "observed_utc": "2026-11-21T01:03:50+00:00",
+  "candidate_hostname": "uitest-consumer.abdelrahmanfahmy.dev",
+  "cloudflare_zone_inventory_http": 200,
+  "cloudflare_dns_inventory_http": 403,
+  "cloudflare_error_codes": [
+    10000
+  ],
+  "independent_credential_gate_run": 44843638257,
+  "mutation_attempted": false
+}
