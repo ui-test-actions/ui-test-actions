@@ -1,0 +1,72 @@
+name: Android native startup observation
+on:
+  push:
+    branches: [research/android-startup-diagnostics-20261121]
+    paths:
+      - .github/workflows/android-native-diagnostics.yml
+      - fixtures/android-native-diagnostics/**
+permissions:
+  contents: read
+jobs:
+  observe:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 34
+            image_tag: google_apis
+          - api: 36
+            image_tag: google_apis
+          - api: 36
+            image_tag: google_apis_playstore
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install diagnostic tools and boot unchanged system image
+        env:
+          API: ${{ matrix.api }}
+          IMAGE_TAG: ${{ matrix.image_tag }}
+          ARCHIVE_URL: ${{ secrets.ANDROID_STARTUP_RESEARCH_XAPK_URL }}
+        run: |
+          set -euo pipefail
+          proof="$RUNNER_TEMP/native-proof"
+          mkdir -p "$proof" "$RUNNER_TEMP/target-archive"
+          sudo apt-get update -qq
+          sudo apt-get install -y lldb
+          tools="$ANDROID_HOME/cmdline-tools/latest/bin"
+          image="system-images;android-${API};${IMAGE_TAG};x86_64"
+          yes | "$tools/sdkmanager" --licenses > "$proof/sdk-licenses.txt" || true
+          "$tools/sdkmanager" --install emulator platform-tools "$image" 'ndk;27.2.12479018'
+          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.2.12479018"
+          export ANDROID_USER_HOME="$HOME/.android"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/native-avds"
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
+          mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
+          sudo chmod a+rw /dev/kvm
+          "$tools/avdmanager" create avd --force --name native-lab --path "$ANDROID_AVD_HOME/native-lab.avd" --package "$image" <<< no
+          "$ANDROID_HOME/emulator/emulator" -avd native-lab -port 5554 -no-window -no-audio \
+            -no-snapshot -no-boot-anim -gpu swiftshader_indirect > "$proof/emulator.log" 2>&1 &
+          emulator_pid=$!
+          trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
+          timeout 360 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do kill -0 "$1" || exit 1; sleep 2; done' bash "$emulator_pid"
+          adb -s emulator-5554 shell wm dismiss-keyguard
+          adb -s emulator-5554 shell cmd connectivity airplane-mode enable
+          adb -s emulator-5554 shell svc wifi disable
+          adb -s emulator-5554 shell svc data disable
+          adb -s emulator-5554 shell 'getprop ro.build.fingerprint; getprop ro.product.cpu.abilist; getprop ro.dalvik.vm.native.bridge; id; getenforce' > "$proof/device.txt"
+          cd "$RUNNER_TEMP/target-archive"
+          curl --fail --silent --show-error --max-time 180 --location "$ARCHIVE_URL" --output target.xapk
+          echo '187a7884900fe182dcf32112f578e0130fb2a8defb682c701182c0ec01f68578  target.xapk' | sha256sum -c | tee "$proof/archive-hash.txt"
+          unzip -j target.xapk com.emeint.android.myservices.apk config.arm64_v8a.apk config.mdpi.apk
+          adb -s emulator-5554 install-multiple com.emeint.android.myservices.apk config.arm64_v8a.apk config.mdpi.apk > "$proof/install.txt" 2>&1
+          bash "$GITHUB_WORKSPACE/fixtures/android-native-diagnostics/observe.sh" "$proof"
+      - name: Retain observation records
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: native-observation-api-${{ matrix.api }}-${{ matrix.image_tag }}
+          path: ${{ runner.temp }}/native-proof
+          retention-days: 7
