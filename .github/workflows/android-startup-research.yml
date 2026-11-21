@@ -25,9 +25,10 @@ jobs:
           sudo chmod a+rw /dev/kvm
           tools="$ANDROID_HOME/cmdline-tools/latest/bin"
           image="system-images;android-${API};google_apis;x86_64"
-          "$tools/sdkmanager" --install emulator "$image" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018'
+          "$tools/sdkmanager" --install emulator platform-tools "$image" 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018'
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/27.2.12479018"
           export ANDROID_USER_HOME="$HOME/.android"
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
           export ANDROID_AVD_HOME="$RUNNER_TEMP/startup-avds"
           mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
           adb start-server
@@ -68,8 +69,9 @@ jobs:
           sudo chmod a+rw /dev/kvm
           tools="$ANDROID_HOME/cmdline-tools/latest/bin"
           image='system-images;android-34;google_apis_playstore;x86_64'
-          "$tools/sdkmanager" --install emulator "$image"
+          "$tools/sdkmanager" --install emulator platform-tools "$image"
           export ANDROID_USER_HOME="$HOME/.android"
+          export PATH="$ANDROID_HOME/platform-tools:$PATH"
           export ANDROID_AVD_HOME="$RUNNER_TEMP/target-avds"
           mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
           adb start-server
