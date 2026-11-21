@@ -6,6 +6,7 @@ permissions:
   contents: read
 jobs:
   diagnostics:
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -53,15 +54,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - api: 34
-            runner: ubuntu-24.04
-            abi: x86_64
           - api: 36
             runner: ubuntu-24.04
             abi: x86_64
+            recording: enabled
           - api: 36
             runner: ubuntu-24.04
-            abi: arm64-v8a
+            abi: x86_64
+            recording: disabled
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 25
     steps:
@@ -72,6 +72,7 @@ jobs:
         env:
           API: ${{ matrix.api }}
           ABI: ${{ matrix.abi }}
+          RECORDING: ${{ matrix.recording }}
           ARCHIVE_URL: ${{ secrets.ANDROID_STARTUP_RESEARCH_XAPK_URL }}
         run: |
           set -euo pipefail
@@ -115,25 +116,44 @@ jobs:
           component=$(tr -d '\r' < "$proof/resolved-activity.txt" | tail -1)
           capture="$GITHUB_WORKSPACE/fixtures/android-startup/capture.sh"
           for trial in 1 2; do
-            "${device[@]}" shell screenrecord --time-limit 12 "/sdcard/startup-$trial.mp4" > "$proof/recording-$trial.txt" 2>&1 &
-            recorder=$!
+            if [[ "$RECORDING" == enabled ]]; then
+              "${device[@]}" shell screenrecord --time-limit 12 "/sdcard/startup-$trial.mp4" > "$proof/recording-$trial.txt" 2>&1 &
+              recorder=$!
+            fi
             raw="$RUNNER_TEMP/raw-target-$trial"
             bash "$capture" emulator-5554 "$pkg" "$component" "$raw"
             mkdir -p "$proof/trial-$trial"
             trial_out="$proof/trial-$trial"
             cp "$raw"/{launch.txt,pid-*.txt,exit-*.txt,*-utc.txt,screen.png} "$trial_out/"
-            wait "$recorder" || true
-            "${device[@]}" pull "/sdcard/startup-$trial.mp4" "$trial_out/startup.mp4" > "$trial_out/recording.txt" 2>&1 || true
+            if [[ "$RECORDING" == enabled ]]; then
+              wait "$recorder" || true
+              "${device[@]}" pull "/sdcard/startup-$trial.mp4" "$trial_out/startup.mp4" > "$trial_out/recording.txt" 2>&1 || true
+            fi
             grep -Ei 'emeint\.android\.myservices|vodafone\.vis\.engezly|pairip|licenseclient|licenseservice|libd26f|zygote.*[Ff]ail' "$raw/logcat.txt" > "$trial_out/logcat-scoped.txt" || true
             grep -Ei 'emeint\.android\.myservices|topResumedActivity' "$raw/activities.txt" > "$trial_out/activities-scoped.txt" || true
             "${device[@]}" logcat -d -b crash -v threadtime > "$trial_out/crash-buffer.txt"
             "${device[@]}" shell dumpsys dropbox --print data_app_native_crash > "$raw/dropbox.txt"
             awk -v RS='========================================' '/com[.]emeint[.]android[.]myservices/' "$raw/dropbox.txt" > "$trial_out/native-dropbox.txt"
+            "${device[@]}" shell dumpsys dropbox --print data_app_anr > "$raw/anr.txt"
+            awk -v RS='========================================' '/com[.]emeint[.]android[.]myservices/' "$raw/anr.txt" > "$trial_out/anr-dropbox.txt"
+            python3 - "$raw/logcat.txt" "$trial_out/target-process-logcat.txt" <<'PYTHON'
+          import pathlib
+          import re
+          import sys
+          source = pathlib.Path(sys.argv[1]).read_text()
+          pids = set(re.findall(r'am_proc_start: \[0,(\d+),\d+,com[.]emeint[.]android[.]myservices,', source))
+          output = []
+          for line in source.splitlines():
+              parts = line.split()
+              if len(parts) > 3 and parts[2] in pids:
+                  output.append(line)
+          pathlib.Path(sys.argv[2]).write_text("\n".join(output) + "\n")
+          PYTHON
           done
       - name: Retain scoped launch diagnostics
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: signed-archive-offline-api-${{ matrix.api }}-${{ matrix.abi }}
+          name: signed-archive-offline-api-${{ matrix.api }}-${{ matrix.abi }}-${{ matrix.recording }}
           path: ${{ runner.temp }}/target-proof
           retention-days: 7
