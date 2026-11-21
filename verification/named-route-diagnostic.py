@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
 from pathlib import Path
+import secrets
 import re
 import subprocess
 import sys
@@ -19,6 +20,7 @@ class Origin(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Length", "15")
+        self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(b"diagnostic-only")
 
@@ -56,11 +58,12 @@ def main():
             origin = connector.start(time.monotonic() + 85, lambda: False)
             valid = {"CF-Access-Client-Id": identifier, "CF-Access-Client-Secret": secret}
             invalid = {**valid, "CF-Access-Client-Secret": "invalid-acceptance-credential"}
-            for attempt in range(3):
+            time.sleep(4)
+            for path in ("/", "/v1/session", "/v2/capabilities", "/_ui_origin/" + secrets.token_hex(16)):
                 for label, headers in (("anonymous", {}), ("configured", valid), ("invalid", invalid)):
-                    result = request(origin + "/v1/session", work, headers)
-                    print(json.dumps({"attempt": attempt + 1, "request": label, **result}), flush=True)
-                time.sleep(2)
+                    result = request(origin + path, work, headers)
+                    print(json.dumps({"path": path.rsplit("/", 1)[0] + "/…" if path.startswith("/_ui_origin/") else path,
+                                      "request": label, **result}), flush=True)
         finally:
             connector.close()
             server.shutdown()
