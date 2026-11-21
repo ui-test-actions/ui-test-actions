@@ -60,7 +60,7 @@ jobs:
             runner: ubuntu-24.04
             abi: x86_64
           - api: 36
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-24.04
             abi: arm64-v8a
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 25
@@ -93,7 +93,10 @@ jobs:
           adb start-server
           "$tools/avdmanager" create avd --force --name target-lab --path "$ANDROID_AVD_HOME/target-lab.avd" --package "$image" <<< no
           "$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fx target-lab
-          "$ANDROID_HOME/emulator/emulator" -avd target-lab -port 5554 -no-window -no-audio \
+          accel=on
+          if [[ "$ABI" == arm64-v8a && "$(uname -m)" == x86_64 ]]; then accel=off; fi
+          "$ANDROID_HOME/emulator/emulator" -version > "$proof/emulator-version.txt"
+          "$ANDROID_HOME/emulator/emulator" -avd target-lab -accel "$accel" -port 5554 -no-window -no-audio \
             -no-snapshot -no-boot-anim -gpu swiftshader_indirect > "$proof/emulator.log" 2>&1 &
           emulator_pid=$!
           trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
@@ -111,11 +114,15 @@ jobs:
           component=$(tr -d '\r' < "$proof/resolved-activity.txt" | tail -1)
           capture="$GITHUB_WORKSPACE/fixtures/android-startup/capture.sh"
           for trial in 1 2; do
+            "${device[@]}" shell screenrecord --time-limit 12 "/sdcard/startup-$trial.mp4" > "$proof/recording-$trial.txt" 2>&1 &
+            recorder=$!
             raw="$RUNNER_TEMP/raw-target-$trial"
             bash "$capture" emulator-5554 "$pkg" "$component" "$raw"
             mkdir -p "$proof/trial-$trial"
             trial_out="$proof/trial-$trial"
-            cp "$raw"/{launch.txt,pid-*.txt,exit-*.txt,*-utc.txt} "$trial_out/"
+            cp "$raw"/{launch.txt,pid-*.txt,exit-*.txt,*-utc.txt,screen.png} "$trial_out/"
+            wait "$recorder" || true
+            "${device[@]}" pull "/sdcard/startup-$trial.mp4" "$trial_out/startup.mp4" > "$trial_out/recording.txt" 2>&1 || true
             grep -Ei 'emeint\.android\.myservices|vodafone\.vis\.engezly|pairip|licenseclient|licenseservice|libd26f|zygote.*[Ff]ail' "$raw/logcat.txt" > "$trial_out/logcat-scoped.txt" || true
             grep -Ei 'emeint\.android\.myservices|topResumedActivity' "$raw/activities.txt" > "$trial_out/activities-scoped.txt" || true
             "${device[@]}" logcat -d -b crash -v threadtime > "$trial_out/crash-buffer.txt"
