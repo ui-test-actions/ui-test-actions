@@ -1,0 +1,45 @@
+name: Observe Named Tunnel from another hosted runner
+on:
+  workflow_dispatch:
+    inputs:
+      host_run:
+        description: Run ID of the Named Tunnel workflow
+        required: true
+        type: string
+      mode:
+        description: Natural expiry or externally requested cancellation
+        required: true
+        type: choice
+        options: [expiry, cancellation]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  external:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Observe the external HTTPS session
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HOST_RUN: ${{ inputs.host_run }}
+          MODE: ${{ inputs.mode }}
+          OBSERVER_BEARER: ${{ secrets.NAMED_ACCEPTANCE_UI_BEARER }}
+          ACCESS_ID: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}
+          ACCESS_SECRET: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
+        run: |
+          python -m pip -q install Pillow==12.2.0
+          python verification/named-hosted-observer.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: named-observation
+          path: ${{ runner.temp }}/named-public
+          if-no-files-found: error
+          retention-days: 14
