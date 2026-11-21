@@ -85,7 +85,7 @@ def capture(debugger, output_path):
                             break
                         time.sleep(0.01)
                 snapshot('natural-stop' if natural else 'timed-sample-%.2f' % delay)
-                if natural or process.GetState() != lldb.eStateStopped:
+                if natural or delay == 3.0 or process.GetState() != lldb.eStateStopped:
                     break
                 previous = process.GetStopID()
                 emit('continue', error=str(process.Continue()))
