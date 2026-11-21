@@ -47,3 +47,63 @@ jobs:
           name: android-startup-api-${{ matrix.api }}
           path: ${{ runner.temp }}/proof
           retention-days: 7
+  signed-archive-offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Boot disposable Google Play emulator and capture offline launch
+        env:
+          ARCHIVE_URL: ${{ secrets.ANDROID_STARTUP_RESEARCH_XAPK_URL }}
+        run: |
+          set -euo pipefail
+          proof="$RUNNER_TEMP/target-proof"
+          mkdir -p "$proof" "$RUNNER_TEMP/archive"
+          cd "$RUNNER_TEMP/archive"
+          curl --fail --silent --max-time 180 --location "$ARCHIVE_URL" --output target.xapk
+          echo '187a7884900fe182dcf32112f578e0130fb2a8defb682c701182c0ec01f68578  target.xapk' | sha256sum -c
+          unzip -j target.xapk com.emeint.android.myservices.apk config.arm64_v8a.apk config.mdpi.apk
+          sudo chmod a+rw /dev/kvm
+          tools="$ANDROID_HOME/cmdline-tools/latest/bin"
+          image='system-images;android-34;google_apis_playstore;x86_64'
+          "$tools/sdkmanager" --install emulator "$image"
+          export ANDROID_USER_HOME="$HOME/.android"
+          export ANDROID_AVD_HOME="$RUNNER_TEMP/target-avds"
+          mkdir -p "$ANDROID_USER_HOME" "$ANDROID_AVD_HOME"
+          adb start-server
+          "$tools/avdmanager" create avd --force --name target-lab --path "$ANDROID_AVD_HOME/target-lab.avd" --package "$image" <<< no
+          "$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fx target-lab
+          "$ANDROID_HOME/emulator/emulator" -avd target-lab -port 5554 -no-window -no-audio \
+            -no-snapshot -no-boot-anim -gpu swiftshader_indirect > "$proof/emulator.log" 2>&1 &
+          emulator_pid=$!
+          trap 'kill "$emulator_pid" 2>/dev/null || true' EXIT
+          timeout 360 bash -c 'until [[ "$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d "\r")" == 1 ]]; do kill -0 "$1" || exit 1; sleep 2; done' bash "$emulator_pid"
+          device=(adb -s emulator-5554)
+          "${device[@]}" shell wm dismiss-keyguard
+          "${device[@]}" shell cmd connectivity airplane-mode enable > "$proof/offline.txt" 2>&1
+          "${device[@]}" shell svc wifi disable >> "$proof/offline.txt" 2>&1
+          "${device[@]}" shell svc data disable >> "$proof/offline.txt" 2>&1
+          "${device[@]}" shell 'getprop ro.build.version.sdk; getprop ro.product.cpu.abilist; getprop ro.dalvik.vm.native.bridge; getprop ro.boot.verifiedbootstate; id' > "$proof/device.txt"
+          "${device[@]}" install-multiple com.emeint.android.myservices.apk config.arm64_v8a.apk config.mdpi.apk 2>&1 | tee "$proof/install.txt"
+          pkg=com.emeint.android.myservices
+          "${device[@]}" shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.LAUNCHER "$pkg" > "$proof/resolved-activity.txt"
+          component=$(tr -d '\r' < "$proof/resolved-activity.txt" | tail -1)
+          capture="$GITHUB_WORKSPACE/fixtures/android-startup/capture.sh"
+          for trial in 1 2; do
+            raw="$RUNNER_TEMP/raw-target-$trial"
+            bash "$capture" emulator-5554 "$pkg" "$component" "$raw"
+            mkdir -p "$proof/trial-$trial"
+            trial_out="$proof/trial-$trial"
+            cp "$raw"/{launch.txt,pid-*.txt,exit-*.txt,*-utc.txt} "$trial_out/"
+            grep -Ei 'emeint\.android\.myservices|vodafone\.vis\.engezly|pairip|licenseclient|licenseservice|libd26f|zygote.*[Ff]ail' "$raw/logcat.txt" > "$trial_out/logcat-scoped.txt" || true
+            grep -Ei 'emeint\.android\.myservices|topResumedActivity' "$raw/activities.txt" > "$trial_out/activities-scoped.txt" || true
+          done
+      - name: Retain scoped launch diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: signed-archive-offline-api-34
+          path: ${{ runner.temp }}/target-proof
+          retention-days: 7
