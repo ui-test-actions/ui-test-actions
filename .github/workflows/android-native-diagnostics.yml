@@ -17,8 +17,6 @@ jobs:
             image_tag: google_apis
           - api: 36
             image_tag: google_apis
-          - api: 36
-            image_tag: google_apis_playstore
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -61,6 +59,7 @@ jobs:
           curl --fail --silent --show-error --max-time 180 --location "$ARCHIVE_URL" --output target.xapk
           echo '187a7884900fe182dcf32112f578e0130fb2a8defb682c701182c0ec01f68578  target.xapk' | sha256sum -c | tee "$proof/archive-hash.txt"
           unzip -j target.xapk com.emeint.android.myservices.apk config.arm64_v8a.apk config.mdpi.apk
+          sha256sum *.apk > "$proof/original-apk-hashes.txt"
           adb -s emulator-5554 install-multiple com.emeint.android.myservices.apk config.arm64_v8a.apk config.mdpi.apk > "$proof/install.txt" 2>&1
           bash "$GITHUB_WORKSPACE/fixtures/android-native-diagnostics/observe.sh" "$proof"
       - name: Retain observation records
